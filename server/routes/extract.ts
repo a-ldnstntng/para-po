@@ -5,11 +5,11 @@ import { SYSTEM_PROMPT } from '../lib/prompt.js';
 
 const router = Router();
 
-// Rate limiter: max 10 route extraction calls per minute per IP address
+// Rate limiter: relaxed for active commuting and testing (max 60 requests per minute)
 const extractLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10,
-  message: { error: 'Too many route extraction requests. Please wait a minute before trying again.' },
+  max: 60,
+  message: { error: 'Naku, sandali lang! (Masyadong mabilis ang request). Pakisubukan ulit pagkalipas ng ilang segundo.' },
   standardHeaders: true,
   legacyHeaders: false,
 });

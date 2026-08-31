@@ -37,7 +37,15 @@ export interface ExtractError {
   error: string;
 }
 
+// In-memory client cache for instant responses on repeated queries
+const routeCache = new Map<string, ExtractedRoute>();
+
 export async function extractRoute(text: string): Promise<ExtractedRoute> {
+  const normalizedKey = text.trim().toLowerCase();
+  if (routeCache.has(normalizedKey)) {
+    return routeCache.get(normalizedKey)!;
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 50000);
   try {
@@ -54,7 +62,9 @@ export async function extractRoute(text: string): Promise<ExtractedRoute> {
       throw new Error(err.error || 'Extraction failed');
     }
     
-    return res.json();
+    const data: ExtractedRoute = await res.json();
+    routeCache.set(normalizedKey, data);
+    return data;
   } catch (err: any) {
     clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
