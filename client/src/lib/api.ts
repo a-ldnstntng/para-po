@@ -29,7 +29,7 @@ export interface ExtractError {
 
 export async function extractRoute(text: string): Promise<ExtractedRoute> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000);
+  const timeoutId = setTimeout(() => controller.abort(), 50000);
   try {
     const res = await fetch(`${API_BASE}/extract`, {
       method: 'POST',
