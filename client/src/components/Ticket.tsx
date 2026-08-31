@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Bus,
   Train,
@@ -13,6 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
   Info,
+  Layers,
   type LucideIcon,
 } from 'lucide-react';
 import type { ExtractedRoute, SavedRoute } from '../lib/api';
@@ -46,32 +47,44 @@ export default function Ticket({
   onClear,
   isSaved = false,
 }: TicketProps) {
+  const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [copied, setCopied] = useState(false);
   const [showDirections, setShowDirections] = useState(true);
 
-  const totalFare = route.steps.reduce(
-    (sum, step) => sum + (step.fare_estimate_php || 0),
-    0
-  );
+  // Determine active steps based on options or fallback
+  const options = route.options && route.options.length > 0 ? route.options : null;
+  const activeOption = options ? options[selectedOptionIdx] || options[0] : null;
+  const activeSteps = useMemo(() => {
+    return activeOption ? activeOption.steps : route.steps;
+  }, [activeOption, route.steps]);
+
+  const totalFare = useMemo(() => {
+    return activeSteps.reduce(
+      (sum, step) => sum + (step.fare_estimate_php || 0),
+      0
+    );
+  }, [activeSteps]);
 
   const savedRoute = isSaved ? (route as SavedRoute) : null;
 
-  // Find the primary vehicle mode
-  const primaryStep = route.steps.find((s) => s.mode !== 'walk') || route.steps[0];
+  // Find the primary vehicle mode for the active option
+  const primaryStep = activeSteps.find((s) => s.mode !== 'walk') || activeSteps[0];
   const PrimaryVehicleIcon = primaryStep ? PRIMARY_ICONS[primaryStep.mode] || Bus : Bus;
 
   // Single consistent serial ID
-  const ticketSerial = `MNL-${Math.abs(route.origin.length * 41 + route.destination.length * 23) % 9000 + 1000}`;
+  const ticketSerial = `MNL-${Math.abs(route.origin.length * 41 + route.destination.length * 23 + selectedOptionIdx * 17) % 9000 + 1000}`;
 
-  // Find the single most useful tip across all steps
-  const bestTip = route.steps.find((s) => s.notes && s.notes.trim().length > 0)?.notes || null;
+  // Find the single most useful tip across all steps of this active option
+  const bestTip = activeSteps.find((s) => s.notes && s.notes.trim().length > 0)?.notes || null;
 
   const handleCopy = () => {
+    const optionHeader = activeOption ? `[${activeOption.title.toUpperCase()}]\n` : '';
     const formatted =
       `PARA PO! TRANSIT PASS #${ticketSerial}\n` +
+      optionHeader +
       `ROUTE: ${route.origin.toUpperCase()} ➔ ${route.destination.toUpperCase()}\n` +
-      `TOTAL FARE: PHP ${totalFare.toFixed(2)} (${route.steps.length} steps)\n\n` +
-      route.steps
+      `TOTAL FARE: PHP ${totalFare.toFixed(2)} (${activeSteps.length} steps)\n\n` +
+      activeSteps
         .map(
           (s, i) =>
             `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (Stop: ${s.landmark} | ₱${(s.fare_estimate_php || 0).toFixed(2)})`
@@ -105,20 +118,78 @@ export default function Ticket({
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       {/* ========================================================
+          0. MULTIPLE ROUTE OPTIONS SELECTOR TABS
+          ======================================================== */}
+      {options && options.length > 1 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-utility font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-amber-600" />
+              <span>Mga Pagpipiliang Ruta ({options.length} Options):</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {options.map((opt, idx) => {
+              const isSelected = selectedOptionIdx === idx;
+              return (
+                <button
+                  key={opt.option_id || idx}
+                  onClick={() => setSelectedOptionIdx(idx)}
+                  type="button"
+                  className={`
+                    px-3.5 py-2 rounded-lg font-display text-sm sm:text-base font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2
+                    ${
+                      isSelected
+                        ? 'bg-amber-500 border-2 border-slate-900 text-slate-950 shadow-[3px_3px_0px_#0F172A] scale-[1.02]'
+                        : 'bg-white border-2 border-slate-300 hover:border-slate-900 text-slate-700 shadow-xs'
+                    }
+                  `}
+                >
+                  <span>{opt.title}</span>
+                  {opt.badge && (
+                    <span
+                      className={`text-[10px] font-utility px-1.5 py-0.5 rounded uppercase font-bold ${
+                        isSelected
+                          ? 'bg-slate-900 text-amber-400'
+                          : 'bg-slate-100 text-slate-600 border border-slate-300'
+                      }`}
+                    >
+                      {opt.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
           1. STRUCTURED TRANSIT TICKET PASS
           ======================================================== */}
       <div className="transit-pass flex flex-col sm:flex-row bg-white border-2 border-slate-900 shadow-[5px_5px_0px_rgba(15,23,42,0.12)]">
         {/* MAIN BODY (Left ~75%) */}
         <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between bg-white">
-          {/* Header: Title + Validator Stamp */}
+          {/* Header: Title + Active Option Badge + Validator Stamp */}
           <div className="flex items-start justify-between gap-2 border-b-2 border-slate-900 pb-3">
             <div>
-              <div className="text-[10px] font-utility font-bold tracking-widest text-slate-500 uppercase">
-                REPUBLIC OF THE PHILIPPINES
+              <div className="text-[10px] font-utility font-bold tracking-widest text-slate-500 uppercase flex items-center gap-2">
+                <span>REPUBLIC OF THE PHILIPPINES</span>
+                {activeOption?.badge && (
+                  <span className="text-[9px] font-utility px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-400 font-bold">
+                    {activeOption.badge}
+                  </span>
+                )}
               </div>
               <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wide text-slate-900 uppercase leading-none mt-0.5">
                 PARA PO! COMMUTE PASS
               </h2>
+              {activeOption && (
+                <p className="font-utility text-xs text-amber-800 font-semibold mt-1">
+                  {activeOption.title}
+                </p>
+              )}
             </div>
 
             {/* Rotated Ink-Stamp Validator Punch */}
@@ -222,7 +293,7 @@ export default function Ticket({
               ₱{totalFare.toFixed(0)}
             </div>
             <span className="text-[11px] font-utility text-slate-700 font-bold mt-1 block">
-              {route.steps.length} transit {route.steps.length === 1 ? 'step' : 'steps'}
+              {activeSteps.length} transit {activeSteps.length === 1 ? 'step' : 'steps'}
             </span>
           </div>
 
@@ -250,10 +321,10 @@ export default function Ticket({
         >
           <div className="flex items-center gap-2">
             <span className="font-display text-lg font-bold text-slate-900 tracking-wide uppercase">
-              Mga Hakbang sa Byahe (Route Steps)
+              Mga Hakbang sa Byahe ({activeOption?.title || 'Route Steps'})
             </span>
             <span className="text-xs font-utility bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-400">
-              {route.steps.length} steps
+              {activeSteps.length} steps
             </span>
           </div>
           {showDirections ? (
@@ -266,9 +337,16 @@ export default function Ticket({
         {/* Collapsible Content */}
         {showDirections && (
           <div className="p-4 sm:p-5 pt-0 border-t-2 border-slate-900 space-y-4">
+            {/* Active option summary if available */}
+            {activeOption?.summary && (
+              <div className="mt-3 text-xs font-body font-semibold text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-300">
+                {activeOption.summary}
+              </div>
+            )}
+
             {/* Single Highlighted Primary Tip Callout */}
             {bestTip && (
-              <div className="mt-3 rounded-lg bg-amber-50 border-2 border-amber-400 p-3 flex items-start gap-2.5 text-xs text-amber-950 shadow-xs">
+              <div className="mt-2 rounded-lg bg-amber-50 border-2 border-amber-400 p-3 flex items-start gap-2.5 text-xs text-amber-950 shadow-xs">
                 <Info className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-utility font-bold text-amber-900 uppercase tracking-wider mr-1">
@@ -281,12 +359,12 @@ export default function Ticket({
 
             {/* Step-by-Step Timeline Cards */}
             <div className="pt-2">
-              {route.steps.map((step, i) => (
+              {activeSteps.map((step, i) => (
                 <StepCard
                   key={i}
                   step={step}
                   index={i}
-                  isLast={i === route.steps.length - 1}
+                  isLast={i === activeSteps.length - 1}
                 />
               ))}
             </div>

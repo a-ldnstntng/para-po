@@ -10,9 +10,19 @@ export interface RouteStep {
   notes: string | null;
 }
 
+export interface RouteOption {
+  option_id: string;
+  title: string;
+  badge?: string;
+  summary?: string;
+  total_fare_php?: number;
+  steps: RouteStep[];
+}
+
 export interface ExtractedRoute {
   origin: string;
   destination: string;
+  options?: RouteOption[];
   steps: RouteStep[];
 }
 

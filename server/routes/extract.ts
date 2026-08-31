@@ -46,11 +46,38 @@ router.post('/', extractLimiter, async (req, res) => {
       return res.status(400).json(parsed);
     }
     
-    if (!parsed.origin || !parsed.destination || !Array.isArray(parsed.steps)) {
-      return res.status(500).json({ error: 'Invalid response format from model' });
+    if (!parsed.origin || !parsed.destination) {
+      return res.status(500).json({ error: 'Invalid response format: missing origin or destination' });
     }
 
-    res.json(parsed);
+    // Normalize options and steps
+    let options = parsed.options;
+    if (!Array.isArray(options) || options.length === 0) {
+      if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
+        options = [
+          {
+            option_id: 'opt-1',
+            title: 'Ruta 1 (Recommended)',
+            badge: 'Recommended',
+            summary: `${parsed.origin} papuntang ${parsed.destination}`,
+            total_fare_php: parsed.steps.reduce((sum: number, s: any) => sum + (s.fare_estimate_php || 0), 0),
+            steps: parsed.steps,
+          }
+        ];
+      } else {
+        return res.status(500).json({ error: 'Invalid response format: no route steps or options found' });
+      }
+    }
+
+    // Ensure first option's steps are available top-level for backward compatibility
+    const responseData = {
+      origin: parsed.origin,
+      destination: parsed.destination,
+      options: options,
+      steps: options[0].steps,
+    };
+
+    res.json(responseData);
   } catch (error: any) {
     console.error('Extraction error:', error);
     if (error?.status === 429 || error?.message?.includes('429 Too Many Requests') || error?.message?.includes('Quota exceeded')) {
