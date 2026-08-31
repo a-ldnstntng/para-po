@@ -14,6 +14,14 @@ const extractLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Resilient Model Cascade: If one model's quota is exhausted, auto-failover to the next available flash model
+const CANDIDATE_MODELS = [
+  'gemini-3.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-flash-lite-latest',
+  'gemini-3.6-flash'
+];
+
 router.post('/', extractLimiter, async (req, res) => {
   try {
     const { text } = req.body;
@@ -29,18 +37,44 @@ router.post('/', extractLimiter, async (req, res) => {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-3.6-flash',
-      systemInstruction: SYSTEM_PROMPT
-    });
+    let parsed: any = null;
+    let lastError: any = null;
 
-    const result = await model.generateContent(text);
-    const responseText = result.response.text();
-    
-    // Clean up potential markdown code block
-    const cleanedText = responseText.replace(/```json\n?|\n?```/g, '').trim();
-    
-    const parsed = JSON.parse(cleanedText);
+    // Try candidate models in cascade order
+    for (const modelName of CANDIDATE_MODELS) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          systemInstruction: SYSTEM_PROMPT
+        });
+
+        const result = await model.generateContent(text);
+        const responseText = result.response.text();
+        
+        // Clean up potential markdown code block
+        const cleanedText = responseText.replace(/```json\n?|\n?```/g, '').trim();
+        parsed = JSON.parse(cleanedText);
+        
+        // Successfully generated and parsed JSON!
+        break;
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`Model ${modelName} failed, trying next candidate in cascade. Reason:`, err.message?.slice(0, 120));
+        // Continue loop to try next model in cascade
+      }
+    }
+
+    if (!parsed) {
+      if (lastError?.status === 429 || lastError?.message?.includes('429 Too Many Requests') || lastError?.message?.includes('Quota exceeded')) {
+        return res.status(429).json({
+          error: 'Naku, mabilis masyado! (Rate limit reached sa lahat ng free tier models). Pakihintay ng 20-30 seconds bago mag-extract ulit.'
+        });
+      }
+      if (lastError?.message?.includes('API key not valid') || lastError?.status === 400) {
+        return res.status(400).json({ error: 'Invalid Gemini API key. Please generate a valid key at aistudio.google.com/apikey and update server/.env' });
+      }
+      return res.status(500).json({ error: 'Failed to extract route from AI model' });
+    }
     
     if (parsed.error) {
       return res.status(400).json(parsed);
@@ -80,17 +114,6 @@ router.post('/', extractLimiter, async (req, res) => {
     res.json(responseData);
   } catch (error: any) {
     console.error('Extraction error:', error);
-    if (error?.status === 429 || error?.message?.includes('429 Too Many Requests') || error?.message?.includes('Quota exceeded')) {
-      return res.status(429).json({
-        error: 'Naku, mabilis masyado! (Rate limit reached: 15 req/min on free tier). Pakihintay ng 15-30 seconds bago mag-extract ulit.'
-      });
-    }
-    if (error?.message?.includes('API key not valid') || error?.status === 400) {
-      return res.status(400).json({ error: 'Invalid Gemini API key. Please generate a valid key at aistudio.google.com/apikey and update server/.env' });
-    }
-    if (error instanceof SyntaxError) {
-      return res.status(500).json({ error: 'Failed to parse JSON response from model' });
-    }
     res.status(502).json({ error: 'Failed to communicate with Google Generative AI' });
   }
 });
