@@ -28,58 +28,61 @@ export default function Ticket({
 
   const savedRoute = isSaved ? (route as SavedRoute) : null;
 
+  // Extract all significant landmarks into a "VIA" signboard string
+  const viaStops = route.steps
+    .map((s) => s.line_label || s.landmark)
+    .filter(Boolean)
+    .filter((val, idx, arr) => arr.indexOf(val) === idx);
+
   const handleCopy = () => {
-    const formatted = `🚐 PARA PO! Route Ticket: ${route.origin} → ${route.destination}\n\n` +
-      route.steps.map((s, i) => `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (📍 ${s.landmark})`).join('\n') +
-      `\n\nEst. Total Fare: ₱${totalFare || '—'}`;
+    const formatted = `🚐 PARA PO! COMMUTE ROUTE: ${route.origin.toUpperCase()} ➔ ${route.destination.toUpperCase()}\n` +
+      `VIA: ${viaStops.join(' • ')}\n\n` +
+      route.steps.map((s, i) => `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (Babaan: ${s.landmark})`).join('\n') +
+      `\n\nESTIMATED TOTAL FARE: ₱${totalFare || '—'}`;
 
     navigator.clipboard.writeText(formatted);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="ticket ticket-print relative">
-      {/* Red Verified Commute Stamp Watermark */}
-      <div className="ticket-stamp">
-        PARA PO! VERIFIED
-      </div>
-
-      {/* Ticket Header */}
-      <div className="text-center mb-4 pt-1">
-        <p className="font-mono text-[10px] sm:text-xs text-slate-400 uppercase tracking-widest">
-          — MANILA TRANSIT COMMUTE PASS —
-        </p>
-        
-        {/* Origin to Destination title */}
-        <div className="mt-2 flex items-center justify-center gap-2 flex-wrap px-8">
-          <span className="font-display font-black text-xl sm:text-2xl text-slate-900 tracking-wide">
-            {route.origin}
-          </span>
-          <span className="text-amber-500 font-bold text-lg">➔</span>
-          <span className="font-display font-black text-xl sm:text-2xl text-slate-900 tracking-wide">
-            {route.destination}
-          </span>
+    <div className="bg-[#000000] border-4 border-[#FFD700] shadow-[8px_8px_0px_#FF0000] p-4 sm:p-6 w-full">
+      {/* Top Acrylic Signboard Destination Header */}
+      <div className="bg-[#0000FF] border-4 border-[#FFFFFF] p-4 sm:p-6 text-center shadow-[4px_4px_0px_#000000]">
+        {/* Origin Label */}
+        <div className="inline-block bg-[#000000] text-[#FFFFFF] font-mono text-xs font-bold uppercase tracking-widest px-3 py-0.5 border border-[#FFFFFF] mb-2">
+          MULA SA: {route.origin.toUpperCase()}
         </div>
 
-        {savedRoute && (
-          <p className="text-xs text-slate-400 mt-1 font-mono">
-            Issued: {new Date(savedRoute.created_at).toLocaleDateString('en-PH', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </p>
+        {/* MASSIVE FINAL DESTINATION */}
+        <h2 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-wider text-[#FFD700] text-stroke-black-lg leading-none uppercase select-all">
+          {route.destination}
+        </h2>
+
+        {/* VIA Route Sub-strip */}
+        {viaStops.length > 0 && (
+          <div className="mt-3 bg-[#FFD700] text-[#000000] border-2 border-[#000000] py-1 px-3">
+            <span className="font-display text-sm sm:text-base font-black tracking-wider uppercase">
+              VIA: {viaStops.join(' • ').toUpperCase()}
+            </span>
+          </div>
         )}
       </div>
 
-      {/* Dashed Separator */}
-      <div className="border-t-2 border-dashed border-slate-300 my-4" />
+      {/* Manifest Timestamp / Route ID */}
+      <div className="flex items-center justify-between py-3 border-b-2 border-[#333333] text-xs font-mono text-[#CCCCCC]">
+        <span>TOTAL TRANSIT STOPS: {route.steps.length}</span>
+        {savedRoute ? (
+          <span>
+            SAVED: {new Date(savedRoute.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
+        ) : (
+          <span className="bg-[#FF0000] text-white px-2 py-0.5 font-bold">UNSAVED ROUTE</span>
+        )}
+      </div>
 
-      {/* Route Steps */}
-      <div className="space-y-1">
+      {/* Step Manifest List */}
+      <div className="my-4 space-y-2">
         {route.steps.map((step, i) => (
           <StepCard
             key={i}
@@ -90,83 +93,63 @@ export default function Ticket({
         ))}
       </div>
 
-      {/* Dashed Separator */}
-      <div className="border-t-2 border-dashed border-slate-300 my-4" />
-
-      {/* Barcode Accent */}
-      <div className="text-center py-1 mb-3 opacity-75">
-        <p className="font-mono text-2xl tracking-widest text-slate-800 select-none">
-          ||||| ||| ||||||| || |||||
-        </p>
-        <p className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
-          PASS ID: {savedRoute ? savedRoute.id.slice(0, 13).toUpperCase() : 'PASS-TEMP-MANILA'}
-        </p>
-      </div>
-
-      {/* Footer: Total Fare + Action Buttons */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-slate-200">
+      {/* Bottom Summary Bar: Total Fare & Brutalist Buttons */}
+      <div className="bg-[#111111] border-3 border-[#FFFFFF] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <p className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">Estimated Total Fare</p>
-          <div className="flex items-baseline gap-2">
-            <span className="font-mono font-black text-2xl sm:text-3xl text-emerald-700">
-              ₱{totalFare || '—'}
+          <div className="font-mono text-xs font-bold text-[#CCCCCC] uppercase tracking-wider">
+            KABUUANG PAMASAHE (ESTIMATE)
+          </div>
+          <div className="flex items-baseline gap-2 mt-0.5">
+            <span className="font-mono font-black text-3xl sm:text-4xl text-[#00E676]">
+              ₱{totalFare || '0'}
             </span>
-            <span className="text-xs text-slate-500 font-mono">
-              ({route.steps.length} step{route.steps.length !== 1 ? 's' : ''})
+            <span className="text-xs font-mono text-[#AAAAAA]">
+              ({route.steps.length} sakay/lakad)
             </span>
           </div>
           {savedRoute && savedRoute.confirms > 0 && (
-            <p className="text-xs text-emerald-600 font-medium mt-0.5">
-              ✅ {savedRoute.confirms} commuter confirm{savedRoute.confirms !== 1 ? 's' : ''}
-            </p>
+            <div className="text-xs font-mono text-[#FFD700] font-bold mt-1">
+              ★ {savedRoute.confirms} COMMUTER CONFIRMATION{savedRoute.confirms !== 1 ? 'S' : ''}
+            </div>
           )}
         </div>
 
-        {/* Interactive Action Buttons */}
+        {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-          {/* Copy Route to Clipboard */}
           <button
             onClick={handleCopy}
             type="button"
-            className="btn-secondary text-xs flex items-center gap-1.5 !bg-slate-100 !text-slate-800 !border-slate-300 hover:!bg-slate-200"
-            title="Copy route steps to clipboard"
+            className="brutalist-btn brutalist-btn-white text-sm py-1.5 px-3"
+            title="Kopyahin ang buong ruta"
           >
-            <span>{copied ? '✅' : '📋'}</span>
-            <span>{copied ? 'Copied!' : 'Copy'}</span>
+            <span>{copied ? '✓ KOPYADO NA' : '📋 KOPYAHIN'}</span>
           </button>
 
           {onConfirm && (
-            <button onClick={onConfirm} type="button" className="btn-confirm text-xs">
-              ✅ Tama 'to!
+            <button onClick={onConfirm} type="button" className="brutalist-btn brutalist-btn-green text-sm py-1.5 px-3">
+              ★ TAMA 'TO!
             </button>
           )}
 
           {onSave && (
-            <button onClick={onSave} type="button" className="btn-confirm text-xs">
-              💾 Save
+            <button onClick={onSave} type="button" className="brutalist-btn brutalist-btn-yellow text-sm py-1.5 px-4">
+              💾 I-SAVE
             </button>
           )}
 
           {onClear && (
-            <button onClick={onClear} type="button" className="btn-secondary text-xs">
-              ✕ Clear
+            <button onClick={onClear} type="button" className="brutalist-btn brutalist-btn-dark text-sm py-1.5 px-3">
+              ✕ ISARA
             </button>
           )}
 
           {onDelete && (
-            <button onClick={onDelete} type="button" className="btn-danger text-xs">
-              🗑️ Delete
+            <button onClick={onDelete} type="button" className="brutalist-btn brutalist-btn-red text-sm py-1.5 px-3">
+              🗑 BURAHIN
             </button>
           )}
         </div>
       </div>
-
-      {/* Copy Toast Feedback */}
-      {copied && (
-        <div className="toast-animate fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-amber-400 px-4 py-2 rounded-full border border-amber-400/40 text-xs font-mono shadow-2xl z-50 flex items-center gap-2">
-          <span>📋 Route copied to clipboard!</span>
-        </div>
-      )}
     </div>
   );
 }

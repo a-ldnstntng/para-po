@@ -8,10 +8,10 @@ interface RouteInputProps {
 }
 
 const SAMPLE_PROMPTS = [
-  { label: '🚌 Cubao ➔ Antipolo', prompt: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons Antipolo.' },
-  { label: '🚈 SM North ➔ Baclaran', prompt: 'From SM North EDSA, take MRT-3 to Taft Avenue, then jeep to Baclaran Redemptorist.' },
-  { label: '🛺 Shaw ➔ Kapitolyo', prompt: 'Mula Shaw MRT Station, mag-trike papuntang Kapitolyo Pasig tapos lakad sa Commons.' },
-  { label: '🚐 SJDM ➔ PUP Sta. Mesa', prompt: 'Galing SJDM Bulacan, sakay ng bus pa-Cubao, tapos LRT-2 to Pureza, then trike to PUP Sta Mesa.' },
+  { label: 'CUBAO ➔ ANTIPOLO', prompt: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons Antipolo.' },
+  { label: 'SM NORTH ➔ BACLARAN', prompt: 'From SM North EDSA, take MRT-3 to Taft Avenue, then jeep to Baclaran Redemptorist.' },
+  { label: 'SHAW ➔ KAPITOLYO', prompt: 'Mula Shaw MRT Station, mag-trike papuntang Kapitolyo Pasig tapos lakad sa Commons.' },
+  { label: 'SJDM ➔ PUP STA. MESA', prompt: 'Galing SJDM Bulacan, sakay ng bus pa-Cubao, tapos LRT-2 to Pureza, then trike to PUP Sta Mesa.' },
 ];
 
 export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInputProps) {
@@ -29,10 +29,6 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
     onClear?.();
   };
 
-  const handleVoiceTranscript = (transcript: string) => {
-    setText((prev) => (prev ? prev + ' ' + transcript : transcript));
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
@@ -41,74 +37,80 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
   };
 
   return (
-    <section className="w-full pb-6">
-      <div className="glass-panel p-5 sm:p-6">
+    <section className="w-full pb-4">
+      <div className="bg-[#111111] border-4 border-[#FFFFFF] shadow-[6px_6px_0px_#FF0000] p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
-          <div className="flex items-center justify-between mb-1">
-            <label htmlFor="route-input" className="text-xs sm:text-sm font-display uppercase tracking-wider text-jeep-yellow font-bold flex items-center gap-1.5">
-              <span>🗣️</span>
-              <span>I-describe ang iyong commute / route:</span>
+          {/* Header row */}
+          <div className="flex items-center justify-between border-b-2 border-[#333333] pb-2">
+            <label htmlFor="route-input" className="font-display text-xl sm:text-2xl font-black text-[#FFD700] tracking-wider uppercase flex items-center gap-2">
+              <span className="bg-[#FF0000] text-white px-2 py-0.5 text-sm font-mono font-bold">ROUTE INPUT</span>
+              <span>ISULAT O SABIHIN ANG BYAHE:</span>
             </label>
-            <span className="text-xs text-jeep-text-dim hidden sm:inline">
-              Tip: Press <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-amber-400 font-mono">Ctrl+Enter</kbd> to extract
+            <span className="text-xs font-mono text-[#CCCCCC] hidden sm:inline">
+              [CTRL+ENTER TO SUBMIT]
             </span>
           </div>
 
+          {/* Text input area */}
           <div className="relative w-full">
             <textarea
               id="route-input"
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="I-type o magsalita sa Taglish/English! &#10;&#10;Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons. Tapos lakad papuntang SM.'"
+              placeholder="Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons. Tapos lakad papuntang SM.'"
               rows={4}
               disabled={isExtracting}
-              className="w-full bg-slate-900/90 border-2 border-slate-700 rounded-xl p-4 pr-16
-                text-slate-100 font-body text-base placeholder:text-slate-500
-                focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20
-                disabled:opacity-50 resize-none transition-all shadow-inner"
+              className="w-full bg-[#000000] border-3 border-[#FFD700] p-3 sm:p-4 pr-16
+                text-[#FFFFFF] font-mono text-sm sm:text-base placeholder:text-[#666666]
+                focus:outline-none focus:border-[#FFFFFF] focus:bg-[#050505]
+                disabled:opacity-50 resize-none transition-none"
             />
-            {/* Voice button inside textarea */}
-            <div className="absolute bottom-3.5 right-3.5">
+            {/* Square Voice Button */}
+            <div className="absolute bottom-3 right-3">
               <VoiceButton
-                onTranscript={handleVoiceTranscript}
+                onTranscript={(transcript) => setText((prev) => (prev ? prev + ' ' + transcript : transcript))}
                 disabled={isExtracting}
               />
             </div>
           </div>
 
-          {/* Quick sample prompt pills */}
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <span className="text-xs text-slate-400 font-medium">Subukan ang sample:</span>
-            {SAMPLE_PROMPTS.map((sample, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setText(sample.prompt)}
-                disabled={isExtracting}
-                className="prompt-pill"
-              >
-                {sample.label}
-              </button>
-            ))}
+          {/* Sample Route Chips */}
+          <div className="pt-1">
+            <div className="text-xs font-mono font-bold text-[#FFD700] uppercase mb-2">
+              MGA SAMPLE NA RUTA:
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SAMPLE_PROMPTS.map((sample, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setText(sample.prompt)}
+                  disabled={isExtracting}
+                  className="sign-chip"
+                >
+                  {sample.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-3 pt-2">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3 pt-2 border-t-2 border-[#333333]">
             <button
               type="submit"
               disabled={!text.trim() || isExtracting}
-              className="btn-primary flex items-center gap-2.5"
+              className="brutalist-btn brutalist-btn-red text-lg sm:text-xl py-2 px-6"
             >
               {isExtracting ? (
                 <>
-                  <span className="loading-wheel !w-5 !h-5 !border-2" />
-                  <span>Ine-extract ang Route...</span>
+                  <span className="loading-square" />
+                  <span>INE-EXTRACT ANG RUTA...</span>
                 </>
               ) : (
                 <>
-                  <span className="text-lg">🚐</span>
-                  <span>Extract Route</span>
+                  <span>EXTRACT ROUTE</span>
+                  <span>➔</span>
                 </>
               )}
             </button>
@@ -117,9 +119,9 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
               <button
                 type="button"
                 onClick={handleClear}
-                className="btn-secondary text-sm"
+                className="brutalist-btn brutalist-btn-dark text-base py-2 px-4"
               >
-                Clear
+                BURAHIN / CLEAR
               </button>
             )}
           </div>

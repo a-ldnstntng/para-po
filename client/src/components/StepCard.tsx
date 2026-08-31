@@ -6,79 +6,71 @@ interface StepCardProps {
   isLast: boolean;
 }
 
-const MODE_ICONS: Record<string, string> = {
-  jeep: '🚐',
-  tricycle: '🛺',
-  bus: '🚌',
-  uv_express: '🚐',
-  walk: '🚶',
-  mrt: '🚈',
-  lrt: '🚈',
-  pnr: '🚂',
-  grab: '🚗',
-};
-
-const MODE_LABELS: Record<string, string> = {
-  jeep: 'Jeepney',
-  tricycle: 'Tricycle',
-  bus: 'Bus',
-  uv_express: 'UV Express',
-  walk: 'Lakad',
-  mrt: 'MRT Train',
-  lrt: 'LRT Train',
-  pnr: 'PNR Train',
-  grab: 'Grab / Car',
+const MODE_TAGS: Record<string, { label: string; bgClass: string }> = {
+  jeep: { label: 'JEEP', bgClass: 'sign-mode-jeep' },
+  tricycle: { label: 'TRIKE', bgClass: 'sign-mode-tricycle' },
+  bus: { label: 'BUS', bgClass: 'sign-mode-bus' },
+  uv_express: { label: 'UV EXP', bgClass: 'sign-mode-uv_express' },
+  walk: { label: 'LAKAD', bgClass: 'sign-mode-walk' },
+  mrt: { label: 'MRT', bgClass: 'sign-mode-mrt' },
+  lrt: { label: 'LRT', bgClass: 'sign-mode-lrt' },
+  pnr: { label: 'PNR', bgClass: 'sign-mode-pnr' },
+  grab: { label: 'GRAB/CAR', bgClass: 'sign-mode-grab' },
 };
 
 export default function StepCard({ step, index, isLast }: StepCardProps) {
+  const modeInfo = MODE_TAGS[step.mode] || { label: step.mode.toUpperCase(), bgClass: 'sign-mode-walk' };
+
   return (
-    <div
-      className="step-slide-in relative"
-      style={{ animationDelay: `${index * 0.12}s` }}
-    >
-      <div className={`flex gap-4 ${!isLast ? 'pb-6' : ''}`}>
-        {/* Timeline connector circle & path line */}
-        <div className="flex flex-col items-center">
-          <div className="w-9 h-9 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center text-base flex-shrink-0 shadow-md">
-            {MODE_ICONS[step.mode] || '📍'}
+    <div className={`relative ${!isLast ? 'pb-4' : ''}`}>
+      <div className="flex items-start gap-3">
+        {/* Step Number Box */}
+        <div className="flex flex-col items-center flex-shrink-0">
+          <div className="w-8 h-8 bg-[#000000] border-2 border-[#FFFFFF] text-[#FFD700] font-mono font-black text-sm flex items-center justify-center">
+            {index + 1}
           </div>
           {!isLast && (
-            <div className="w-0.5 flex-1 bg-gradient-to-b from-slate-400 via-slate-300 to-transparent mt-1" />
+            <div className="w-1 flex-1 bg-[#444444] my-1" />
           )}
         </div>
 
-        {/* Step details content */}
-        <div className="flex-1 pb-1">
-          {/* Mode badge + signboard line label + fare */}
-          <div className="flex items-center gap-2 flex-wrap mb-1.5">
-            <span className={`mode-badge mode-${step.mode}`}>
-              <span>{MODE_ICONS[step.mode]}</span>
-              <span>{MODE_LABELS[step.mode] || step.mode}</span>
+        {/* Step Details Box */}
+        <div className="flex-1 bg-[#1A1A1A] border-2 border-[#444444] p-3 sm:p-4">
+          {/* Header Row: Mode Tag + Signboard Plaque + Fare */}
+          <div className="flex items-center gap-2 flex-wrap mb-2">
+            <span className={`sign-mode-tag ${modeInfo.bgClass}`}>
+              {modeInfo.label}
             </span>
+
             {step.line_label && (
-              <span className="line-label">BOARD: {step.line_label}</span>
+              <span className="font-display font-bold text-sm bg-[#0000FF] text-[#FFD700] border-2 border-[#FFFFFF] px-2 py-0.5">
+                BYAHE: {step.line_label.toUpperCase()}
+              </span>
             )}
+
             {step.fare_estimate_php !== null && step.fare_estimate_php !== undefined && (
-              <span className="fare-badge">₱{step.fare_estimate_php} EST</span>
+              <span className="sign-fare-tag ml-auto">
+                EST: ₱{step.fare_estimate_php}
+              </span>
             )}
           </div>
 
-          {/* Imperative Taglish Instruction */}
-          <p className="text-slate-900 font-medium text-sm sm:text-base leading-relaxed">
+          {/* Imperative Instruction */}
+          <p className="font-mono text-sm sm:text-base font-bold text-[#FFFFFF] leading-snug">
             {step.instruction}
           </p>
 
-          {/* Stop / Landmark location */}
-          <div className="flex items-center gap-1 text-slate-500 text-xs font-mono mt-1">
-            <span>📍 Stop:</span>
-            <span className="font-semibold text-slate-700">{step.landmark}</span>
+          {/* Landmark / Stop Node */}
+          <div className="mt-2 text-xs font-mono text-[#CCCCCC] bg-[#000000] border border-[#333333] px-2 py-1 flex items-center gap-1.5">
+            <span className="text-[#FFD700] font-bold">STOP / BABAAN:</span>
+            <span className="font-bold text-[#FFFFFF]">{step.landmark.toUpperCase()}</span>
           </div>
 
-          {/* Commuter Tips / Alternatives notes */}
+          {/* Commuter Tips / Note */}
           {step.notes && (
-            <div className="mt-2 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-start gap-1.5">
-              <span className="text-sm">💡</span>
-              <span className="leading-snug">{step.notes}</span>
+            <div className="mt-2 bg-[#FFD700] text-[#000000] border-2 border-[#000000] p-2 text-xs font-mono font-bold leading-tight">
+              <span className="underline mr-1">PAALALA:</span>
+              <span>{step.notes}</span>
             </div>
           )}
         </div>

@@ -34,61 +34,59 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
-        <div className="loading-wheel" />
+        <div className="loading-square !w-10 !h-10 !border-4 !border-white !border-t-yellow-400" />
       </div>
     );
   }
 
   if (routes.length === 0) {
     return (
-      <div className="text-center py-12 glass-panel p-8">
-        <div className="text-4xl mb-2">📋</div>
-        <p className="text-slate-300 font-display text-lg uppercase tracking-wider">Wala pang saved routes sa terminal</p>
-        <p className="text-slate-500 text-sm mt-1">
-          I-describe ang iyong commute sa taas at i-click ang <span className="text-amber-400 font-bold">Extract Route</span>!
+      <div className="text-center py-12 bg-[#111111] border-4 border-[#333333] p-8">
+        <div className="font-display font-black text-3xl text-[#FFD700] uppercase tracking-wider mb-1">
+          WALA PANG NAKA-SAVE NA RUTA SA TERMINAL
+        </div>
+        <p className="text-[#AAAAAA] font-mono text-sm">
+          Mag-type ng byahe sa itaas at i-click ang <span className="text-[#FF0000] font-bold">EXTRACT ROUTE</span> para magsimula!
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Terminal Dispatch Header */}
-      <Signboard variant="green" className="!p-4">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">📋</span>
-            <div>
-              <h2 className="signboard-text text-xl sm:text-2xl">Terminal Dispatch Archive</h2>
-              <p className="text-xs text-emerald-200 font-mono opacity-80">
-                {routes.length} saved route{routes.length !== 1 ? 's' : ''} in database
-              </p>
-            </div>
+    <div className="space-y-4 w-full">
+      {/* Terminal Dispatch Header Plaque */}
+      <Signboard variant="yellow">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wider uppercase text-[#000000] leading-none">
+              TERMINAL DISPATCH ARCHIVE
+            </h2>
+            <p className="text-xs font-mono font-bold text-[#000000] uppercase mt-1">
+              [{routes.length} NAI-SAVE NA RUTA SA DATABASE]
+            </p>
           </div>
 
-          {/* Search Filter Input */}
+          {/* Search Box */}
           <div className="w-full sm:w-auto">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="🔍 Search routes or landmarks..."
-              className="w-full sm:w-64 bg-slate-900/90 border border-emerald-500/40 rounded-lg px-3 py-1.5
-                text-slate-100 font-body text-xs placeholder:text-slate-500
-                focus:outline-none focus:border-amber-400"
+              placeholder="MAG-SEARCH NG DESTINATION / STOP..."
+              className="w-full sm:w-72 bg-[#000000] text-[#FFFFFF] font-mono text-xs font-bold border-3 border-[#000000] p-2 placeholder:text-[#888888] focus:outline-none focus:bg-[#111111]"
             />
           </div>
         </div>
       </Signboard>
 
-      {/* Filter result notice */}
+      {/* Filter notice */}
       {searchQuery && (
-        <p className="text-xs text-slate-400 font-mono px-1">
-          Showing {filteredRoutes.length} of {routes.length} routes matching "{searchQuery}"
-        </p>
+        <div className="font-mono text-xs text-[#FFD700] bg-[#111111] border-2 border-[#FFD700] px-3 py-1">
+          IPINAPAKITA: {filteredRoutes.length} ng {routes.length} ruta para sa "{searchQuery.toUpperCase()}"
+        </div>
       )}
 
-      {/* Route List */}
+      {/* Route Cards */}
       <div className="space-y-3">
         {filteredRoutes.map((route) => (
           <div key={route.id}>
@@ -104,45 +102,48 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
               </div>
             ) : (
               <div
-                className="archive-item hover:border-amber-400/50"
                 onClick={() => setExpandedId(route.id)}
+                className="bg-[#111111] border-3 border-[#FFFFFF] hover:border-[#FFD700] hover:bg-[#1A1A1A] p-4 cursor-pointer shadow-[4px_4px_0px_#FF0000] transition-none"
               >
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex-1">
+                    {/* Origin ➔ Destination */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-display font-bold text-lg text-amber-400">
-                        {route.origin}
+                      <span className="font-display font-bold text-xl text-[#FFFFFF]">
+                        {route.origin.toUpperCase()}
                       </span>
-                      <span className="text-slate-500 font-bold">➔</span>
-                      <span className="font-display font-bold text-lg text-amber-400">
-                        {route.destination}
+                      <span className="font-mono font-bold text-lg text-[#FF0000]">➔</span>
+                      <span className="font-display font-black text-2xl text-[#FFD700] tracking-wider">
+                        {route.destination.toUpperCase()}
                       </span>
                     </div>
 
-                    <p className="text-slate-400 text-xs mt-1 line-clamp-1 font-mono">
+                    {/* Raw commute text */}
+                    <p className="text-xs font-mono text-[#CCCCCC] mt-1 line-clamp-1">
                       "{route.raw_text}"
                     </p>
 
-                    <div className="flex items-center gap-3 text-slate-500 text-xs mt-2 font-mono">
-                      <span>{route.steps.length} step{route.steps.length !== 1 ? 's' : ''}</span>
+                    {/* Metadata strip */}
+                    <div className="flex items-center gap-3 text-xs font-mono text-[#AAAAAA] mt-2">
+                      <span className="bg-[#0000FF] text-white px-2 py-0.5 font-bold">
+                        {route.steps.length} SAKAY/LAKAD
+                      </span>
                       {route.confirms > 0 && (
-                        <span className="text-emerald-400 font-bold">✅ {route.confirms} confirm{route.confirms !== 1 ? 's' : ''}</span>
+                        <span className="bg-[#00E676] text-black px-2 py-0.5 font-bold">
+                          ★ {route.confirms} CONFIRM{route.confirms !== 1 ? 'S' : ''}
+                        </span>
                       )}
-                      <span>·</span>
                       <span>
-                        {new Date(route.created_at).toLocaleDateString('en-PH', {
-                          month: 'short',
-                          day: 'numeric',
-                        })}
+                        PETSA: {new Date(route.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-amber-400 font-display font-bold uppercase tracking-wider group-hover:underline">
-                      View Ticket
+                  {/* Expand button */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="brutalist-btn brutalist-btn-yellow text-xs py-1 px-3 pointer-events-none">
+                      BUKSAN ➔
                     </span>
-                    <span className="text-slate-500 text-lg">▸</span>
                   </div>
                 </div>
               </div>
