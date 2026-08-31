@@ -298,11 +298,11 @@ export default function Ticket({
       {/* ========================================================
           3. ACTION BUTTONS
           ======================================================== */}
-      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
+      <div className="flex flex-wrap items-center justify-center gap-3 pt-3 pb-1">
         <button
           onClick={handleCopy}
           type="button"
-          className="btn-transit-secondary text-xs sm:text-sm"
+          className="btn-transit-secondary !py-2.5 !px-4 text-xs sm:text-sm font-utility"
           title="Kopyahin ang buong ruta"
         >
           {copied ? <Check className="w-4 h-4 text-amber-600" /> : <Copy className="w-4 h-4 text-slate-700" />}
@@ -313,7 +313,7 @@ export default function Ticket({
           <button
             onClick={onConfirm}
             type="button"
-            className="btn-transit-secondary text-xs sm:text-sm text-amber-800 hover:text-amber-900 border-amber-600"
+            className="btn-transit-secondary !py-2.5 !px-4 text-xs sm:text-sm font-utility text-amber-800 hover:text-amber-900 border-amber-600"
           >
             <Star className="w-4 h-4 text-amber-600" />
             <span>Tama 'to!</span>
@@ -324,7 +324,7 @@ export default function Ticket({
           <button
             onClick={onSave}
             type="button"
-            className="btn-sakay-primary !text-xs sm:!text-sm !py-2 !px-4"
+            className="btn-sakay-primary !py-2.5 !px-6 text-sm sm:text-base font-display"
           >
             <Bookmark className="w-4 h-4" />
             <span>I-Save</span>
@@ -335,7 +335,7 @@ export default function Ticket({
           <button
             onClick={onClear}
             type="button"
-            className="btn-transit-secondary text-xs sm:text-sm"
+            className="btn-transit-secondary !py-2.5 !px-4 text-xs sm:text-sm font-utility"
           >
             <X className="w-4 h-4 text-slate-700" />
             <span>Isara</span>
@@ -346,7 +346,7 @@ export default function Ticket({
           <button
             onClick={onDelete}
             type="button"
-            className="px-3.5 py-2 rounded-lg border-1.5 border-rose-600 bg-rose-50 text-rose-800 hover:bg-rose-100 text-xs sm:text-sm font-bold transition-all inline-flex items-center gap-1.5 shadow-xs"
+            className="px-4 py-2.5 rounded-lg border-1.5 border-rose-600 bg-rose-50 text-rose-800 hover:bg-rose-100 text-xs sm:text-sm font-utility font-bold transition-all inline-flex items-center gap-1.5 shadow-xs cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
           >
             <Trash2 className="w-4 h-4" />
             <span>Burahin</span>

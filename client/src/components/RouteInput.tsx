@@ -101,11 +101,11 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 pt-3 border-t-2 border-slate-900">
+          <div className="flex items-center gap-3 pt-4 border-t-2 border-slate-900">
             <button
               type="submit"
               disabled={!text.trim() || isExtracting}
-              className="btn-sakay-primary"
+              className="btn-sakay-primary !py-2.5 !px-6"
             >
               {isExtracting ? (
                 <>
@@ -124,7 +124,7 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
               <button
                 type="button"
                 onClick={handleClear}
-                className="btn-transit-secondary"
+                className="btn-transit-secondary !py-2.5 !px-4"
               >
                 <RotateCcw className="w-4 h-4 text-slate-700" />
                 <span>Burahin</span>
