@@ -3,13 +3,17 @@
 
 @import "tailwindcss";
 
-/* Tailwind v4 theme customization */
+/* Tailwind v4 theme customization - Option 1: Manila Commuter Classic */
 @theme {
-  --color-transit-emerald: #10B981;
-  --color-transit-amber: #F59E0B;
-  --color-transit-blue: #3B82F6;
-  --color-transit-slate: #0F172A;
-  --color-transit-card: #1E293B;
+  --color-manila-amber: #D97706;
+  --color-manila-amber-light: #F59E0B;
+  --color-manila-amber-bg: #FEF3C7;
+  --color-manila-charcoal: #0F172A;
+  --color-manila-charcoal-light: #1E293B;
+  --color-manila-slate: #64748B;
+  --color-manila-border: #E2E8F0;
+  --color-manila-canvas: #F8FAFC;
+  --color-manila-card: #FFFFFF;
 
   --font-family-display: 'Barlow Condensed', sans-serif;
   --font-family-utility: 'JetBrains Mono', monospace;
@@ -25,8 +29,8 @@
 
 body {
   font-family: var(--font-family-body);
-  background-color: #0B0F19;
-  color: #F8FAFC;
+  background-color: #F8FAFC;
+  color: #0F172A;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -48,14 +52,14 @@ body {
 }
 
 /* =========================================================
-   AUTHENTIC LANDSCAPE TRANSIT TICKET PASS
+   AUTHENTIC LIGHT TRANSIT TICKET PASS
    ========================================================= */
 .transit-pass {
-  background: #182234;
-  border: 1px solid #334155;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
   border-radius: 14px;
   position: relative;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
   overflow: hidden;
 }
 
@@ -65,9 +69,9 @@ body {
   top: -10px;
   width: 20px;
   height: 20px;
-  background-color: #0B0F19;
+  background-color: #F8FAFC;
   border-radius: 50%;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1.5px solid #CBD5E1;
   z-index: 20;
 }
 
@@ -76,16 +80,16 @@ body {
   bottom: -10px;
   width: 20px;
   height: 20px;
-  background-color: #0B0F19;
+  background-color: #F8FAFC;
   border-radius: 50%;
-  border-top: 1px solid #334155;
+  border-top: 1.5px solid #CBD5E1;
   z-index: 20;
 }
 
 /* Rotated Ink-Stamp Validator Graphic */
 .validator-stamp {
-  border: 2px dashed #10B981;
-  color: #10B981;
+  border: 2px dashed #D97706;
+  color: #B45309;
   padding: 3px 8px;
   font-family: var(--font-family-utility);
   font-size: 0.72rem;
@@ -93,38 +97,22 @@ body {
   letter-spacing: 0.06em;
   display: inline-block;
   transform: rotate(-6deg);
-  opacity: 0.95;
-  background-color: rgba(16, 185, 129, 0.08);
+  background-color: #FFFBEB;
   border-radius: 4px;
-}
-
-/* Security Micro-strip */
-.security-strip {
-  background: repeating-linear-gradient(
-    90deg,
-    #334155,
-    #334155 10px,
-    #1E293B 10px,
-    #1E293B 20px
-  );
-  font-family: var(--font-family-utility);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  color: #94A3B8;
 }
 
 /* Modern Card / Panel Utilities */
 .transit-panel {
-  background-color: #131B2E;
-  border: 1px solid #1E293B;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: 1rem;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
 }
 
 /* Buttons */
 .btn-sakay-primary {
-  background-color: #10B981;
-  color: #042F2E;
+  background-color: #D97706;
+  color: #FFFFFF;
   font-family: var(--font-family-display);
   font-size: 1.25rem;
   letter-spacing: 0.05em;
@@ -136,14 +124,14 @@ body {
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-sakay-primary:hover {
-  background-color: #34D399;
+  background-color: #B45309;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.45);
 }
 
 .btn-sakay-primary:active {
@@ -158,35 +146,35 @@ body {
 }
 
 .btn-transit-secondary {
-  background-color: #1E293B;
-  color: #CBD5E1;
+  background-color: #FFFFFF;
+  color: #0F172A;
   font-family: var(--font-family-body);
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #334155;
+  border: 1px solid #CBD5E1;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
 }
 
 .btn-transit-secondary:hover {
-  background-color: #334155;
-  color: #FFFFFF;
-  border-color: #475569;
+  background-color: #F1F5F9;
+  border-color: #94A3B8;
 }
 
 /* Sample Prompt Pill */
 .sample-pill {
-  background-color: #1E293B;
-  color: #E2E8F0;
-  border: 1px solid #334155;
+  background-color: #F1F5F9;
+  color: #334155;
+  border: 1px solid #E2E8F0;
   border-radius: 9999px;
   font-size: 0.78rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.35rem 0.85rem;
   display: inline-flex;
   align-items: center;
@@ -196,9 +184,9 @@ body {
 }
 
 .sample-pill:hover {
-  background-color: #2D3748;
-  border-color: #10B981;
-  color: #34D399;
+  background-color: #FEF3C7;
+  border-color: #D97706;
+  color: #B45309;
   transform: translateY(-1px);
 }
 
@@ -211,8 +199,8 @@ body {
 .spinner-ring {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #FFFFFF;
+  border: 2px solid #CBD5E1;
+  border-top-color: #D97706;
   border-radius: 50%;
   animation: spinRing 0.7s linear infinite;
   display: inline-block;
@@ -224,14 +212,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0F19;
+  background: #F8FAFC;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #CBD5E1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94A3B8;
 }

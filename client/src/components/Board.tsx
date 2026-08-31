@@ -6,13 +6,13 @@ export default function Board({ onSelectRouteTag }: BoardProps) {
   const ROUTE_TAGS = ['CUBAO', 'ANTIPOLO', 'FAIRVIEW', 'BACLARAN', 'PITX', 'SM NORTH', 'EDSA', 'TAFT', 'QUIAPO', 'DIVISORIA'];
 
   return (
-    <header className="w-full flex flex-col items-center pt-4 pb-2">
-      {/* Unified Transit Wordmark */}
+    <header className="w-full flex flex-col items-center pt-6 pb-2">
+      {/* Wordmark in Midnight Charcoal + Manila Amber accent */}
       <div className="text-center">
-        <h1 className="font-display font-black text-6xl sm:text-7xl md:text-8xl tracking-wider text-emerald-400 leading-none select-none">
+        <h1 className="font-display font-black text-6xl sm:text-7xl md:text-8xl tracking-wider text-slate-900 leading-none select-none">
           PARA PO!
         </h1>
-        <p className="font-utility text-xs sm:text-sm font-semibold tracking-widest text-slate-400 uppercase mt-1">
+        <p className="font-utility text-xs sm:text-sm font-bold tracking-widest text-amber-700 uppercase mt-1">
           NCR • PUV COMMUTE
         </p>
       </div>
@@ -24,7 +24,7 @@ export default function Board({ onSelectRouteTag }: BoardProps) {
             key={label}
             onClick={() => onSelectRouteTag?.(label)}
             type="button"
-            className="font-display text-xs sm:text-sm font-bold tracking-wide px-3 py-1 rounded-md bg-slate-900/90 hover:bg-emerald-600 hover:text-slate-950 text-slate-300 border border-slate-700 hover:border-emerald-500 transition-all cursor-pointer shadow-sm"
+            className="font-display text-xs sm:text-sm font-bold tracking-wide px-3 py-1 rounded-md bg-white hover:bg-amber-600 hover:text-white text-slate-700 border border-slate-300 hover:border-amber-600 transition-all cursor-pointer shadow-sm"
             title={`Filter or search routes for ${label}`}
           >
             {label}
