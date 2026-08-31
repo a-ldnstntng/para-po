@@ -13,7 +13,6 @@ import {
   ChevronDown,
   ChevronUp,
   Info,
-  Layers,
   type LucideIcon,
 } from 'lucide-react';
 import type { ExtractedRoute, SavedRoute } from '../lib/api';
@@ -48,10 +47,11 @@ export default function Ticket({
   isSaved = false,
 }: TicketProps) {
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
+  const [showAlternativeRoutes, setShowAlternativeRoutes] = useState(false);
+  const [showDirections, setShowDirections] = useState(false); // Collapsed by default per prompt
   const [copied, setCopied] = useState(false);
-  const [showDirections, setShowDirections] = useState(true);
 
-  // Determine active steps based on options or fallback
+  // Active option logic
   const options = route.options && route.options.length > 0 ? route.options : null;
   const activeOption = options ? options[selectedOptionIdx] || options[0] : null;
   const activeSteps = useMemo(() => {
@@ -67,14 +67,14 @@ export default function Ticket({
 
   const savedRoute = isSaved ? (route as SavedRoute) : null;
 
-  // Find the primary vehicle mode for the active option
+  // Primary vehicle mode icon
   const primaryStep = activeSteps.find((s) => s.mode !== 'walk') || activeSteps[0];
   const PrimaryVehicleIcon = primaryStep ? PRIMARY_ICONS[primaryStep.mode] || Bus : Bus;
 
   // Single consistent serial ID
   const ticketSerial = `MNL-${Math.abs(route.origin.length * 41 + route.destination.length * 23 + selectedOptionIdx * 17) % 9000 + 1000}`;
 
-  // Find the single most useful tip across all steps of this active option
+  // Tip
   const bestTip = activeSteps.find((s) => s.notes && s.notes.trim().length > 0)?.notes || null;
 
   const handleCopy = () => {
@@ -118,97 +118,93 @@ export default function Ticket({
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       {/* ========================================================
-          0. MULTIPLE ROUTE OPTIONS SELECTOR TABS
+          0. PROGRESSIVE DISCLOSURE: MULTI-ROUTE TOGGLE
           ======================================================== */}
       {options && options.length > 1 && (
-        <div className="space-y-2 w-full">
+        <div className="w-full">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-utility font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-amber-600" />
-              <span>Mga Pagpipiliang Ruta ({options.length} Options):</span>
+            <span className="text-xs font-utility text-slate-500">
+              Piniling ruta: <strong className="text-slate-800 font-semibold">{activeOption?.title}</strong>
             </span>
-            <span className="text-[11px] font-utility text-amber-800 font-semibold hidden sm:inline">
-              Scroll ➔ to view all
-            </span>
+            <button
+              onClick={() => setShowAlternativeRoutes(!showAlternativeRoutes)}
+              type="button"
+              className="text-xs font-utility text-slate-600 hover:text-slate-900 underline flex items-center gap-1 cursor-pointer"
+            >
+              <span>{showAlternativeRoutes ? 'Itago ang ibang ruta' : `Tingnan ang ${options.length - 1} pang ruta`}</span>
+              {showAlternativeRoutes ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
           </div>
 
-          {/* Smooth Horizontal Scrollable Track */}
-          <div className="w-full overflow-x-auto overflow-y-hidden scroll-smooth py-1 px-0.5 flex items-center gap-2.5 pb-2">
-            {options.map((opt, idx) => {
-              const isSelected = selectedOptionIdx === idx;
-              return (
-                <button
-                  key={opt.option_id || idx}
-                  onClick={() => setSelectedOptionIdx(idx)}
-                  type="button"
-                  className={`
-                    flex-shrink-0 px-4 py-2.5 rounded-lg font-display text-sm sm:text-base font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2.5
-                    ${
-                      isSelected
-                        ? 'bg-amber-500 border-2 border-slate-900 text-slate-950 shadow-[3px_3px_0px_#0F172A] scale-[1.02]'
-                        : 'bg-white border-2 border-slate-300 hover:border-slate-900 text-slate-700 shadow-xs hover:bg-slate-50'
-                    }
-                  `}
-                >
-                  <span>{opt.title}</span>
-                  {opt.badge && (
-                    <span
-                      className={`text-[10px] font-utility px-1.5 py-0.5 rounded uppercase font-bold ${
+          {/* Collapsible Alternative Route Options */}
+          {showAlternativeRoutes && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-200">
+              {options.map((opt, idx) => {
+                const isSelected = selectedOptionIdx === idx;
+                return (
+                  <button
+                    key={opt.option_id || idx}
+                    onClick={() => {
+                      setSelectedOptionIdx(idx);
+                      setShowAlternativeRoutes(false);
+                    }}
+                    type="button"
+                    className={`
+                      p-2.5 rounded-lg text-left transition-all cursor-pointer border text-xs
+                      ${
                         isSelected
-                          ? 'bg-slate-900 text-amber-400'
-                          : 'bg-slate-100 text-slate-700 border border-slate-300'
-                      }`}
-                    >
-                      {opt.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                          ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                          : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+                      }
+                    `}
+                  >
+                    <div className="font-display font-bold text-sm truncate">{opt.title}</div>
+                    <div className="flex items-center justify-between mt-1 text-[11px] font-utility">
+                      <span className={isSelected ? 'text-slate-300' : 'text-slate-500'}>
+                        {opt.steps?.length} {opt.steps?.length === 1 ? 'leg' : 'legs'}
+                      </span>
+                      {opt.total_fare_php !== undefined && (
+                        <span className="font-bold">₱{opt.total_fare_php.toFixed(0)}</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 
       {/* ========================================================
-          1. STRUCTURED TRANSIT TICKET PASS
+          1. THE SINGLE HERO OBJECT: TRANSIT PASS TICKET
           ======================================================== */}
-      <div className="transit-pass flex flex-col sm:flex-row bg-white border-2 border-slate-900 shadow-[5px_5px_0px_rgba(15,23,42,0.12)]">
+      <div className="transit-pass flex flex-col sm:flex-row bg-white">
         {/* MAIN BODY (Left ~75%) */}
         <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between bg-white">
-          {/* Header: Title + Active Option Badge + Validator Stamp */}
-          <div className="flex items-start justify-between gap-2 border-b-2 border-slate-900 pb-3">
+          {/* Header: Title + Validator Stamp */}
+          <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
             <div>
-              <div className="text-[10px] font-utility font-bold tracking-widest text-slate-500 uppercase flex items-center gap-2">
-                <span>REPUBLIC OF THE PHILIPPINES</span>
-                {activeOption?.badge && (
-                  <span className="text-[9px] font-utility px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-400 font-bold">
-                    {activeOption.badge}
-                  </span>
-                )}
+              <div className="text-[10px] font-utility font-semibold tracking-widest text-slate-400 uppercase">
+                REPUBLIC OF THE PHILIPPINES
               </div>
               <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wide text-slate-900 uppercase leading-none mt-0.5">
                 PARA PO! COMMUTE PASS
               </h2>
-              {activeOption && (
-                <p className="font-utility text-xs text-amber-800 font-semibold mt-1">
-                  {activeOption.title}
-                </p>
-              )}
             </div>
 
-            {/* Rotated Ink-Stamp Validator Punch */}
-            <div className="validator-stamp shadow-xs">
+            {/* Validator Stamp */}
+            <div className="validator-stamp">
               <div>VALIDATED</div>
-              <div className="text-[10px] font-normal">{formattedStampDate} {formattedStampTime}</div>
+              <div className="text-[9px] font-normal">{formattedStampDate} {formattedStampTime}</div>
             </div>
           </div>
 
-          {/* Journey Section with Origin & Destination */}
-          <div className="py-4 my-2 border-y-2 border-dashed border-slate-300 bg-slate-50/60 -mx-5 sm:-mx-6 px-5 sm:px-6">
+          {/* Journey Section */}
+          <div className="py-4 my-2 border-y border-dashed border-slate-200">
             <div className="space-y-3">
               {/* Origin */}
               <div>
-                <span className="text-[10px] font-utility font-bold text-slate-500 uppercase tracking-widest block">
+                <span className="text-[10px] font-utility font-semibold text-slate-400 uppercase tracking-widest block">
                   ORIGIN
                 </span>
                 <div className="font-display font-black text-xl sm:text-2xl text-slate-900 leading-tight uppercase">
@@ -216,24 +212,24 @@ export default function Ticket({
                 </div>
               </div>
 
-              {/* Connecting Journey Line */}
-              <div className="flex items-center gap-2 text-amber-700 my-1">
-                <div className="p-1.5 rounded-full bg-amber-400 border-2 border-slate-900 text-slate-950 flex-shrink-0 shadow-xs">
-                  <PrimaryVehicleIcon className="w-4 h-4" />
+              {/* Connecting Journey Line with Vehicle Icon */}
+              <div className="flex items-center gap-2 text-slate-600 my-1">
+                <div className="p-1 rounded-full bg-slate-100 border border-slate-300 flex-shrink-0">
+                  <PrimaryVehicleIcon className="w-4 h-4 text-slate-700" />
                 </div>
-                <div className="h-0.5 flex-1 bg-slate-900" />
-                <span className="font-utility text-xs text-slate-700 uppercase font-bold tracking-wider">
+                <div className="h-0.5 flex-1 bg-slate-200" />
+                <span className="font-utility text-xs text-slate-400 uppercase font-semibold">
                   TO DESTINATION
                 </span>
-                <div className="h-0.5 w-6 bg-slate-900" />
+                <div className="h-0.5 w-6 bg-slate-200" />
               </div>
 
               {/* Destination */}
               <div>
-                <span className="text-[10px] font-utility font-bold text-amber-800 uppercase tracking-widest block">
+                <span className="text-[10px] font-utility font-semibold text-slate-400 uppercase tracking-widest block">
                   DESTINATION
                 </span>
-                <div className="font-display font-black text-xl sm:text-2xl text-amber-700 leading-tight uppercase">
+                <div className="font-display font-black text-xl sm:text-2xl text-slate-900 leading-tight uppercase">
                   {route.destination}
                 </div>
               </div>
@@ -241,19 +237,19 @@ export default function Ticket({
           </div>
 
           {/* Bottom Info Bar: Serial + Barcode */}
-          <div className="pt-3 border-t-2 border-slate-900 flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-utility tracking-widest text-slate-500 uppercase font-bold">
+              <div className="text-[10px] font-utility tracking-widest text-slate-400 uppercase font-semibold">
                 TICKET NO.
               </div>
-              <div className="font-utility font-bold text-xs sm:text-sm text-slate-900">
+              <div className="font-utility font-bold text-xs sm:text-sm text-slate-800">
                 PASS #{ticketSerial}
               </div>
             </div>
 
             {/* Code128 Vector Barcode */}
             <div className="flex flex-col items-end">
-              <svg className="w-24 h-5 text-slate-900 fill-current opacity-90" viewBox="0 0 100 24">
+              <svg className="w-24 h-5 text-slate-800 fill-current opacity-80" viewBox="0 0 100 24">
                 <rect x="0" y="0" width="3" height="24" />
                 <rect x="5" y="0" width="2" height="24" />
                 <rect x="9" y="0" width="4" height="24" />
@@ -277,92 +273,84 @@ export default function Ticket({
                 <rect x="93" y="0" width="3" height="24" />
                 <rect x="98" y="0" width="2" height="24" />
               </svg>
-              <span className="text-[9px] font-utility text-slate-600 uppercase tracking-widest mt-0.5 font-bold">
+              <span className="text-[9px] font-utility text-slate-400 uppercase tracking-widest mt-0.5 font-semibold">
                 SINGLE RIDE ONLY
               </span>
             </div>
           </div>
         </div>
 
-        {/* TEAR-OFF STUB (Right ~25%) */}
-        <div className="w-full sm:w-44 bg-amber-50/70 p-5 flex flex-col justify-between items-center text-center border-t-2 sm:border-t-0 sm:border-l-2 border-dashed border-slate-900 relative shrink-0">
-          {/* Accent Color Band on top */}
-          <div className="w-full h-2 bg-amber-500 absolute top-0 left-0 right-0 border-b border-slate-900" />
-
+        {/* TEAR-OFF STUB (Right ~25% - HERO ORANGE ACCENT FOR FARE) */}
+        <div className="w-full sm:w-44 bg-slate-50 p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-dashed border-slate-300 relative shrink-0">
           <div className="pt-2">
-            <span className="text-[10px] font-utility tracking-widest text-slate-600 uppercase font-bold">
+            <span className="text-[10px] font-utility tracking-widest text-slate-400 uppercase font-semibold">
               TOTAL FARE
             </span>
+            {/* The single hero orange accent number */}
             <div className="font-display font-black text-4xl sm:text-5xl text-amber-700 tracking-tight leading-none mt-1">
               ₱{totalFare.toFixed(0)}
             </div>
-            <span className="text-[11px] font-utility text-slate-700 font-bold mt-1 block">
-              {activeSteps.length} transit {activeSteps.length === 1 ? 'step' : 'steps'}
+            <span className="text-[11px] font-utility text-slate-500 font-medium mt-1 block">
+              {activeSteps.length} {activeSteps.length === 1 ? 'transit leg' : 'transit legs'}
             </span>
           </div>
 
-          {/* Stub Barcode & Serial */}
-          <div className="pt-3 border-t border-slate-300 w-full mt-4 sm:mt-0">
-            <div className="font-utility text-[10px] text-slate-700 uppercase font-bold">
+          {/* Stub Serial */}
+          <div className="pt-3 border-t border-slate-200 w-full mt-4 sm:mt-0">
+            <div className="font-utility text-[10px] text-slate-500 uppercase font-medium">
               STUB #{ticketSerial}
             </div>
-            <div className="text-[9px] font-utility text-amber-800 uppercase font-bold mt-0.5">
-              PAID • VERIFIED
+            <div className="text-[9px] font-utility text-slate-400 uppercase font-semibold mt-0.5">
+              VERIFIED PASS
             </div>
           </div>
         </div>
       </div>
 
       {/* ========================================================
-          2. CONSOLIDATED EXPANDABLE DIRECTIONS DRAWER
+          2. PROGRESSIVE DISCLOSURE: COLLAPSIBLE DIRECTIONS DRAWER
           ======================================================== */}
-      <div className="transit-panel overflow-hidden border-2 border-slate-900 shadow-[4px_4px_0px_rgba(15,23,42,0.08)]">
-        {/* Consolidated Header Row */}
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+        {/* Toggle Button (Single tap to expand) */}
         <button
           onClick={() => setShowDirections(!showDirections)}
           type="button"
           className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-display text-lg font-bold text-slate-900 tracking-wide uppercase">
-              Mga Hakbang sa Byahe ({activeOption?.title || 'Route Steps'})
+          <div className="flex items-center gap-2">
+            <span className="font-display text-base sm:text-lg font-bold text-slate-800 tracking-wide uppercase">
+              Mga Hakbang sa Byahe
             </span>
-            <span className="text-xs font-utility bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-400">
+            <span className="text-xs font-utility bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded border border-slate-200">
               {activeSteps.length} {activeSteps.length === 1 ? 'leg' : 'legs'}
             </span>
           </div>
-          {showDirections ? (
-            <ChevronUp className="w-5 h-5 text-slate-700" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-slate-700" />
-          )}
+          <div className="flex items-center gap-1 text-xs font-utility text-slate-500">
+            <span>{showDirections ? 'Itago' : 'Tingnan'}</span>
+            {showDirections ? (
+              <ChevronUp className="w-4 h-4 text-slate-500" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-slate-500" />
+            )}
+          </div>
         </button>
 
-        {/* Collapsible Content */}
+        {/* Collapsible Step List Content */}
         {showDirections && (
-          <div className="p-4 sm:p-5 pt-0 border-t-2 border-slate-900 space-y-3">
-            {/* Consolidated Summary & Integrated Route Tip */}
-            {(activeOption?.summary || bestTip) && (
-              <div className="mt-3 bg-amber-50/70 border border-amber-300 rounded-lg p-2.5 text-xs text-amber-950 font-body flex flex-col gap-1">
-                {activeOption?.summary && (
-                  <p className="font-semibold text-slate-800">
-                    {activeOption.summary}
-                  </p>
-                )}
-                {bestTip && (
-                  <div className="flex items-start gap-1.5 text-amber-900 pt-0.5">
-                    <Info className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-                    <span>
-                      <strong className="font-utility text-[11px] uppercase tracking-wider text-amber-900">Paalala: </strong>
-                      {bestTip}
-                    </span>
-                  </div>
-                )}
+          <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 space-y-3">
+            {/* Integrated Tip */}
+            {bestTip && (
+              <div className="mt-3 bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-600 flex items-start gap-1.5">
+                <Info className="w-3.5 h-3.5 text-slate-500 flex-shrink-0 mt-0.5" />
+                <span>
+                  <strong className="font-utility text-[11px] uppercase text-slate-700">Paalala: </strong>
+                  {bestTip}
+                </span>
               </div>
             )}
 
-            {/* Step-by-Step Connecting Route Timeline */}
-            <div className="pt-3 pl-1">
+            {/* Connecting Step Timeline */}
+            <div className="pt-2 pl-1">
               {activeSteps.map((step, i) => (
                 <StepCard
                   key={i}
@@ -378,16 +366,16 @@ export default function Ticket({
       </div>
 
       {/* ========================================================
-          3. ACTION BUTTONS
+          3. CLEAN NEUTRAL ACTION BUTTONS
           ======================================================== */}
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
         <button
           onClick={handleCopy}
           type="button"
-          className="btn-transit-secondary text-xs sm:text-sm font-utility"
+          className="btn-transit-secondary text-xs sm:text-sm"
           title="Kopyahin ang buong ruta"
         >
-          {copied ? <Check className="w-4 h-4 text-amber-600" /> : <Copy className="w-4 h-4 text-slate-700" />}
+          {copied ? <Check className="w-3.5 h-3.5 text-slate-800" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
           <span>{copied ? 'Kopyado Na!' : 'Kopyahin'}</span>
         </button>
 
@@ -395,9 +383,9 @@ export default function Ticket({
           <button
             onClick={onConfirm}
             type="button"
-            className="btn-transit-secondary text-xs sm:text-sm font-utility text-amber-800 hover:text-amber-900 border-amber-600"
+            className="btn-transit-secondary text-xs sm:text-sm"
           >
-            <Star className="w-4 h-4 text-amber-600" />
+            <Star className="w-3.5 h-3.5 text-slate-500" />
             <span>Tama 'to!</span>
           </button>
         )}
@@ -406,9 +394,9 @@ export default function Ticket({
           <button
             onClick={onSave}
             type="button"
-            className="btn-sakay-primary !text-xs sm:!text-sm !py-2 !px-4"
+            className="btn-transit-secondary text-xs sm:text-sm font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 border-slate-300"
           >
-            <Bookmark className="w-4 h-4" />
+            <Bookmark className="w-3.5 h-3.5" />
             <span>I-Save</span>
           </button>
         )}
@@ -417,10 +405,10 @@ export default function Ticket({
           <button
             onClick={onClear}
             type="button"
-            className="btn-transit-secondary text-xs sm:text-sm font-utility"
+            className="btn-transit-secondary text-xs sm:text-sm"
           >
-            <X className="w-4 h-4 text-slate-700" />
-            <span>Isara</span>
+            <X className="w-3.5 h-3.5 text-slate-500" />
+            <span>Bagong Byahe</span>
           </button>
         )}
 
@@ -428,9 +416,9 @@ export default function Ticket({
           <button
             onClick={onDelete}
             type="button"
-            className="px-3.5 py-2 rounded-lg border-1.5 border-rose-600 bg-rose-50 text-rose-800 hover:bg-rose-100 text-xs sm:text-sm font-utility font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-xs active:translate-x-0.5 active:translate-y-0.5"
+            className="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-utility font-medium transition-all inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-3.5 h-3.5" />
             <span>Burahin</span>
           </button>
         )}

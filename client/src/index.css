@@ -3,15 +3,13 @@
 
 @import "tailwindcss";
 
-/* Tailwind v4 theme customization - Manila Commuter Structured Classic */
+/* Tailwind v4 theme customization - Clean Hierarchy System */
 @theme {
   --color-manila-amber: #D97706;
-  --color-manila-amber-light: #F59E0B;
-  --color-manila-amber-bg: #FEF3C7;
+  --color-manila-amber-hover: #B45309;
   --color-manila-charcoal: #0F172A;
-  --color-manila-charcoal-light: #1E293B;
   --color-manila-slate: #64748B;
-  --color-manila-border: #0F172A;
+  --color-manila-border: #E2E8F0;
   --color-manila-canvas: #F8FAFC;
   --color-manila-card: #FFFFFF;
 
@@ -30,8 +28,6 @@
 body {
   font-family: var(--font-family-body);
   background-color: #F8FAFC;
-  background-image: radial-gradient(#CBD5E1 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
   color: #0F172A;
   min-height: 100vh;
   overflow-x: hidden;
@@ -53,67 +49,62 @@ body {
   font-family: var(--font-family-utility);
 }
 
-/* Structured Card / Panel Utilities with Crisp Borders */
-.transit-panel {
-  background-color: #FFFFFF;
-  border: 2px solid #0F172A;
-  border-radius: 12px;
-  box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.08);
-}
-
-/* Authentic Structured Transit Ticket Pass */
+/* =========================================================
+   AUTHENTIC TRANSIT PASS TICKET (The Single Bordered Hero Card)
+   ========================================================= */
 .transit-pass {
   background: #FFFFFF;
-  border: 2px solid #0F172A;
+  border: 1.5px solid #0F172A;
   border-radius: 12px;
   position: relative;
-  box-shadow: 5px 5px 0px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
   overflow: hidden;
 }
 
-/* Rotated Ink-Stamp Validator Graphic */
+/* Validator Stamp */
 .validator-stamp {
-  border: 2px dashed #D97706;
-  color: #B45309;
-  padding: 2px 8px;
+  border: 1px dashed #64748B;
+  color: #475569;
+  padding: 2px 6px;
   font-family: var(--font-family-utility);
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 600;
   letter-spacing: 0.06em;
   display: inline-block;
-  transform: rotate(-4deg);
-  background-color: #FFFBEB;
+  transform: rotate(-3deg);
+  background-color: #F8FAFC;
   border-radius: 4px;
 }
 
-/* Buttons */
+/* =========================================================
+   BUTTONS (Accent Orange STRICTLY for Primary CTA)
+   ========================================================= */
 .btn-sakay-primary {
   background-color: #D97706;
   color: #FFFFFF;
   font-family: var(--font-family-display);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   letter-spacing: 0.05em;
   font-weight: 800;
   padding: 0.65rem 1.75rem;
   border-radius: 0.5rem;
-  border: 2px solid #0F172A;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: all 0.12s ease;
-  box-shadow: 3px 3px 0px #0F172A;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .btn-sakay-primary:hover {
   background-color: #B45309;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #0F172A;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
 }
 
 .btn-sakay-primary:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px transparent;
+  transform: translateY(0);
 }
 
 .btn-sakay-primary:disabled {
@@ -123,62 +114,48 @@ body {
   box-shadow: none;
 }
 
+/* Secondary Button (Neutral Gray/Dark) */
 .btn-transit-secondary {
   background-color: #FFFFFF;
-  color: #0F172A;
+  color: #334155;
   font-family: var(--font-family-body);
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 0.55rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
   border-radius: 0.5rem;
-  border: 1.5px solid #0F172A;
+  border: 1px solid #CBD5E1;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
-  transition: all 0.12s ease;
-  box-shadow: 2px 2px 0px rgba(15, 23, 42, 0.12);
+  transition: all 0.15s ease;
 }
 
 .btn-transit-secondary:hover {
-  background-color: #F8FAFC;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px rgba(15, 23, 42, 0.2);
-}
-
-.btn-transit-secondary:active {
-  transform: translate(1px, 1px);
-  box-shadow: 0px 0px 0px transparent;
-}
-
-/* Sample Prompt Pill */
-.sample-pill {
-  background-color: #FFFFFF;
+  background-color: #F1F5F9;
   color: #0F172A;
-  border: 1.5px solid #0F172A;
+  border-color: #94A3B8;
+}
+
+/* Subtle Suggestion Link */
+.suggestion-pill {
+  color: #475569;
+  background-color: #F1F5F9;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.65rem;
   border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  box-shadow: 2px 2px 0px rgba(15, 23, 42, 0.08);
+  gap: 0.3rem;
+  border: 1px solid transparent;
 }
 
-.sample-pill:hover {
-  background-color: #FEF3C7;
-  border-color: #D97706;
-  color: #B45309;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px #D97706;
-}
-
-.sample-pill:active {
-  transform: translate(1px, 1px);
-  box-shadow: 0px 0px 0px transparent;
+.suggestion-pill:hover {
+  background-color: #E2E8F0;
+  color: #0F172A;
 }
 
 /* Loading Spinner */
@@ -188,10 +165,10 @@ body {
 }
 
 .spinner-ring {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #CBD5E1;
-  border-top-color: #D97706;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #FFFFFF;
   border-radius: 50%;
   animation: spinRing 0.7s linear infinite;
   display: inline-block;
@@ -199,7 +176,8 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -208,7 +186,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
