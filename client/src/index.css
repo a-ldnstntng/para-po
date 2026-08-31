@@ -1,0 +1,458 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Libre+Barcode+39+Text&display=swap');
+
+@import "tailwindcss";
+
+/* Tailwind v4 theme customization */
+@theme {
+  --color-jeep-yellow: #FFD700;
+  --color-jeep-yellow-dark: #B8960F;
+  --color-jeep-red: #E63946;
+  --color-jeep-red-dark: #A81C26;
+  --color-jeep-blue: #0056D2;
+  --color-jeep-blue-dark: #003688;
+  --color-jeep-green: #10B981;
+  --color-jeep-green-dark: #047857;
+  --color-jeep-chrome: #D1D5DB;
+  --color-jeep-chrome-light: #F3F4F6;
+  --color-jeep-chrome-dark: #6B7280;
+  --color-jeep-dark: #0F172A;
+  --color-jeep-darker: #090D16;
+  --color-jeep-surface: #1E293B;
+  --color-jeep-surface-light: #334155;
+  --color-jeep-text: #F8FAFC;
+  --color-jeep-text-dim: #94A3B8;
+  --color-jeep-orange: #F97316;
+  
+  --font-family-display: 'Oswald', Impact, sans-serif;
+  --font-family-body: 'Inter', system-ui, sans-serif;
+  --font-family-mono: 'JetBrains Mono', monospace;
+  --font-family-barcode: 'Libre Barcode 39 Text', cursive;
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-body);
+  background: radial-gradient(circle at 50% 0%, #1E1B4B 0%, #090D16 70%);
+  color: var(--color-jeep-text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Signboard 3D Metallic Frame */
+.signboard {
+  background: linear-gradient(135deg, #0047AB 0%, #002D62 50%, #001F42 100%);
+  border: 5px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  position: relative;
+  box-shadow:
+    0 0 0 2px #4B5563,
+    0 0 0 5px rgba(255, 215, 0, 0.4),
+    0 20px 40px rgba(0, 0, 0, 0.7),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signboard:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 2px #6B7280,
+    0 0 0 6px rgba(255, 215, 0, 0.6),
+    0 24px 48px rgba(0, 0, 0, 0.8),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+/* Chrome rivet dots */
+.signboard::before,
+.signboard::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #9CA3AF 50%, #374151 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.4);
+  z-index: 10;
+}
+
+.signboard::before {
+  top: 12px;
+  left: 12px;
+}
+
+.signboard::after {
+  top: 12px;
+  right: 12px;
+}
+
+.signboard-rivets::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #9CA3AF 50%, #374151 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.4);
+  bottom: 12px;
+  left: 12px;
+  z-index: 10;
+}
+
+.signboard-rivets::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #FFFFFF 0%, #9CA3AF 50%, #374151 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 2px 4px rgba(0,0,0,0.4);
+  bottom: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+/* Neon Signboard typography */
+.signboard-text {
+  font-family: var(--font-family-display);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #FFD700;
+  text-shadow:
+    0 0 12px rgba(255, 215, 0, 0.7),
+    0 0 24px rgba(255, 215, 0, 0.4),
+    3px 3px 0 #000000;
+}
+
+/* Glassmorphism containers */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Thermal Ticket Styling */
+.ticket {
+  background: #FFFDF9;
+  color: #0F172A;
+  border: 2px dashed #CBD5E1;
+  border-radius: 6px;
+  padding: 1.75rem;
+  position: relative;
+  font-family: var(--font-family-mono);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Ticket perforated edges */
+.ticket::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 10px,
+    #FFFDF9 10px,
+    #FFFDF9 14px,
+    transparent 14px,
+    transparent 24px
+  );
+}
+
+.ticket::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 10px,
+    #FFFDF9 10px,
+    #FFFDF9 14px,
+    transparent 14px,
+    transparent 24px
+  );
+}
+
+/* Stamp Watermark */
+.ticket-stamp {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  border: 3px double #DC2626;
+  color: #DC2626;
+  padding: 0.25rem 0.75rem;
+  font-family: var(--font-family-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transform: rotate(12deg);
+  opacity: 0.85;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* Print animation */
+@keyframes thermalPrint {
+  from { max-height: 0; opacity: 0; transform: translateY(-16px); }
+  to { max-height: 2500px; opacity: 1; transform: translateY(0); }
+}
+
+.ticket-print {
+  animation: thermalPrint 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+/* Vehicle Mode Badges */
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  font-family: var(--font-family-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.mode-jeep { background: linear-gradient(135deg, #FFD700 0%, #E6C200 100%); color: #0F172A; border: 1px solid #B8960F; }
+.mode-tricycle { background: linear-gradient(135deg, #F97316 0%, #EA580C 100%); color: white; }
+.mode-bus { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; }
+.mode-walk { background: linear-gradient(135deg, #64748B 0%, #475569 100%); color: white; }
+.mode-mrt, .mode-lrt { background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); color: white; }
+.mode-pnr { background: linear-gradient(135deg, #9333EA 0%, #7E22CE 100%); color: white; }
+.mode-uv_express { background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%); color: white; }
+.mode-grab { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; }
+
+/* Line label signboard mini */
+.line-label {
+  display: inline-block;
+  background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+  color: #FFD700;
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid #475569;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 #000;
+}
+
+/* Fare badge */
+.fare-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: #ECFDF5;
+  color: #047857;
+  font-family: var(--font-family-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #A7F3D0;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, #E63946 0%, #B91C1C 100%);
+  color: white;
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 2.25rem;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(230, 57, 70, 0.5);
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-confirm {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+  font-family: var(--font-family-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  border-color: #94A3B8;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  font-family: var(--font-family-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #EF4444;
+}
+
+/* Sample Prompt Pill */
+.prompt-pill {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  color: #CBD5E1;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.prompt-pill:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: #FFD700;
+  color: #FFD700;
+  transform: translateY(-1px);
+}
+
+/* Chrome divider stripe */
+.chrome-stripe {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #475569 15%,
+    #E2E8F0 50%,
+    #475569 85%,
+    transparent 100%
+  );
+  margin: 1.5rem 0;
+}
+
+/* Toast animation */
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.toast-animate {
+  animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Neon flicker */
+@keyframes neonFlicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 12px rgba(255, 215, 0, 0.7), 0 0 24px rgba(255, 215, 0, 0.4), 3px 3px 0 #000; }
+  92% { opacity: 1; }
+  93% { opacity: 0.85; text-shadow: 0 0 6px rgba(255, 215, 0, 0.4), 3px 3px 0 #000; }
+  94% { opacity: 1; }
+  97% { opacity: 0.9; }
+}
+
+.neon-flicker {
+  animation: neonFlicker 5s ease-in-out infinite;
+}
+
+/* Voice pulse */
+@keyframes voicePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.6); }
+  50% { box-shadow: 0 0 0 14px rgba(230, 57, 70, 0); }
+}
+
+.voice-pulse {
+  animation: voicePulse 1.5s ease-in-out infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090D16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
