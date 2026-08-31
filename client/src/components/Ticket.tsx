@@ -105,15 +105,15 @@ export default function Ticket({
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       {/* ========================================================
-          1. TRANSIT TICKET PASS CARD
+          1. STRUCTURED TRANSIT TICKET PASS
           ======================================================== */}
-      <div className="transit-pass flex flex-col sm:flex-row bg-white">
+      <div className="transit-pass flex flex-col sm:flex-row bg-white border-2 border-slate-900 shadow-[5px_5px_0px_rgba(15,23,42,0.12)]">
         {/* MAIN BODY (Left ~75%) */}
         <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between bg-white">
           {/* Header: Title + Validator Stamp */}
-          <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
+          <div className="flex items-start justify-between gap-2 border-b-2 border-slate-900 pb-3">
             <div>
-              <div className="text-[10px] font-utility font-bold tracking-widest text-slate-400 uppercase">
+              <div className="text-[10px] font-utility font-bold tracking-widest text-slate-500 uppercase">
                 REPUBLIC OF THE PHILIPPINES
               </div>
               <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wide text-slate-900 uppercase leading-none mt-0.5">
@@ -122,18 +122,18 @@ export default function Ticket({
             </div>
 
             {/* Rotated Ink-Stamp Validator Punch */}
-            <div className="validator-stamp">
+            <div className="validator-stamp shadow-xs">
               <div>VALIDATED</div>
               <div className="text-[10px] font-normal">{formattedStampDate} {formattedStampTime}</div>
             </div>
           </div>
 
           {/* Journey Section with Origin & Destination */}
-          <div className="py-4 my-2 border-y border-dashed border-slate-200">
+          <div className="py-4 my-2 border-y-2 border-dashed border-slate-300 bg-slate-50/60 -mx-5 sm:-mx-6 px-5 sm:px-6">
             <div className="space-y-3">
               {/* Origin */}
               <div>
-                <span className="text-[10px] font-utility font-bold text-slate-400 uppercase tracking-widest block">
+                <span className="text-[10px] font-utility font-bold text-slate-500 uppercase tracking-widest block">
                   ORIGIN
                 </span>
                 <div className="font-display font-black text-xl sm:text-2xl text-slate-900 leading-tight uppercase">
@@ -142,20 +142,20 @@ export default function Ticket({
               </div>
 
               {/* Connecting Journey Line */}
-              <div className="flex items-center gap-2 text-amber-600 my-1">
-                <div className="p-1 rounded-full bg-amber-100 border border-amber-400 flex-shrink-0">
+              <div className="flex items-center gap-2 text-amber-700 my-1">
+                <div className="p-1.5 rounded-full bg-amber-400 border-2 border-slate-900 text-slate-950 flex-shrink-0 shadow-xs">
                   <PrimaryVehicleIcon className="w-4 h-4" />
                 </div>
-                <div className="h-0.5 flex-1 bg-slate-200" />
-                <span className="font-utility text-xs text-slate-400 uppercase font-semibold">
+                <div className="h-0.5 flex-1 bg-slate-900" />
+                <span className="font-utility text-xs text-slate-700 uppercase font-bold tracking-wider">
                   TO DESTINATION
                 </span>
-                <div className="h-0.5 w-6 bg-slate-200" />
+                <div className="h-0.5 w-6 bg-slate-900" />
               </div>
 
               {/* Destination */}
               <div>
-                <span className="text-[10px] font-utility font-bold text-amber-700 uppercase tracking-widest block">
+                <span className="text-[10px] font-utility font-bold text-amber-800 uppercase tracking-widest block">
                   DESTINATION
                 </span>
                 <div className="font-display font-black text-xl sm:text-2xl text-amber-700 leading-tight uppercase">
@@ -166,9 +166,9 @@ export default function Ticket({
           </div>
 
           {/* Bottom Info Bar: Serial + Barcode */}
-          <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+          <div className="pt-3 border-t-2 border-slate-900 flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-utility tracking-widest text-slate-400 uppercase font-bold">
+              <div className="text-[10px] font-utility tracking-widest text-slate-500 uppercase font-bold">
                 TICKET NO.
               </div>
               <div className="font-utility font-bold text-xs sm:text-sm text-slate-900">
@@ -178,7 +178,7 @@ export default function Ticket({
 
             {/* Code128 Vector Barcode */}
             <div className="flex flex-col items-end">
-              <svg className="w-24 h-5 text-slate-800 fill-current opacity-80" viewBox="0 0 100 24">
+              <svg className="w-24 h-5 text-slate-900 fill-current opacity-90" viewBox="0 0 100 24">
                 <rect x="0" y="0" width="3" height="24" />
                 <rect x="5" y="0" width="2" height="24" />
                 <rect x="9" y="0" width="4" height="24" />
@@ -202,7 +202,7 @@ export default function Ticket({
                 <rect x="93" y="0" width="3" height="24" />
                 <rect x="98" y="0" width="2" height="24" />
               </svg>
-              <span className="text-[9px] font-utility text-slate-400 uppercase tracking-widest mt-0.5 font-semibold">
+              <span className="text-[9px] font-utility text-slate-600 uppercase tracking-widest mt-0.5 font-bold">
                 SINGLE RIDE ONLY
               </span>
             </div>
@@ -210,25 +210,25 @@ export default function Ticket({
         </div>
 
         {/* TEAR-OFF STUB (Right ~25%) */}
-        <div className="w-full sm:w-44 bg-slate-50 p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-dashed border-slate-300 relative shrink-0">
+        <div className="w-full sm:w-44 bg-amber-50/70 p-5 flex flex-col justify-between items-center text-center border-t-2 sm:border-t-0 sm:border-l-2 border-dashed border-slate-900 relative shrink-0">
           {/* Accent Color Band on top */}
-          <div className="w-full h-1.5 bg-amber-500 absolute top-0 left-0 right-0" />
+          <div className="w-full h-2 bg-amber-500 absolute top-0 left-0 right-0 border-b border-slate-900" />
 
           <div className="pt-2">
-            <span className="text-[10px] font-utility tracking-widest text-slate-500 uppercase font-bold">
+            <span className="text-[10px] font-utility tracking-widest text-slate-600 uppercase font-bold">
               TOTAL FARE
             </span>
             <div className="font-display font-black text-4xl sm:text-5xl text-amber-700 tracking-tight leading-none mt-1">
               ₱{totalFare.toFixed(0)}
             </div>
-            <span className="text-[11px] font-utility text-slate-600 font-semibold mt-1 block">
+            <span className="text-[11px] font-utility text-slate-700 font-bold mt-1 block">
               {route.steps.length} transit {route.steps.length === 1 ? 'step' : 'steps'}
             </span>
           </div>
 
           {/* Stub Barcode & Serial */}
-          <div className="pt-3 border-t border-slate-200 w-full mt-4 sm:mt-0">
-            <div className="font-utility text-[10px] text-slate-600 uppercase font-bold">
+          <div className="pt-3 border-t border-slate-300 w-full mt-4 sm:mt-0">
+            <div className="font-utility text-[10px] text-slate-700 uppercase font-bold">
               STUB #{ticketSerial}
             </div>
             <div className="text-[9px] font-utility text-amber-800 uppercase font-bold mt-0.5">
@@ -241,7 +241,7 @@ export default function Ticket({
       {/* ========================================================
           2. SEPARATE EXPANDABLE DIRECTIONS DRAWER
           ======================================================== */}
-      <div className="transit-panel overflow-hidden">
+      <div className="transit-panel overflow-hidden border-2 border-slate-900 shadow-[4px_4px_0px_rgba(15,23,42,0.08)]">
         {/* Toggle Button */}
         <button
           onClick={() => setShowDirections(!showDirections)}
@@ -252,29 +252,29 @@ export default function Ticket({
             <span className="font-display text-lg font-bold text-slate-900 tracking-wide uppercase">
               Mga Hakbang sa Byahe (Route Steps)
             </span>
-            <span className="text-xs font-utility bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded border border-slate-300">
+            <span className="text-xs font-utility bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-400">
               {route.steps.length} steps
             </span>
           </div>
           {showDirections ? (
-            <ChevronUp className="w-5 h-5 text-slate-600" />
+            <ChevronUp className="w-5 h-5 text-slate-700" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-slate-600" />
+            <ChevronDown className="w-5 h-5 text-slate-700" />
           )}
         </button>
 
         {/* Collapsible Content */}
         {showDirections && (
-          <div className="p-4 sm:p-5 pt-0 border-t border-slate-200 space-y-4">
+          <div className="p-4 sm:p-5 pt-0 border-t-2 border-slate-900 space-y-4">
             {/* Single Highlighted Primary Tip Callout */}
             {bestTip && (
-              <div className="mt-3 rounded-lg bg-amber-50 border border-amber-300 p-3 flex items-start gap-2.5 text-xs text-amber-950">
-                <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="mt-3 rounded-lg bg-amber-50 border-2 border-amber-400 p-3 flex items-start gap-2.5 text-xs text-amber-950 shadow-xs">
+                <Info className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-utility font-bold text-amber-900 uppercase tracking-wider mr-1">
                     Paalala sa Byahe:
                   </span>
-                  <span className="leading-relaxed font-medium">{bestTip}</span>
+                  <span className="leading-relaxed font-semibold">{bestTip}</span>
                 </div>
               </div>
             )}
@@ -304,7 +304,7 @@ export default function Ticket({
           className="btn-transit-secondary text-xs sm:text-sm font-utility"
           title="Kopyahin ang buong ruta"
         >
-          {copied ? <Check className="w-4 h-4 text-amber-600" /> : <Copy className="w-4 h-4 text-slate-600" />}
+          {copied ? <Check className="w-4 h-4 text-amber-600" /> : <Copy className="w-4 h-4 text-slate-700" />}
           <span>{copied ? 'Kopyado Na!' : 'Kopyahin'}</span>
         </button>
 
@@ -312,7 +312,7 @@ export default function Ticket({
           <button
             onClick={onConfirm}
             type="button"
-            className="btn-transit-secondary text-xs sm:text-sm font-utility text-amber-800 hover:text-amber-900"
+            className="btn-transit-secondary text-xs sm:text-sm font-utility text-amber-800 hover:text-amber-900 border-amber-600"
           >
             <Star className="w-4 h-4 text-amber-600" />
             <span>Tama 'to!</span>
@@ -336,7 +336,7 @@ export default function Ticket({
             type="button"
             className="btn-transit-secondary text-xs sm:text-sm font-utility"
           >
-            <X className="w-4 h-4 text-slate-600" />
+            <X className="w-4 h-4 text-slate-700" />
             <span>Isara</span>
           </button>
         )}
@@ -345,7 +345,7 @@ export default function Ticket({
           <button
             onClick={onDelete}
             type="button"
-            className="px-3.5 py-2 rounded-lg border border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs sm:text-sm font-utility font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-2 rounded-lg border-1.5 border-rose-600 bg-rose-50 text-rose-800 hover:bg-rose-100 text-xs sm:text-sm font-utility font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-xs active:translate-x-0.5 active:translate-y-0.5"
           >
             <Trash2 className="w-4 h-4" />
             <span>Burahin</span>
