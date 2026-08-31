@@ -22,6 +22,22 @@ const CANDIDATE_MODELS = [
   'gemini-3.6-flash'
 ];
 
+function getEstimatedDurationFallback(mode: string): number {
+  switch (mode) {
+    case 'walk': return 5;
+    case 'jeep': return 20;
+    case 'bus': return 25;
+    case 'p2p_bus': return 35;
+    case 'uv_express': return 25;
+    case 'mrt':
+    case 'lrt': return 15;
+    case 'pnr': return 25;
+    case 'tricycle': return 8;
+    case 'grab': return 20;
+    default: return 15;
+  }
+}
+
 router.post('/', extractLimiter, async (req, res) => {
   try {
     const { text } = req.body;
@@ -84,7 +100,7 @@ router.post('/', extractLimiter, async (req, res) => {
       return res.status(500).json({ error: 'Invalid response format: missing origin or destination' });
     }
 
-    // Normalize options and steps
+    // Normalize options, steps, fares, and durations
     let options = parsed.options;
     if (!Array.isArray(options) || options.length === 0) {
       if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
@@ -103,12 +119,44 @@ router.post('/', extractLimiter, async (req, res) => {
       }
     }
 
+    // Populate duration minutes for all options and steps
+    options = options.map((opt: any, idx: number) => {
+      const sanitizedSteps = (opt.steps || []).map((step: any, sIdx: number) => {
+        const estDuration = step.estimated_duration_min && step.estimated_duration_min > 0
+          ? step.estimated_duration_min
+          : getEstimatedDurationFallback(step.mode);
+        return {
+          ...step,
+          step_order: step.step_order || sIdx + 1,
+          estimated_duration_min: estDuration,
+        };
+      });
+
+      const totalDuration = opt.total_duration_min && opt.total_duration_min > 0
+        ? opt.total_duration_min
+        : sanitizedSteps.reduce((sum: number, s: any) => sum + (s.estimated_duration_min || 0), 0);
+
+      const totalFare = opt.total_fare_php !== undefined && opt.total_fare_php !== null
+        ? opt.total_fare_php
+        : sanitizedSteps.reduce((sum: number, s: any) => sum + (s.fare_estimate_php || 0), 0);
+
+      return {
+        ...opt,
+        option_id: opt.option_id || `opt-${idx + 1}`,
+        total_fare_php: totalFare,
+        total_duration_min: totalDuration,
+        steps: sanitizedSteps,
+      };
+    });
+
     // Ensure first option's steps are available top-level for backward compatibility
     const responseData = {
       origin: parsed.origin,
       destination: parsed.destination,
       options: options,
       steps: options[0].steps,
+      total_duration_min: options[0].total_duration_min,
+      total_fare_php: options[0].total_fare_php,
     };
 
     res.json(responseData);

@@ -14,6 +14,8 @@ import {
   ChevronDown,
   ChevronUp,
   Info,
+  Clock,
+  WifiOff,
   type LucideIcon,
 } from 'lucide-react';
 import type { ExtractedRoute, SavedRoute, RouteOption } from '../lib/api';
@@ -30,6 +32,7 @@ interface TicketProps {
 }
 
 const PRIMARY_ICONS: Record<string, LucideIcon> = {
+  p2p_bus: Bus,
   jeep: Bus,
   bus: Bus,
   uv_express: Bus,
@@ -52,6 +55,11 @@ function getOptionIcon(opt: RouteOption): LucideIcon {
     opt.steps?.some((s) => s.mode === 'grab');
   if (isCar) return Car;
 
+  const isP2P =
+    opt.title.toLowerCase().includes('p2p') ||
+    opt.steps?.some((s) => s.mode === 'p2p_bus');
+  if (isP2P) return Bus;
+
   const isTrain = opt.steps?.some((s) => s.mode === 'mrt' || s.mode === 'lrt' || s.mode === 'pnr');
   if (isTrain) return Train;
 
@@ -71,7 +79,7 @@ export default function Ticket({
 }: TicketProps) {
   const [selectedOptionIdx, setSelectedOptionIdx] = useState(0);
   const [showAlternativeRoutes, setShowAlternativeRoutes] = useState(false);
-  const [showDirections, setShowDirections] = useState(false); // Collapsed by default
+  const [showDirections, setShowDirections] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Active option logic
@@ -82,11 +90,24 @@ export default function Ticket({
   }, [activeOption, route.steps]);
 
   const totalFare = useMemo(() => {
+    if (activeOption?.total_fare_php !== undefined && activeOption.total_fare_php !== null) {
+      return activeOption.total_fare_php;
+    }
     return activeSteps.reduce(
       (sum, step) => sum + (step.fare_estimate_php || 0),
       0
     );
-  }, [activeSteps]);
+  }, [activeOption, activeSteps]);
+
+  const totalDuration = useMemo(() => {
+    if (activeOption?.total_duration_min !== undefined && activeOption.total_duration_min !== null) {
+      return activeOption.total_duration_min;
+    }
+    return activeSteps.reduce(
+      (sum, step) => sum + (step.estimated_duration_min || 0),
+      0
+    );
+  }, [activeOption, activeSteps]);
 
   const savedRoute = isSaved ? (route as SavedRoute) : null;
 
@@ -106,11 +127,11 @@ export default function Ticket({
       `PARA PO! TRANSIT PASS #${ticketSerial}\n` +
       optionHeader +
       `ROUTE: ${route.origin.toUpperCase()} ➔ ${route.destination.toUpperCase()}\n` +
-      `TOTAL FARE: PHP ${totalFare.toFixed(2)} (${activeSteps.length} legs)\n\n` +
+      `EST. TIME: ~${totalDuration} MINS | TOTAL FARE: PHP ${totalFare.toFixed(2)} (${activeSteps.length} legs)\n\n` +
       activeSteps
         .map(
           (s, i) =>
-            `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (Stop: ${s.landmark} | ₱${(s.fare_estimate_php || 0).toFixed(2)})`
+            `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (~${s.estimated_duration_min || 15}m | Stop: ${s.landmark} | ₱${(s.fare_estimate_php || 0).toFixed(2)})`
         )
         .join('\n') +
       (bestTip ? `\n\nTIP: ${bestTip}` : '');
@@ -141,7 +162,7 @@ export default function Ticket({
   return (
     <div className="w-full max-w-xl mx-auto space-y-3.5 sm:space-y-4">
       {/* ========================================================
-          1. SCANNABLE ROUTE-OPTION COMPARISON CARDS
+          1. SCANNABLE ROUTE-OPTION COMPARISON (LEGS · TIME · FARE)
           ======================================================== */}
       {options && options.length > 1 && (
         <div className="w-full">
@@ -169,6 +190,11 @@ export default function Ticket({
                   opt.title.toLowerCase().includes('grab') ||
                   opt.title.toLowerCase().includes('taxi') ||
                   opt.title.toLowerCase().includes('car');
+                const isP2P =
+                  opt.title.toLowerCase().includes('p2p') ||
+                  opt.steps?.some((s) => s.mode === 'p2p_bus');
+
+                const optDuration = opt.total_duration_min || opt.steps?.reduce((sum, s) => sum + (s.estimated_duration_min || 15), 0) || 45;
 
                 return (
                   <button
@@ -183,6 +209,8 @@ export default function Ticket({
                       ${
                         isSelected
                           ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                          : isP2P
+                          ? 'bg-indigo-950 text-indigo-100 border-indigo-900 hover:border-indigo-700'
                           : isRideHailing
                           ? 'bg-slate-100/90 text-slate-800 border-slate-300 hover:border-slate-800'
                           : 'bg-white text-slate-800 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
@@ -192,7 +220,7 @@ export default function Ticket({
                     {/* Top Row: Icon + Title */}
                     <div>
                       <div className="flex items-center gap-1.5 mb-1">
-                        <OptIcon className={`w-3.5 h-3.5 flex-shrink-0 ${isSelected ? 'text-amber-400' : 'text-slate-600'}`} />
+                        <OptIcon className={`w-3.5 h-3.5 flex-shrink-0 ${isSelected ? 'text-amber-400' : isP2P ? 'text-indigo-300' : 'text-slate-600'}`} />
                         <span className="font-utility font-bold text-xs leading-tight line-clamp-1">
                           {opt.title}
                         </span>
@@ -200,7 +228,7 @@ export default function Ticket({
                       {opt.badge && (
                         <span
                           className={`inline-block text-[9px] font-utility px-1.5 py-0.2 rounded font-medium ${
-                            isSelected ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'
+                            isSelected ? 'bg-slate-800 text-slate-200' : isP2P ? 'bg-indigo-900 text-indigo-200' : 'bg-slate-100 text-slate-600'
                           }`}
                         >
                           {opt.badge}
@@ -208,13 +236,13 @@ export default function Ticket({
                       )}
                     </div>
 
-                    {/* Bottom Row: High-Contrast Legs + Fare */}
-                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-slate-200/50 text-[11px] font-utility">
-                      <span className={`font-bold ${isSelected ? 'text-slate-200' : 'text-slate-800'}`}>
-                        {opt.steps?.length} {opt.steps?.length === 1 ? 'leg' : 'legs'}
+                    {/* Bottom Row: 3 Axes of Comparison (Legs · Time · Fare) */}
+                    <div className="mt-2 pt-1 border-t border-slate-200/50 text-[11px] font-utility flex items-center justify-between gap-1 flex-wrap">
+                      <span className={`font-bold ${isSelected ? 'text-slate-200' : isP2P ? 'text-indigo-200' : 'text-slate-800'}`}>
+                        {opt.steps?.length} legs · ~{optDuration}m
                       </span>
                       {opt.total_fare_php !== undefined && (
-                        <span className={`font-bold ${isSelected ? 'text-amber-400' : 'text-slate-900'}`}>
+                        <span className={`font-bold ${isSelected ? 'text-amber-400' : isP2P ? 'text-amber-400' : 'text-slate-900'}`}>
                           ₱{opt.total_fare_php.toFixed(0)}
                         </span>
                       )}
@@ -233,11 +261,19 @@ export default function Ticket({
       <div className="transit-pass flex flex-col sm:flex-row bg-white">
         {/* MAIN BODY (Left ~75%) */}
         <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between bg-white">
-          {/* Header: Title + Validator Stamp */}
+          {/* Header: Title + Offline Flag / Validator Stamp */}
           <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-2.5">
             <div>
-              <div className="text-[9px] font-utility font-semibold tracking-widest text-slate-400 uppercase">
-                REPUBLIC OF THE PHILIPPINES
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-utility font-semibold tracking-widest text-slate-400 uppercase">
+                  REPUBLIC OF THE PHILIPPINES
+                </span>
+                {route.is_offline_cached && (
+                  <span className="text-[9px] font-utility font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 flex items-center gap-0.5">
+                    <WifiOff className="w-2.5 h-2.5" />
+                    <span>Offline</span>
+                  </span>
+                )}
               </div>
               <h2 className="font-display font-black text-xl sm:text-2xl tracking-tight text-slate-900 uppercase leading-none mt-0.5">
                 PARA PO! COMMUTE PASS
@@ -309,9 +345,9 @@ export default function Ticket({
           </div>
         </div>
 
-        {/* TEAR-OFF STUB (Right ~25% - HERO ORANGE ACCENT FOR FARE) */}
-        <div className="w-full sm:w-40 bg-slate-50 p-4 sm:p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-dashed border-slate-300 relative shrink-0">
-          <div className="pt-1">
+        {/* TEAR-OFF STUB (Right ~25% - TOTAL FARE & ESTIMATED TRAVEL TIME) */}
+        <div className="w-full sm:w-44 bg-slate-50 p-4 sm:p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-dashed border-slate-300 relative shrink-0">
+          <div className="pt-1 w-full">
             <span className="text-[9px] font-utility tracking-widest text-slate-400 uppercase font-semibold">
               TOTAL FARE
             </span>
@@ -319,7 +355,14 @@ export default function Ticket({
             <div className="font-display font-black text-3xl sm:text-4xl text-amber-700 tracking-tight leading-none mt-1">
               ₱{totalFare.toFixed(0)}
             </div>
-            <span className="text-[10px] font-utility text-slate-500 font-medium mt-1 block">
+
+            {/* Prominent Estimated Travel Time on Stub */}
+            <div className="mt-2 pt-2 border-t border-slate-200 flex items-center justify-center gap-1 text-slate-800 font-utility font-bold text-xs">
+              <Clock className="w-3.5 h-3.5 text-slate-500" />
+              <span>~{totalDuration} MINS</span>
+            </div>
+
+            <span className="text-[10px] font-utility text-slate-500 font-medium mt-0.5 block">
               {activeSteps.length} {activeSteps.length === 1 ? 'transit leg' : 'transit legs'}
             </span>
           </div>
@@ -351,7 +394,7 @@ export default function Ticket({
               Mga Hakbang sa Byahe
             </span>
             <span className="text-[11px] font-utility bg-slate-100 text-slate-700 font-bold px-1.5 py-0.2 rounded border border-slate-200">
-              {activeSteps.length} {activeSteps.length === 1 ? 'leg' : 'legs'}
+              {activeSteps.length} {activeSteps.length === 1 ? 'leg' : 'legs'} · ~{totalDuration}m
             </span>
             {bestTip && (
               <span className="text-[10px] font-utility text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded font-medium flex items-center gap-1">
@@ -370,7 +413,7 @@ export default function Ticket({
           </div>
         </button>
 
-        {/* Collapsible Step List Content with Folded Tip */}
+        {/* Collapsible Step List Content with Folded Tip & Durations */}
         {showDirections && (
           <div className="p-3.5 sm:p-4 pt-0 border-t border-slate-100 space-y-2.5">
             {/* Integrated Reminder Note */}
@@ -401,7 +444,7 @@ export default function Ticket({
       </div>
 
       {/* ========================================================
-          4. CLEAN ACTION CONTROLS
+          4. ACTION CONTROLS
           ======================================================== */}
       <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
         <button
