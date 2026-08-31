@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3 } from 'lucide-react';
+import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3, Lightbulb, Navigation } from 'lucide-react';
 import VoiceButton from './VoiceButton';
 
 interface RouteInputProps {
@@ -51,9 +51,9 @@ export default function RouteInput({
   // -------------------------------------------------------------------------
   if (isCollapsed && text.trim()) {
     return (
-      <div className="w-full bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-2.5 shadow-xs">
+      <div className="w-full bg-white border border-slate-300 rounded-xl p-3 flex items-center justify-between gap-2.5 shadow-2xs">
         <div className="flex-1 min-w-0">
-          <span className="text-[9px] font-utility font-semibold text-slate-400 uppercase tracking-wider block">
+          <span className="text-[9px] font-utility font-bold text-slate-500 uppercase tracking-wider block">
             Hinanap na Byahe:
           </span>
           <p className="text-xs font-utility text-slate-800 font-medium truncate">
@@ -63,9 +63,9 @@ export default function RouteInput({
         <button
           onClick={onExpand}
           type="button"
-          className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-utility font-medium transition-all cursor-pointer flex-shrink-0"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 text-xs font-utility font-bold transition-all cursor-pointer flex-shrink-0 shadow-2xs"
         >
-          <Edit3 className="w-3 h-3" />
+          <Edit3 className="w-3.5 h-3.5 text-slate-600" />
           <span>Baguhin</span>
         </button>
       </div>
@@ -73,11 +73,11 @@ export default function RouteInput({
   }
 
   // -------------------------------------------------------------------------
-  // 2. EXPANDED PRIMARY INPUT STATE (Tightened Mobile Padding)
+  // 2. EXPANDED PRIMARY INPUT STATE
   // -------------------------------------------------------------------------
   return (
     <section className="w-full">
-      <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs">
+      <div className="bg-white border border-slate-300 rounded-xl p-4 sm:p-5 shadow-xs">
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5 w-full">
           {/* Header Row */}
           <div className="flex items-center justify-between">
@@ -102,10 +102,10 @@ export default function RouteInput({
               placeholder="Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons.'"
               rows={3}
               disabled={isExtracting}
-              className="w-full bg-slate-50/80 border border-slate-300 rounded-lg p-3 pr-11
+              className="w-full bg-slate-50/90 border border-slate-300 rounded-lg p-3 pr-11
                 text-slate-900 font-utility text-xs sm:text-sm placeholder:text-slate-400
                 focus:outline-none focus:border-slate-800 focus:bg-white focus:ring-1 focus:ring-slate-800
-                disabled:opacity-50 resize-none transition-all"
+                disabled:opacity-50 resize-none transition-all shadow-inner"
             />
             {/* Voice Button */}
             <div className="absolute bottom-2.5 right-2.5">
@@ -116,28 +116,30 @@ export default function RouteInput({
             </div>
           </div>
 
-          {/* Progressive Disclosure: Examples Toggle */}
+          {/* Progressive Disclosure: Examples Toggle with Lightbulb Icon */}
           <div className="pt-0.5">
             <button
               type="button"
               onClick={() => setShowExamples(!showExamples)}
-              className="text-[11px] font-utility text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer transition-colors"
+              className="bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 text-[11px] font-utility font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
             >
+              <Lightbulb className="w-3.5 h-3.5 text-slate-500" />
               <span>{showExamples ? 'Itago ang mga halimbawa' : 'Subukan ang halimbawa'}</span>
-              {showExamples ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              {showExamples ? <ChevronUp className="w-3.5 h-3.5 text-slate-500" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-500" />}
             </button>
 
             {showExamples && (
-              <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-slate-100">
+              <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2 border-t border-slate-100">
                 {SAMPLE_PROMPTS.map((sample, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setText(sample.prompt)}
                     disabled={isExtracting}
-                    className="suggestion-pill text-[11px] py-0.5 px-2"
+                    className="bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-800 text-slate-800 text-[11px] font-utility font-medium px-2.5 py-1 rounded-md shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
                   >
-                    {sample.label}
+                    <Navigation className="w-2.5 h-2.5 text-slate-500 flex-shrink-0" />
+                    <span>{sample.label}</span>
                   </button>
                 ))}
               </div>

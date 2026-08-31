@@ -16,6 +16,8 @@ import {
   Info,
   Clock,
   WifiOff,
+  Layers,
+  ListOrdered,
   type LucideIcon,
 } from 'lucide-react';
 import type { ExtractedRoute, SavedRoute, RouteOption } from '../lib/api';
@@ -166,17 +168,19 @@ export default function Ticket({
           ======================================================== */}
       {options && options.length > 1 && (
         <div className="w-full">
-          <div className="flex items-center justify-between pb-1">
-            <span className="text-[11px] font-utility text-slate-500">
-              Ruta: <strong className="text-slate-900 font-semibold">{activeOption?.title}</strong>
+          <div className="flex items-center justify-between pb-1 flex-wrap gap-2">
+            <span className="text-[11px] font-utility text-slate-600 flex items-center gap-1">
+              <span className="font-bold text-slate-900">Ruta:</span>
+              <strong className="text-slate-800 font-semibold">{activeOption?.title}</strong>
             </span>
             <button
               onClick={() => setShowAlternativeRoutes(!showAlternativeRoutes)}
               type="button"
-              className="text-[11px] font-utility text-slate-600 hover:text-slate-900 underline flex items-center gap-1 cursor-pointer"
+              className="bg-white border border-slate-300 hover:border-slate-800 text-slate-800 font-utility text-[11px] font-semibold px-2.5 py-1 rounded-md shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all hover:bg-slate-50"
             >
+              <Layers className="w-3.5 h-3.5 text-slate-600" />
               <span>{showAlternativeRoutes ? 'Itago ang ibang ruta' : `Tingnan ang ${options.length - 1} pang ruta`}</span>
-              {showAlternativeRoutes ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              {showAlternativeRoutes ? <ChevronUp className="w-3 h-3 text-slate-500" /> : <ChevronDown className="w-3 h-3 text-slate-500" />}
             </button>
           </div>
 
@@ -382,7 +386,7 @@ export default function Ticket({
       {/* ========================================================
           3. FOLDED STEPS & TIP SECTION (Consolidated Header)
           ======================================================== */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+      <div className="bg-white border border-slate-300 rounded-xl overflow-hidden shadow-xs">
         {/* Consolidated Section Header */}
         <button
           onClick={() => setShowDirections(!showDirections)}
@@ -390,25 +394,26 @@ export default function Ticket({
           className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-2 flex-wrap">
+            <ListOrdered className="w-4 h-4 text-slate-700" />
             <span className="font-display text-sm sm:text-base font-black text-slate-900 tracking-tight uppercase">
               Mga Hakbang sa Byahe
             </span>
-            <span className="text-[11px] font-utility bg-slate-100 text-slate-700 font-bold px-1.5 py-0.2 rounded border border-slate-200">
+            <span className="text-[11px] font-utility bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded border border-slate-300">
               {activeSteps.length} {activeSteps.length === 1 ? 'leg' : 'legs'} · ~{totalDuration}m
             </span>
             {bestTip && (
-              <span className="text-[10px] font-utility text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded font-medium flex items-center gap-1">
+              <span className="text-[10px] font-utility text-amber-900 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded font-bold flex items-center gap-1">
                 <Info className="w-3 h-3 text-amber-600" />
                 <span>Tip</span>
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1 text-[11px] font-utility text-slate-500">
+          <div className="bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1 rounded-md text-slate-800 font-utility text-[11px] font-bold flex items-center gap-1.5 transition-colors">
             <span>{showDirections ? 'Itago' : 'Tingnan'}</span>
             {showDirections ? (
-              <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronUp className="w-3.5 h-3.5 text-slate-600" />
             ) : (
-              <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-600" />
             )}
           </div>
         </button>

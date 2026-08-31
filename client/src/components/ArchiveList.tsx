@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Search, ChevronRight, Star, Calendar } from 'lucide-react';
+import { Search, ChevronRight, Star, Calendar, Eye } from 'lucide-react';
 import type { SavedRoute } from '../lib/api';
 import Ticket from './Ticket';
 
@@ -125,9 +125,10 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 text-slate-400 text-[11px] font-utility flex-shrink-0">
+                  <div className="bg-slate-100 group-hover:bg-slate-200 border border-slate-300 px-2.5 py-1 rounded-md text-slate-800 text-[11px] font-utility font-bold flex items-center gap-1.5 flex-shrink-0 transition-colors shadow-2xs">
+                    <Eye className="w-3 h-3 text-slate-600" />
                     <span>Tingnan</span>
-                    <ChevronRight className="w-3 h-3" />
+                    <ChevronRight className="w-3 h-3 text-slate-500" />
                   </div>
                 </div>
               </div>
