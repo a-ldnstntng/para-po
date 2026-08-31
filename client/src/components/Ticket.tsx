@@ -314,21 +314,21 @@ export default function Ticket({
       </div>
 
       {/* ========================================================
-          2. SEPARATE EXPANDABLE DIRECTIONS DRAWER
+          2. CONSOLIDATED EXPANDABLE DIRECTIONS DRAWER
           ======================================================== */}
       <div className="transit-panel overflow-hidden border-2 border-slate-900 shadow-[4px_4px_0px_rgba(15,23,42,0.08)]">
-        {/* Toggle Button */}
+        {/* Consolidated Header Row */}
         <button
           onClick={() => setShowDirections(!showDirections)}
           type="button"
           className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="font-display text-lg font-bold text-slate-900 tracking-wide uppercase">
               Mga Hakbang sa Byahe ({activeOption?.title || 'Route Steps'})
             </span>
             <span className="text-xs font-utility bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-400">
-              {activeSteps.length} steps
+              {activeSteps.length} {activeSteps.length === 1 ? 'leg' : 'legs'}
             </span>
           </div>
           {showDirections ? (
@@ -340,35 +340,36 @@ export default function Ticket({
 
         {/* Collapsible Content */}
         {showDirections && (
-          <div className="p-4 sm:p-5 pt-0 border-t-2 border-slate-900 space-y-4">
-            {/* Active option summary if available */}
-            {activeOption?.summary && (
-              <div className="mt-3 text-xs font-body font-semibold text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-300">
-                {activeOption.summary}
+          <div className="p-4 sm:p-5 pt-0 border-t-2 border-slate-900 space-y-3">
+            {/* Consolidated Summary & Integrated Route Tip */}
+            {(activeOption?.summary || bestTip) && (
+              <div className="mt-3 bg-amber-50/70 border border-amber-300 rounded-lg p-2.5 text-xs text-amber-950 font-body flex flex-col gap-1">
+                {activeOption?.summary && (
+                  <p className="font-semibold text-slate-800">
+                    {activeOption.summary}
+                  </p>
+                )}
+                {bestTip && (
+                  <div className="flex items-start gap-1.5 text-amber-900 pt-0.5">
+                    <Info className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong className="font-utility text-[11px] uppercase tracking-wider text-amber-900">Paalala: </strong>
+                      {bestTip}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Single Highlighted Primary Tip Callout */}
-            {bestTip && (
-              <div className="mt-2 rounded-lg bg-amber-50 border-2 border-amber-400 p-3 flex items-start gap-2.5 text-xs text-amber-950 shadow-xs">
-                <Info className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-utility font-bold text-amber-900 uppercase tracking-wider mr-1">
-                    Paalala sa Byahe:
-                  </span>
-                  <span className="leading-relaxed font-semibold">{bestTip}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Step-by-Step Timeline Cards */}
-            <div className="pt-2">
+            {/* Step-by-Step Connecting Route Timeline */}
+            <div className="pt-3 pl-1">
               {activeSteps.map((step, i) => (
                 <StepCard
                   key={i}
                   step={step}
                   index={i}
                   isLast={i === activeSteps.length - 1}
+                  nextStepMode={activeSteps[i + 1]?.mode}
                 />
               ))}
             </div>
