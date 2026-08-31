@@ -73,7 +73,7 @@ export default function Ticket({
   }).toUpperCase();
 
   return (
-    <div className="w-full max-w-xl mx-auto my-3">
+    <div className="w-full max-w-lg mx-auto my-6">
       {/* ========================================================
           THERMAL PAPER TRANSIT RECEIPT
           ======================================================== */}
@@ -190,7 +190,7 @@ export default function Ticket({
       {/* ========================================================
           RECEIPT ACTION BUTTONS
           ======================================================== */}
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
         <button
           onClick={handleCopy}
           type="button"
