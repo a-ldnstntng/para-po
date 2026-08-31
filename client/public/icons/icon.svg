@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background with subtle border -->
+  <rect width="512" height="512" rx="108" fill="#0F172A"/>
+  <rect x="16" y="16" width="480" height="480" rx="92" fill="none" stroke="#D97706" stroke-width="8"/>
+  
+  <!-- Bus / Jeepney Graphic Silhouette -->
+  <path d="M140 120 C140 90, 372 90, 372 120 L372 320 C372 340, 350 350, 330 350 L330 380 C330 395, 305 395, 305 380 L305 350 L207 350 L207 380 C207 395, 182 395, 182 380 L182 350 C162 350, 140 340, 140 320 Z" fill="#F8FAFC" stroke="#0F172A" stroke-width="6"/>
+  
+  <!-- Windshield -->
+  <rect x="164" y="140" width="184" height="75" rx="12" fill="#0F172A"/>
+  
+  <!-- Signboard / Destination Plate -->
+  <rect x="180" y="235" width="152" height="36" rx="6" fill="#D97706"/>
+  <text x="256" y="259" font-family="Arial, sans-serif" font-size="16" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">PARA PO!</text>
+  
+  <!-- Headlights -->
+  <circle cx="178" cy="305" r="16" fill="#F59E0B"/>
+  <circle cx="334" cy="305" r="16" fill="#F59E0B"/>
+  <rect x="214" y="295" width="84" height="20" rx="4" fill="#64748B"/>
+
+  <!-- Brand Wordmark below vehicle -->
+  <text x="256" y="445" font-family="Impact, Arial Black, sans-serif" font-size="44" font-weight="900" fill="#D97706" text-anchor="middle" letter-spacing="4">PARA PO!</text>
+</svg>

@@ -93,5 +93,6 @@ export function useRoutes() {
     remove,
     clearCurrent,
     setError,
+    setCurrentRoute,
   };
 }

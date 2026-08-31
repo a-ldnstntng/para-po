@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, X } from 'lucide-react';
+import { AlertTriangle, X, WifiOff } from 'lucide-react';
 import Board from './components/Board';
 import RouteInput from './components/RouteInput';
 import Ticket from './components/Ticket';
 import ArchiveList from './components/ArchiveList';
+import InstallPrompt from './components/InstallPrompt';
 import { useRoutes } from './hooks/useRoutes';
+import { useOfflineStatus } from './hooks/useOfflineStatus';
 
 function App() {
   const {
@@ -19,14 +21,17 @@ function App() {
     remove,
     clearCurrent,
     setError,
+    setCurrentRoute,
   } = useRoutes();
 
+  const { isOffline, saveLastRouteOffline, getLastRouteOffline } = useOfflineStatus();
   const [isInputCollapsed, setIsInputCollapsed] = useState(false);
   const ticketRef = useRef<HTMLDivElement>(null);
 
-  // When a route is successfully extracted, collapse the input to focus on the result
+  // Auto-persist last extracted route to local storage for offline use
   useEffect(() => {
     if (currentRoute) {
+      saveLastRouteOffline(currentRoute);
       setIsInputCollapsed(true);
       if (ticketRef.current) {
         ticketRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -35,6 +40,17 @@ function App() {
       setIsInputCollapsed(false);
     }
   }, [currentRoute]);
+
+  // If user opens the app offline without an active route, restore the last trip automatically
+  useEffect(() => {
+    if (isOffline && !currentRoute) {
+      const cached = getLastRouteOffline();
+      if (cached) {
+        setCurrentRoute(cached);
+        setIsInputCollapsed(true);
+      }
+    }
+  }, [isOffline]);
 
   const handleClearRoute = () => {
     clearCurrent();
@@ -47,7 +63,24 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-start py-8 px-4 sm:px-6 bg-[#F8FAFC] text-slate-900 selection:bg-slate-200">
+    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-[env(safe-area-inset-top,1rem)] pb-[env(safe-area-inset-bottom,2rem)] px-4 sm:px-6 bg-[#F8FAFC] text-slate-900 selection:bg-slate-200">
+      {/* PWA Install Banner */}
+      <div className="w-full max-w-xl mx-auto pt-2 pb-1">
+        <InstallPrompt />
+      </div>
+
+      {/* Offline Status Notice */}
+      {isOffline && (
+        <div className="w-full max-w-xl mx-auto my-2">
+          <div className="bg-slate-900 text-amber-400 text-xs font-utility px-3.5 py-2 rounded-xl flex items-center gap-2 border border-slate-700 shadow-sm">
+            <WifiOff className="w-3.5 h-3.5 flex-shrink-0 text-amber-500" />
+            <span className="leading-snug font-medium text-slate-200">
+              Offline ka ngayon — ipinapakita ang huling na-save na commute pass.
+            </span>
+          </div>
+        </div>
+      )}
+
       <main className="w-full max-w-xl mx-auto flex flex-col items-center space-y-6">
         {/* Minimal Wordmark Header */}
         <Board onSelectRouteTag={handleSelectRouteTag} />
