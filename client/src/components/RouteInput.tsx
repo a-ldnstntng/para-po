@@ -41,13 +41,13 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
       <div className="transit-panel p-5 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
           {/* Header row */}
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-            <label htmlFor="route-input" className="font-display text-lg sm:text-xl font-bold text-amber-400 tracking-wide uppercase flex items-center gap-2">
-              <span className="bg-rose-600 text-white px-2 py-0.5 text-xs font-mono font-bold rounded">ROUTE INPUT</span>
-              <span>I-describe ang iyong commute:</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-2.5 gap-2">
+            <label htmlFor="route-input" className="font-plate text-lg sm:text-xl font-bold text-emerald-400 tracking-wide uppercase flex items-center gap-2">
+              <span className="bg-emerald-700 text-white px-2 py-0.5 text-xs font-mono font-bold rounded">COMMUTE INPUT</span>
+              <span>I-describe ang iyong byahe:</span>
             </label>
-            <span className="text-xs font-mono text-slate-400 hidden sm:inline">
-              Tip: Press <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-amber-400 font-mono">Ctrl+Enter</kbd>
+            <span className="text-xs font-mono text-slate-400">
+              Tip: Press <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-emerald-400 font-mono">Ctrl+Enter</kbd>
             </span>
           </div>
 
