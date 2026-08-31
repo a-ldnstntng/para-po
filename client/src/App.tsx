@@ -20,7 +20,7 @@ function App() {
   } = useRoutes();
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-start pb-16 bg-[#0A0A0A] text-[#FFFFFF]">
+    <div className="min-h-screen w-full flex flex-col items-center justify-start pb-16 bg-[#0B0F19] text-slate-100">
       <main className="w-full max-w-3xl md:max-w-4xl px-3 sm:px-6 flex flex-col items-center">
         {/* Header Board */}
         <Board />
@@ -31,13 +31,13 @@ function App() {
         {/* Error Banner */}
         {error && (
           <div className="w-full pb-4">
-            <div className="bg-[#FF0000] border-3 border-[#000000] shadow-[4px_4px_0px_#FFFFFF] p-3 sm:p-4 flex items-center justify-between">
-              <p className="text-white font-mono font-bold text-xs sm:text-sm">⚠️ {error}</p>
+            <div className="bg-rose-950/80 border border-rose-800 rounded-xl p-3.5 sm:p-4 flex items-center justify-between shadow-lg">
+              <p className="text-rose-200 font-medium text-xs sm:text-sm">⚠️ {error}</p>
               <button
                 onClick={() => setError(null)}
-                className="bg-[#000000] text-white px-2 py-1 font-mono text-xs font-bold border border-white hover:bg-white hover:text-black transition-none ml-2"
+                className="text-rose-300 hover:text-white text-sm font-semibold ml-2 px-2 py-1"
               >
-                ✕ ISARA
+                ✕
               </button>
             </div>
           </div>
@@ -54,8 +54,8 @@ function App() {
           </div>
         )}
 
-        {/* Solid Color Separator */}
-        <div className="w-full my-4 border-t-4 border-[#333333]" />
+        {/* Divider */}
+        <div className="w-full my-4 border-t border-slate-800" />
 
         {/* Terminal Dispatch Archive */}
         <div className="w-full pt-2">

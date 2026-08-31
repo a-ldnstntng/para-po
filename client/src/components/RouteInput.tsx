@@ -8,10 +8,10 @@ interface RouteInputProps {
 }
 
 const SAMPLE_PROMPTS = [
-  { label: 'CUBAO ➔ ANTIPOLO', prompt: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons Antipolo.' },
-  { label: 'SM NORTH ➔ BACLARAN', prompt: 'From SM North EDSA, take MRT-3 to Taft Avenue, then jeep to Baclaran Redemptorist.' },
-  { label: 'SHAW ➔ KAPITOLYO', prompt: 'Mula Shaw MRT Station, mag-trike papuntang Kapitolyo Pasig tapos lakad sa Commons.' },
-  { label: 'SJDM ➔ PUP STA. MESA', prompt: 'Galing SJDM Bulacan, sakay ng bus pa-Cubao, tapos LRT-2 to Pureza, then trike to PUP Sta Mesa.' },
+  { label: '🚌 Cubao ➔ Antipolo', prompt: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons Antipolo.' },
+  { label: '🚈 SM North ➔ Baclaran', prompt: 'From SM North EDSA, take MRT-3 to Taft Avenue, then jeep to Baclaran Redemptorist.' },
+  { label: '🛺 Shaw ➔ Kapitolyo', prompt: 'Mula Shaw MRT Station, mag-trike papuntang Kapitolyo Pasig tapos lakad sa Commons.' },
+  { label: '🚐 SJDM ➔ PUP Sta. Mesa', prompt: 'Galing SJDM Bulacan, sakay ng bus pa-Cubao, tapos LRT-2 to Pureza, then trike to PUP Sta Mesa.' },
 ];
 
 export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInputProps) {
@@ -38,16 +38,16 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
 
   return (
     <section className="w-full pb-4">
-      <div className="bg-[#111111] border-4 border-[#FFFFFF] shadow-[6px_6px_0px_#FF0000] p-4 sm:p-6">
+      <div className="transit-panel p-5 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
           {/* Header row */}
-          <div className="flex items-center justify-between border-b-2 border-[#333333] pb-2">
-            <label htmlFor="route-input" className="font-display text-xl sm:text-2xl font-black text-[#FFD700] tracking-wider uppercase flex items-center gap-2">
-              <span className="bg-[#FF0000] text-white px-2 py-0.5 text-sm font-mono font-bold">ROUTE INPUT</span>
-              <span>ISULAT O SABIHIN ANG BYAHE:</span>
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <label htmlFor="route-input" className="font-display text-lg sm:text-xl font-bold text-amber-400 tracking-wide uppercase flex items-center gap-2">
+              <span className="bg-rose-600 text-white px-2 py-0.5 text-xs font-mono font-bold rounded">ROUTE INPUT</span>
+              <span>I-describe ang iyong commute:</span>
             </label>
-            <span className="text-xs font-mono text-[#CCCCCC] hidden sm:inline">
-              [CTRL+ENTER TO SUBMIT]
+            <span className="text-xs font-mono text-slate-400 hidden sm:inline">
+              Tip: Press <kbd className="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-amber-400 font-mono">Ctrl+Enter</kbd>
             </span>
           </div>
 
@@ -61,13 +61,13 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
               placeholder="Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons. Tapos lakad papuntang SM.'"
               rows={4}
               disabled={isExtracting}
-              className="w-full bg-[#000000] border-3 border-[#FFD700] p-3 sm:p-4 pr-16
-                text-[#FFFFFF] font-mono text-sm sm:text-base placeholder:text-[#666666]
-                focus:outline-none focus:border-[#FFFFFF] focus:bg-[#050505]
-                disabled:opacity-50 resize-none transition-none"
+              className="w-full bg-slate-950/80 border border-slate-700 rounded-xl p-4 pr-16
+                text-slate-100 font-body text-sm sm:text-base placeholder:text-slate-500
+                focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30
+                disabled:opacity-50 resize-none transition-all shadow-inner"
             />
-            {/* Square Voice Button */}
-            <div className="absolute bottom-3 right-3">
+            {/* Voice Button */}
+            <div className="absolute bottom-3.5 right-3.5">
               <VoiceButton
                 onTranscript={(transcript) => setText((prev) => (prev ? prev + ' ' + transcript : transcript))}
                 disabled={isExtracting}
@@ -75,10 +75,10 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
             </div>
           </div>
 
-          {/* Sample Route Chips */}
+          {/* Sample Route Pills */}
           <div className="pt-1">
-            <div className="text-xs font-mono font-bold text-[#FFD700] uppercase mb-2">
-              MGA SAMPLE NA RUTA:
+            <div className="text-xs font-medium text-slate-400 mb-2">
+              Subukan ang mga sample na ruta:
             </div>
             <div className="flex flex-wrap gap-2">
               {SAMPLE_PROMPTS.map((sample, idx) => (
@@ -87,7 +87,7 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
                   type="button"
                   onClick={() => setText(sample.prompt)}
                   disabled={isExtracting}
-                  className="sign-chip"
+                  className="sample-pill"
                 >
                   {sample.label}
                 </button>
@@ -96,21 +96,21 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 pt-2 border-t-2 border-[#333333]">
+          <div className="flex items-center gap-3 pt-2 border-t border-slate-800">
             <button
               type="submit"
               disabled={!text.trim() || isExtracting}
-              className="brutalist-btn brutalist-btn-red text-lg sm:text-xl py-2 px-6"
+              className="btn-jeep-primary"
             >
               {isExtracting ? (
                 <>
-                  <span className="loading-square" />
-                  <span>INE-EXTRACT ANG RUTA...</span>
+                  <span className="spinner-ring" />
+                  <span>Ine-extract ang ruta...</span>
                 </>
               ) : (
                 <>
-                  <span>EXTRACT ROUTE</span>
-                  <span>➔</span>
+                  <span>🚐</span>
+                  <span>Extract Route</span>
                 </>
               )}
             </button>
@@ -119,9 +119,9 @@ export default function RouteInput({ onSubmit, onClear, isExtracting }: RouteInp
               <button
                 type="button"
                 onClick={handleClear}
-                className="brutalist-btn brutalist-btn-dark text-base py-2 px-4"
+                className="btn-jeep-secondary"
               >
-                BURAHIN / CLEAR
+                Clear
               </button>
             )}
           </div>

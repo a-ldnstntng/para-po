@@ -11,36 +11,34 @@ export default function Board({ onSelectRouteTag }: BoardProps) {
     <header className="py-4 w-full">
       <Signboard variant="blue">
         <div className="text-center">
-          {/* Top Tri-Color Solid Jeepney Bands */}
-          <div className="flex h-3 w-full border-2 border-black mb-3">
-            <div className="w-1/3 bg-[#FFD700]" />
-            <div className="w-1/3 bg-[#FF0000]" />
-            <div className="w-1/3 bg-[#FFFFFF]" />
+          {/* Top Tri-Color Manila Accent Ribbon */}
+          <div className="flex h-1.5 w-full rounded-full overflow-hidden mb-3 opacity-90">
+            <div className="w-1/3 bg-amber-400" />
+            <div className="w-1/3 bg-rose-500" />
+            <div className="w-1/3 bg-blue-300" />
           </div>
 
-          {/* Main Destination Logo */}
-          <h1 className="font-display font-black text-6xl sm:text-7xl md:text-8xl tracking-wider text-[#FFD700] text-stroke-black-lg leading-none py-1 select-none">
+          {/* Main Title */}
+          <h1 className="signboard-title text-5xl sm:text-6xl md:text-7xl font-black tracking-wider leading-none py-1 select-none">
             PARA PO!
           </h1>
           
-          {/* Subtitle Banner */}
-          <div className="inline-block bg-[#000000] border-2 border-[#FFD700] px-4 py-1 mt-2">
-            <p className="font-mono text-xs sm:text-sm tracking-widest uppercase font-bold text-[#FFFFFF]">
-              PHILIPPINE TRANSIT ROUTE EXTRACTOR
-            </p>
-          </div>
+          {/* Subtitle */}
+          <p className="mt-1 text-blue-100 font-body text-xs sm:text-sm tracking-widest uppercase font-semibold opacity-90">
+            🚍 Philippine Transit Route Extractor
+          </p>
 
-          {/* Solid divider */}
-          <div className="border-t-4 border-black my-4" />
+          {/* Divider */}
+          <div className="border-t border-blue-400/30 my-3.5" />
 
-          {/* Hand-painted destination tags */}
+          {/* Quick Route Tag Pills */}
           <div className="flex justify-center gap-1.5 sm:gap-2 flex-wrap">
             {ROUTE_TAGS.map((label) => (
               <button
                 key={label}
                 onClick={() => onSelectRouteTag?.(label)}
                 type="button"
-                className="font-display text-sm sm:text-base font-black px-2.5 py-0.5 bg-[#FFD700] text-[#000000] border-2 border-[#000000] hover:bg-[#FFFFFF] hover:text-[#000000] transition-none cursor-pointer"
+                className="font-display text-xs sm:text-sm font-bold px-3 py-1 rounded-lg bg-blue-900/60 hover:bg-amber-400 hover:text-slate-900 text-amber-300 border border-blue-400/30 hover:border-amber-400 transition-all cursor-pointer shadow-sm"
                 title={`Filter routes for ${label}`}
               >
                 {label}

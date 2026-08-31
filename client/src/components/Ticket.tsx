@@ -28,17 +28,16 @@ export default function Ticket({
 
   const savedRoute = isSaved ? (route as SavedRoute) : null;
 
-  // Extract all significant landmarks into a "VIA" signboard string
   const viaStops = route.steps
     .map((s) => s.line_label || s.landmark)
     .filter(Boolean)
     .filter((val, idx, arr) => arr.indexOf(val) === idx);
 
   const handleCopy = () => {
-    const formatted = `🚐 PARA PO! COMMUTE ROUTE: ${route.origin.toUpperCase()} ➔ ${route.destination.toUpperCase()}\n` +
-      `VIA: ${viaStops.join(' • ')}\n\n` +
-      route.steps.map((s, i) => `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (Babaan: ${s.landmark})`).join('\n') +
-      `\n\nESTIMATED TOTAL FARE: ₱${totalFare || '—'}`;
+    const formatted = `🚐 PARA PO! Commute Route: ${route.origin} ➔ ${route.destination}\n` +
+      (viaStops.length > 0 ? `Via: ${viaStops.join(' • ')}\n\n` : '\n') +
+      route.steps.map((s, i) => `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (📍 ${s.landmark})`).join('\n') +
+      `\n\nEst. Total Fare: ₱${totalFare || '—'}`;
 
     navigator.clipboard.writeText(formatted);
     setCopied(true);
@@ -46,42 +45,40 @@ export default function Ticket({
   };
 
   return (
-    <div className="bg-[#000000] border-4 border-[#FFD700] shadow-[8px_8px_0px_#FF0000] p-4 sm:p-6 w-full">
-      {/* Top Acrylic Signboard Destination Header */}
-      <div className="bg-[#0000FF] border-4 border-[#FFFFFF] p-4 sm:p-6 text-center shadow-[4px_4px_0px_#000000]">
-        {/* Origin Label */}
-        <div className="inline-block bg-[#000000] text-[#FFFFFF] font-mono text-xs font-bold uppercase tracking-widest px-3 py-0.5 border border-[#FFFFFF] mb-2">
-          MULA SA: {route.origin.toUpperCase()}
+    <div className="transit-panel p-5 sm:p-6 w-full border-2 border-amber-500/30">
+      {/* Top Acrylic Destination Signboard */}
+      <div className="bg-gradient-to-br from-blue-900 via-blue-950 to-slate-950 border-2 border-blue-400/40 rounded-xl p-5 text-center shadow-lg">
+        {/* Origin Tag */}
+        <div className="inline-block bg-slate-900/90 text-slate-300 font-mono text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-700 mb-2">
+          Galing sa: {route.origin}
         </div>
 
-        {/* MASSIVE FINAL DESTINATION */}
-        <h2 className="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-wider text-[#FFD700] text-stroke-black-lg leading-none uppercase select-all">
+        {/* Scaled Destination Title */}
+        <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl tracking-wide text-amber-400 leading-tight uppercase select-all">
           {route.destination}
         </h2>
 
-        {/* VIA Route Sub-strip */}
+        {/* VIA Sub-strip */}
         {viaStops.length > 0 && (
-          <div className="mt-3 bg-[#FFD700] text-[#000000] border-2 border-[#000000] py-1 px-3">
-            <span className="font-display text-sm sm:text-base font-black tracking-wider uppercase">
-              VIA: {viaStops.join(' • ').toUpperCase()}
-            </span>
+          <div className="mt-2.5 inline-block bg-amber-400/10 text-amber-300 border border-amber-400/30 rounded-lg py-1 px-3 text-xs sm:text-sm font-semibold">
+            VIA: {viaStops.join(' • ')}
           </div>
         )}
       </div>
 
-      {/* Manifest Timestamp / Route ID */}
-      <div className="flex items-center justify-between py-3 border-b-2 border-[#333333] text-xs font-mono text-[#CCCCCC]">
-        <span>TOTAL TRANSIT STOPS: {route.steps.length}</span>
+      {/* Manifest Timestamp / Details */}
+      <div className="flex items-center justify-between py-3 border-b border-slate-800 text-xs font-mono text-slate-400">
+        <span>{route.steps.length} TRANSIT STEP{route.steps.length !== 1 ? 'S' : ''}</span>
         {savedRoute ? (
           <span>
-            SAVED: {new Date(savedRoute.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+            Nai-save: {new Date(savedRoute.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
           </span>
         ) : (
-          <span className="bg-[#FF0000] text-white px-2 py-0.5 font-bold">UNSAVED ROUTE</span>
+          <span className="bg-rose-950 text-rose-300 px-2 py-0.5 rounded border border-rose-800">Bagong Extract</span>
         )}
       </div>
 
-      {/* Step Manifest List */}
+      {/* Steps List */}
       <div className="my-4 space-y-2">
         {route.steps.map((step, i) => (
           <StepCard
@@ -93,23 +90,23 @@ export default function Ticket({
         ))}
       </div>
 
-      {/* Bottom Summary Bar: Total Fare & Brutalist Buttons */}
-      <div className="bg-[#111111] border-3 border-[#FFFFFF] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Bottom Summary Bar: Total Fare & Modern Action Buttons */}
+      <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="font-mono text-xs font-bold text-[#CCCCCC] uppercase tracking-wider">
-            KABUUANG PAMASAHE (ESTIMATE)
+          <div className="font-mono text-xs font-medium text-slate-400 uppercase tracking-wider">
+            Kabuuang Pamasahe (Est.)
           </div>
           <div className="flex items-baseline gap-2 mt-0.5">
-            <span className="font-mono font-black text-3xl sm:text-4xl text-[#00E676]">
+            <span className="font-mono font-black text-2xl sm:text-3xl text-emerald-400">
               ₱{totalFare || '0'}
             </span>
-            <span className="text-xs font-mono text-[#AAAAAA]">
+            <span className="text-xs font-mono text-slate-400">
               ({route.steps.length} sakay/lakad)
             </span>
           </div>
           {savedRoute && savedRoute.confirms > 0 && (
-            <div className="text-xs font-mono text-[#FFD700] font-bold mt-1">
-              ★ {savedRoute.confirms} COMMUTER CONFIRMATION{savedRoute.confirms !== 1 ? 'S' : ''}
+            <div className="text-xs font-mono text-amber-400 font-semibold mt-0.5">
+              ★ {savedRoute.confirms} commuter confirmation{savedRoute.confirms !== 1 ? 's' : ''}
             </div>
           )}
         </div>
@@ -119,33 +116,38 @@ export default function Ticket({
           <button
             onClick={handleCopy}
             type="button"
-            className="brutalist-btn brutalist-btn-white text-sm py-1.5 px-3"
+            className="btn-jeep-secondary text-xs flex items-center gap-1.5"
             title="Kopyahin ang buong ruta"
           >
-            <span>{copied ? '✓ KOPYADO NA' : '📋 KOPYAHIN'}</span>
+            <span>{copied ? '✓' : '📋'}</span>
+            <span>{copied ? 'Kopyado Na!' : 'Kopyahin'}</span>
           </button>
 
           {onConfirm && (
-            <button onClick={onConfirm} type="button" className="brutalist-btn brutalist-btn-green text-sm py-1.5 px-3">
-              ★ TAMA 'TO!
+            <button onClick={onConfirm} type="button" className="btn-jeep-confirm text-xs">
+              ★ Tama 'to!
             </button>
           )}
 
           {onSave && (
-            <button onClick={onSave} type="button" className="brutalist-btn brutalist-btn-yellow text-sm py-1.5 px-4">
-              💾 I-SAVE
+            <button onClick={onSave} type="button" className="btn-jeep-primary !text-xs !py-2 !px-4">
+              💾 I-Save
             </button>
           )}
 
           {onClear && (
-            <button onClick={onClear} type="button" className="brutalist-btn brutalist-btn-dark text-sm py-1.5 px-3">
-              ✕ ISARA
+            <button onClick={onClear} type="button" className="btn-jeep-secondary text-xs">
+              ✕ Isara
             </button>
           )}
 
           {onDelete && (
-            <button onClick={onDelete} type="button" className="brutalist-btn brutalist-btn-red text-sm py-1.5 px-3">
-              🗑 BURAHIN
+            <button
+              onClick={onDelete}
+              type="button"
+              className="px-3 py-1.5 rounded-lg border border-rose-800/80 bg-rose-950/60 text-rose-300 hover:bg-rose-900 text-xs font-semibold transition-all"
+            >
+              🗑 Burahin
             </button>
           )}
         </div>

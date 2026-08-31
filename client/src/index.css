@@ -1,35 +1,38 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Bebas+Neue&display=swap');
 
 @import "tailwindcss";
 
 /* Tailwind v4 theme customization */
 @theme {
-  --color-sign-yellow: #FFD700;
-  --color-sign-red: #FF0000;
-  --color-sign-blue: #0000FF;
-  --color-sign-green: #00E676;
-  --color-sign-black: #111111;
-  --color-sign-white: #FFFFFF;
-  --color-sign-gray: #CCCCCC;
-  --color-sign-darkgray: #222222;
+  --color-jeep-yellow: #F59E0B;
+  --color-jeep-yellow-light: #FDE68A;
+  --color-jeep-red: #E11D48;
+  --color-jeep-red-dark: #BE123C;
+  --color-jeep-blue: #1D4ED8;
+  --color-jeep-blue-dark: #1E40AF;
+  --color-jeep-green: #10B981;
+  --color-jeep-dark: #0B0F19;
+  --color-jeep-card: #131B2E;
+  --color-jeep-card-light: #1E293B;
+  --color-jeep-border: #334155;
 
   --font-family-display: 'Bebas Neue', 'Oswald', Impact, sans-serif;
+  --font-family-body: 'Inter', system-ui, sans-serif;
   --font-family-mono: 'JetBrains Mono', monospace;
 }
 
-/* Base reset - strict brutalist rules: zero border-radius anywhere */
-*, *::before, *::after {
+/* Base styles */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  border-radius: 0px !important;
 }
 
 body {
-  font-family: var(--font-family-mono);
-  background-color: #0A0A0A;
-  color: #FFFFFF;
+  font-family: var(--font-family-body);
+  background-color: #0B0F19;
+  color: #F8FAFC;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -41,217 +44,147 @@ body {
   flex-direction: column;
 }
 
-/* Text-Stroke Utilities for Authentic Hand-Painted Signboard Look */
-.text-stroke-black-sm {
-  -webkit-text-stroke: 1.5px #000000;
-  paint-order: stroke fill;
-}
-
-.text-stroke-black-md {
-  -webkit-text-stroke: 2.5px #000000;
-  paint-order: stroke fill;
-}
-
-.text-stroke-black-lg {
-  -webkit-text-stroke: 3.5px #000000;
-  paint-order: stroke fill;
-}
-
-.text-stroke-white-md {
-  -webkit-text-stroke: 2px #FFFFFF;
-  paint-order: stroke fill;
-}
-
-.text-stroke-yellow-md {
-  -webkit-text-stroke: 2px #FFD700;
-  paint-order: stroke fill;
-}
-
-/* Brutalist Signboard Cards & Containers */
-.brutalist-card {
-  background-color: #111111;
-  border: 4px solid #FFFFFF;
-  box-shadow: 6px 6px 0px #FF0000;
+/* Signboard Hero Frame */
+.signboard-card {
+  background: linear-gradient(135deg, #1E40AF 0%, #172554 100%);
+  border: 2px solid #60A5FA;
+  border-radius: 1rem;
   padding: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(29, 78, 216, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
   position: relative;
 }
 
-.brutalist-card-yellow {
-  background-color: #FFD700;
-  border: 4px solid #000000;
-  box-shadow: 6px 6px 0px #0000FF;
-  color: #000000;
-}
-
-.brutalist-card-blue {
-  background-color: #0000FF;
-  border: 4px solid #FFFFFF;
-  box-shadow: 6px 6px 0px #FFD700;
-  color: #FFFFFF;
-}
-
-.brutalist-card-white {
-  background-color: #FFFFFF;
-  border: 4px solid #000000;
-  box-shadow: 6px 6px 0px #000000;
-  color: #000000;
-}
-
-/* Brutalist Action Buttons */
-.brutalist-btn {
+/* Signboard Display Typography */
+.signboard-title {
   font-family: var(--font-family-display);
-  font-size: 1.25rem;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: #FBBF24;
+  text-shadow: 0 2px 8px rgba(245, 158, 11, 0.4), 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Modern Transit Card */
+.transit-panel {
+  background-color: #131B2E;
+  border: 1px solid #1E293B;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Modern Action Buttons */
+.btn-jeep-primary {
+  background-color: #E11D48;
+  color: #FFFFFF;
+  font-family: var(--font-family-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
   font-weight: 700;
-  padding: 0.6rem 1.5rem;
-  border: 3px solid #000000;
-  cursor: pointer;
+  padding: 0.65rem 1.75rem;
+  border-radius: 0.75rem;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
-  transition: transform 0.05s ease, box-shadow 0.05s ease;
-}
-
-.brutalist-btn:active {
-  transform: translate(3px, 3px) !important;
-  box-shadow: 0px 0px 0px transparent !important;
-}
-
-.brutalist-btn-red {
-  background-color: #FF0000;
-  color: #FFFFFF;
-  border-color: #000000;
-  box-shadow: 4px 4px 0px #000000;
-}
-
-.brutalist-btn-red:hover {
-  background-color: #E60000;
-  box-shadow: 6px 6px 0px #000000;
-  transform: translate(-1px, -1px);
-}
-
-.brutalist-btn-yellow {
-  background-color: #FFD700;
-  color: #000000;
-  border-color: #000000;
-  box-shadow: 4px 4px 0px #000000;
-}
-
-.brutalist-btn-yellow:hover {
-  background-color: #FFE600;
-  box-shadow: 6px 6px 0px #000000;
-  transform: translate(-1px, -1px);
-}
-
-.brutalist-btn-blue {
-  background-color: #0000FF;
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-  box-shadow: 4px 4px 0px #FFD700;
-}
-
-.brutalist-btn-green {
-  background-color: #00E676;
-  color: #000000;
-  border-color: #000000;
-  box-shadow: 4px 4px 0px #000000;
-}
-
-.brutalist-btn-dark {
-  background-color: #111111;
-  color: #FFFFFF;
-  border-color: #FFFFFF;
-  box-shadow: 4px 4px 0px #FFFFFF;
-}
-
-.brutalist-btn-white {
-  background-color: #FFFFFF;
-  color: #000000;
-  border-color: #000000;
-  box-shadow: 4px 4px 0px #000000;
-}
-
-.brutalist-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* Mode Badges - Flat, high contrast cut signs */
-.sign-mode-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-family: var(--font-family-display);
-  font-size: 0.95rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.15rem 0.6rem;
-  border: 2px solid #000000;
-}
-
-.sign-mode-jeep { background-color: #FFD700; color: #000000; }
-.sign-mode-bus { background-color: #00E676; color: #000000; }
-.sign-mode-tricycle { background-color: #FF9100; color: #000000; }
-.sign-mode-mrt, .sign-mode-lrt { background-color: #0000FF; color: #FFFFFF; border-color: #FFFFFF; }
-.sign-mode-pnr { background-color: #9C27B0; color: #FFFFFF; border-color: #FFFFFF; }
-.sign-mode-uv_express { background-color: #00B0FF; color: #000000; }
-.sign-mode-walk { background-color: #FFFFFF; color: #000000; }
-.sign-mode-grab { background-color: #00E676; color: #000000; }
-
-/* Fare tag */
-.sign-fare-tag {
-  font-family: var(--font-family-mono);
-  font-weight: 800;
-  font-size: 0.85rem;
-  background-color: #000000;
-  color: #00E676;
-  border: 2px solid #00E676;
-  padding: 0.1rem 0.5rem;
-}
-
-/* Brutalist Chip / Pill for Samples */
-.sign-chip {
-  font-family: var(--font-family-display);
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  background-color: #1A1A1A;
-  color: #FFD700;
-  border: 2px solid #FFD700;
-  padding: 0.25rem 0.75rem;
   cursor: pointer;
-  transition: all 0.05s ease;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.sign-chip:hover {
-  background-color: #FFD700;
-  color: #000000;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px #FF0000;
+.btn-jeep-primary:hover {
+  background-color: #F43F5E;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.45);
 }
 
-.sign-chip:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px transparent;
+.btn-jeep-primary:active {
+  transform: translateY(0);
 }
 
-/* Spinner */
-@keyframes spinSquare {
+.btn-jeep-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-jeep-secondary {
+  background-color: #1E293B;
+  color: #CBD5E1;
+  font-family: var(--font-family-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-jeep-secondary:hover {
+  background-color: #334155;
+  color: #FFFFFF;
+  border-color: #475569;
+}
+
+.btn-jeep-confirm {
+  background-color: #059669;
+  color: #FFFFFF;
+  font-family: var(--font-family-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.btn-jeep-confirm:hover {
+  background-color: #10B981;
+  transform: translateY(-1px);
+}
+
+/* Sample Prompt Pill */
+.sample-pill {
+  background-color: #1E293B;
+  color: #E2E8F0;
+  border: 1px solid #334155;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sample-pill:hover {
+  background-color: #2D3748;
+  border-color: #F59E0B;
+  color: #FBBF24;
+  transform: translateY(-1px);
+}
+
+/* Vehicle Mode Badges */
+.mode-badge-jeep { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+.mode-badge-bus { background: #D1FAE5; color: #065F46; border: 1px solid #6EE7B7; }
+.mode-badge-trike { background: #FFEDD5; color: #9A3412; border: 1px solid #FDBA74; }
+.mode-badge-train { background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD; }
+.mode-badge-walk { background: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; }
+.mode-badge-uv { background: #E0F2FE; color: #075985; border: 1px solid #7DD3FC; }
+
+/* Loading Spinner */
+@keyframes spinRing {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-.loading-square {
+.spinner-ring {
   width: 18px;
   height: 18px;
-  border: 3px solid #000000;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #FFFFFF;
-  animation: spinSquare 0.6s linear infinite;
+  border-radius: 50%;
+  animation: spinRing 0.7s linear infinite;
   display: inline-block;
 }
 
@@ -261,10 +194,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #0B0F19;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FFD700;
-  border: 1px solid #000000;
+  background: #1E293B;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }
