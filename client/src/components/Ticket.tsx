@@ -34,123 +34,212 @@ export default function Ticket({
     .filter((val, idx, arr) => arr.indexOf(val) === idx);
 
   const handleCopy = () => {
-    const formatted = `🚐 PARA PO! Commute Route: ${route.origin} ➔ ${route.destination}\n` +
-      (viaStops.length > 0 ? `Via: ${viaStops.join(' • ')}\n\n` : '\n') +
-      route.steps.map((s, i) => `${i + 1}. [${s.mode.toUpperCase()}] ${s.instruction} (📍 ${s.landmark})`).join('\n') +
-      `\n\nEst. Total Fare: ₱${totalFare || '—'}`;
+    const formatted =
+      `========================================\n` +
+      `       *** PARA PO! TRANSIT PASS ***\n` +
+      `         REPUBLIC OF THE PHILIPPINES\n` +
+      `========================================\n` +
+      `ORIGIN: ${route.origin.toUpperCase()}\n` +
+      `DESTINATION: ${route.destination.toUpperCase()}\n` +
+      (viaStops.length > 0 ? `VIA: ${viaStops.join(' • ').toUpperCase()}\n` : '') +
+      `----------------------------------------\n` +
+      route.steps.map((s, i) => `${String(i + 1).padStart(2, '0')}. [${s.mode.toUpperCase()}] ${s.instruction}\n    Stop: ${s.landmark} | Fare: PHP ${(s.fare_estimate_php || 0).toFixed(2)}`).join('\n') +
+      `\n----------------------------------------\n` +
+      `TOTAL TRANSIT STOPS: ${route.steps.length}\n` +
+      `TOTAL ESTIMATED FARE: PHP ${totalFare.toFixed(2)}\n` +
+      `========================================\n` +
+      `   *** SALAMAT PO! INGAT SA BYAHE! ***\n` +
+      `========================================`;
 
     navigator.clipboard.writeText(formatted);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const receiptDate = savedRoute
+    ? new Date(savedRoute.created_at)
+    : new Date();
+
+  const formattedDate = receiptDate.toLocaleDateString('en-PH', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).toUpperCase();
+
+  const formattedTime = receiptDate.toLocaleTimeString('en-PH', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).toUpperCase();
+
   return (
-    <div className="transit-panel p-5 sm:p-6 w-full border-2 border-amber-500/30">
-      {/* Top Acrylic Destination Signboard */}
-      <div className="bg-gradient-to-br from-blue-900 via-blue-950 to-slate-950 border-2 border-blue-400/40 rounded-xl p-5 text-center shadow-lg">
-        {/* Origin Tag */}
-        <div className="inline-block bg-slate-900/90 text-slate-300 font-mono text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-700 mb-2">
-          Galing sa: {route.origin}
+    <div className="w-full max-w-xl mx-auto my-3">
+      {/* ========================================================
+          THERMAL PAPER TRANSIT RECEIPT
+          ======================================================== */}
+      <div className="receipt-paper">
+        {/* Official Header */}
+        <div className="text-center">
+          <p className="text-[11px] tracking-widest text-slate-500 font-bold uppercase">
+            REPUBLIC OF THE PHILIPPINES
+          </p>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-wider font-plate uppercase my-0.5">
+            *** PARA PO! TRANSIT PASS ***
+          </h2>
+          <p className="text-[10px] text-slate-500 uppercase tracking-widest">
+            METRO MANILA COMMUTER NETWORK • OFFICIAL RECEIPT
+          </p>
         </div>
 
-        {/* Scaled Destination Title */}
-        <h2 className="font-display font-black text-4xl sm:text-5xl md:text-6xl tracking-wide text-amber-400 leading-tight uppercase select-all">
-          {route.destination}
-        </h2>
+        {/* Double Line Divider */}
+        <div className="receipt-divider-double" />
 
-        {/* VIA Sub-strip */}
-        {viaStops.length > 0 && (
-          <div className="mt-2.5 inline-block bg-amber-400/10 text-amber-300 border border-amber-400/30 rounded-lg py-1 px-3 text-xs sm:text-sm font-semibold">
-            VIA: {viaStops.join(' • ')}
+        {/* Receipt Meta Details (Date, OR #, Stamp) */}
+        <div className="flex items-center justify-between text-xs text-slate-600">
+          <div>
+            <div>DATE: {formattedDate} {formattedTime}</div>
+            <div>OR #: MNL-{Math.abs(route.origin.length * 37 + route.destination.length * 19) % 9000 + 1000}</div>
           </div>
-        )}
-      </div>
-
-      {/* Manifest Timestamp / Details */}
-      <div className="flex items-center justify-between py-3 border-b border-slate-800 text-xs font-mono text-slate-400">
-        <span>{route.steps.length} TRANSIT STEP{route.steps.length !== 1 ? 'S' : ''}</span>
-        {savedRoute ? (
-          <span>
-            Nai-save: {new Date(savedRoute.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
-          </span>
-        ) : (
-          <span className="bg-rose-950 text-rose-300 px-2 py-0.5 rounded border border-rose-800">Bagong Extract</span>
-        )}
-      </div>
-
-      {/* Steps List */}
-      <div className="my-4 space-y-2">
-        {route.steps.map((step, i) => (
-          <StepCard
-            key={i}
-            step={step}
-            index={i}
-            isLast={i === route.steps.length - 1}
-          />
-        ))}
-      </div>
-
-      {/* Bottom Summary Bar: Total Fare & Modern Action Buttons */}
-      <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="font-mono text-xs font-medium text-slate-400 uppercase tracking-wider">
-            Kabuuang Pamasahe (Est.)
+          <div className="receipt-stamp">
+            VERIFIED COMMUTE
           </div>
-          <div className="flex items-baseline gap-2 mt-0.5">
-            <span className="font-mono font-black text-2xl sm:text-3xl text-emerald-400">
-              ₱{totalFare || '0'}
-            </span>
-            <span className="text-xs font-mono text-slate-400">
-              ({route.steps.length} sakay/lakad)
-            </span>
+        </div>
+
+        <div className="receipt-divider" />
+
+        {/* Origin & Destination Route Block */}
+        <div className="bg-slate-100 p-3 rounded border border-slate-300">
+          <div className="text-[11px] text-slate-500 uppercase font-semibold">
+            MULA SA (ORIGIN):
           </div>
-          {savedRoute && savedRoute.confirms > 0 && (
-            <div className="text-xs font-mono text-amber-400 font-semibold mt-0.5">
-              ★ {savedRoute.confirms} commuter confirmation{savedRoute.confirms !== 1 ? 's' : ''}
+          <div className="text-sm sm:text-base font-bold text-slate-900 uppercase">
+            {route.origin}
+          </div>
+
+          <div className="text-[11px] text-slate-500 uppercase font-semibold mt-2">
+            PAPUNTA SA (DESTINATION):
+          </div>
+          <div className="text-lg sm:text-xl font-black text-emerald-800 uppercase font-plate tracking-wide">
+            {route.destination}
+          </div>
+
+          {viaStops.length > 0 && (
+            <div className="mt-2 pt-1.5 border-t border-slate-200 text-[11px] text-slate-600 font-medium">
+              <span className="font-bold text-slate-800">VIA:</span> {viaStops.join(' • ')}
             </div>
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-          <button
-            onClick={handleCopy}
-            type="button"
-            className="btn-jeep-secondary text-xs flex items-center gap-1.5"
-            title="Kopyahin ang buong ruta"
-          >
-            <span>{copied ? '✓' : '📋'}</span>
-            <span>{copied ? 'Kopyado Na!' : 'Kopyahin'}</span>
-          </button>
+        {/* Table Header */}
+        <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 uppercase tracking-wider pt-3 pb-1 border-b-2 border-slate-800 mt-2">
+          <span>QTY / TRANSIT STEP</span>
+          <span>EST. FARE</span>
+        </div>
 
-          {onConfirm && (
-            <button onClick={onConfirm} type="button" className="btn-jeep-confirm text-xs">
-              ★ Tama 'to!
-            </button>
-          )}
+        {/* Itemized Transit Step List */}
+        <div className="py-3 space-y-1">
+          {route.steps.map((step, i) => (
+            <StepCard
+              key={i}
+              step={step}
+              index={i}
+              isLast={i === route.steps.length - 1}
+            />
+          ))}
+        </div>
 
-          {onSave && (
-            <button onClick={onSave} type="button" className="btn-jeep-primary !text-xs !py-2 !px-4">
-              💾 I-Save
-            </button>
-          )}
+        <div className="receipt-divider" />
 
-          {onClear && (
-            <button onClick={onClear} type="button" className="btn-jeep-secondary text-xs">
-              ✕ Isara
-            </button>
-          )}
+        {/* Receipt Totals Summary */}
+        <div className="space-y-1 text-xs">
+          <div className="flex justify-between text-slate-600">
+            <span>TOTAL TRANSIT STEPS:</span>
+            <span className="font-bold text-slate-900">{route.steps.length} STOPS</span>
+          </div>
 
-          {onDelete && (
-            <button
-              onClick={onDelete}
-              type="button"
-              className="px-3 py-1.5 rounded-lg border border-rose-800/80 bg-rose-950/60 text-rose-300 hover:bg-rose-900 text-xs font-semibold transition-all"
-            >
-              🗑 Burahin
-            </button>
+          <div className="flex justify-between items-baseline text-sm sm:text-base font-black text-slate-900 pt-1 border-t border-slate-300">
+            <span className="font-plate text-lg">TOTAL ESTIMATED FARE:</span>
+            <span className="text-lg sm:text-xl text-emerald-700">PHP {totalFare.toFixed(2)}</span>
+          </div>
+
+          {savedRoute && savedRoute.confirms > 0 && (
+            <div className="text-[11px] text-amber-700 font-bold pt-1">
+              ★ {savedRoute.confirms} COMMUTER CONFIRMATION{savedRoute.confirms !== 1 ? 'S' : ''}
+            </div>
           )}
         </div>
+
+        {/* Double Line Divider */}
+        <div className="receipt-divider-double mt-3" />
+
+        {/* Barcode & Footer */}
+        <div className="text-center pt-1 pb-2">
+          {/* Simulated Barcode */}
+          <div className="tracking-[0.25em] font-mono text-base font-bold text-slate-800 select-none">
+            || | | ||| |||| | ||| || |||| || | ||| |
+          </div>
+          <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">
+            PASS ID: MNL-2026-COMMUTE-{Math.abs(route.destination.length * 13) % 900 + 100}
+          </p>
+          <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mt-1.5 font-plate">
+            *** SALAMAT PO! INGAT SA BYAHE! ***
+          </p>
+        </div>
+      </div>
+
+      {/* ========================================================
+          RECEIPT ACTION BUTTONS
+          ======================================================== */}
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+        <button
+          onClick={handleCopy}
+          type="button"
+          className="btn-jeep-secondary text-xs sm:text-sm flex items-center gap-1.5 shadow-md"
+          title="Kopyahin ang resibo sa clipboard"
+        >
+          <span>{copied ? '✓' : '📋'}</span>
+          <span>{copied ? 'Kopyado ang Resibo!' : 'Kopyahin ang Resibo'}</span>
+        </button>
+
+        {onConfirm && (
+          <button
+            onClick={onConfirm}
+            type="button"
+            className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold transition-all shadow-md"
+          >
+            ★ Tama 'to!
+          </button>
+        )}
+
+        {onSave && (
+          <button
+            onClick={onSave}
+            type="button"
+            className="btn-jeep-primary !text-xs sm:!text-sm !py-2 !px-4 shadow-md"
+          >
+            💾 I-Save sa Terminal
+          </button>
+        )}
+
+        {onClear && (
+          <button
+            onClick={onClear}
+            type="button"
+            className="btn-jeep-secondary text-xs sm:text-sm"
+          >
+            ✕ Isara
+          </button>
+        )}
+
+        {onDelete && (
+          <button
+            onClick={onDelete}
+            type="button"
+            className="px-3 py-2 rounded-lg border border-rose-800/80 bg-rose-950/60 text-rose-300 hover:bg-rose-900 text-xs sm:text-sm font-semibold transition-all"
+          >
+            🗑 Burahin
+          </button>
+        )}
       </div>
     </div>
   );

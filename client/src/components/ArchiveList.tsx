@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { SavedRoute } from '../lib/api';
 import Ticket from './Ticket';
-import Signboard from './Signboard';
 
 interface ArchiveListProps {
   routes: SavedRoute[];
@@ -42,12 +41,12 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
   if (routes.length === 0) {
     return (
       <div className="text-center py-10 transit-panel p-8">
-        <div className="text-3xl mb-2">📋</div>
-        <div className="font-display font-bold text-xl text-slate-300 uppercase tracking-wide">
-          Wala pang naka-save na ruta sa terminal
+        <div className="text-3xl mb-2">🧾</div>
+        <div className="font-plate font-bold text-xl text-slate-300 uppercase tracking-wide">
+          Wala pang naka-save na resibo sa terminal
         </div>
         <p className="text-slate-500 text-xs sm:text-sm mt-1">
-          I-describe ang iyong byahe sa itaas at i-click ang <span className="text-amber-400 font-semibold">Extract Route</span>!
+          I-describe ang iyong byahe sa itaas at i-click ang <span className="text-emerald-400 font-semibold">Extract Route</span>!
         </p>
       </div>
     );
@@ -56,38 +55,36 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
   return (
     <div className="space-y-4 w-full">
       {/* Terminal Dispatch Header */}
-      <Signboard variant="yellow">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div>
-            <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wide uppercase text-white leading-none">
-              Terminal Dispatch Archive
-            </h2>
-            <p className="text-xs font-mono font-medium text-amber-100 uppercase mt-1">
-              {routes.length} nai-save na ruta sa database
-            </p>
-          </div>
-
-          {/* Search Box */}
-          <div className="w-full sm:w-auto">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="🔍 Mag-search ng ruta o babaan..."
-              className="w-full sm:w-64 bg-slate-900/90 text-slate-100 font-body text-xs rounded-lg border border-amber-300/40 p-2 placeholder:text-slate-500 focus:outline-none focus:border-white transition-all"
-            />
-          </div>
+      <div className="transit-panel p-4 sm:p-5 border-l-4 border-emerald-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="font-plate font-bold text-2xl sm:text-3xl tracking-wide uppercase text-white leading-none">
+            Terminal Dispatch Archive
+          </h2>
+          <p className="text-xs font-mono font-medium text-emerald-400 uppercase mt-1">
+            [{routes.length} nai-save na resibo sa database]
+          </p>
         </div>
-      </Signboard>
+
+        {/* Search Box */}
+        <div className="w-full sm:w-auto">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="🔍 Mag-search ng resibo o babaan..."
+            className="w-full sm:w-64 bg-slate-950 text-slate-100 font-body text-xs rounded-lg border border-slate-700 p-2 placeholder:text-slate-500 focus:outline-none focus:border-emerald-400 transition-all"
+          />
+        </div>
+      </div>
 
       {/* Filter notice */}
       {searchQuery && (
-        <div className="text-xs font-mono text-amber-400 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5">
-          Ipinapakita: {filteredRoutes.length} ng {routes.length} ruta para sa "{searchQuery}"
+        <div className="text-xs font-mono text-emerald-400 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5">
+          Ipinapakita: {filteredRoutes.length} ng {routes.length} resibo para sa "{searchQuery}"
         </div>
       )}
 
-      {/* Route Cards */}
+      {/* Route Cards (Receipt Slips) */}
       <div className="space-y-3">
         {filteredRoutes.map((route) => (
           <div key={route.id}>
@@ -104,17 +101,17 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
             ) : (
               <div
                 onClick={() => setExpandedId(route.id)}
-                className="transit-panel p-4 cursor-pointer hover:border-amber-400/50 hover:bg-slate-800/60 transition-all shadow-md group"
+                className="transit-panel p-4 cursor-pointer hover:border-emerald-500/50 hover:bg-slate-800/60 transition-all shadow-md group border-l-4 border-l-emerald-600"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex-1">
                     {/* Origin ➔ Destination */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-display font-bold text-lg text-slate-200">
+                      <span className="font-plate font-bold text-lg text-slate-200 uppercase">
                         {route.origin}
                       </span>
-                      <span className="font-bold text-amber-500">➔</span>
-                      <span className="font-display font-black text-xl text-amber-400">
+                      <span className="font-bold text-emerald-500">➔</span>
+                      <span className="font-plate font-black text-xl text-emerald-400 uppercase tracking-wide">
                         {route.destination}
                       </span>
                     </div>
@@ -126,8 +123,8 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
 
                     {/* Metadata strip */}
                     <div className="flex items-center gap-3 text-xs font-mono text-slate-500 mt-2">
-                      <span className="bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800 text-[11px] font-semibold">
-                        {route.steps.length} sakay/lakad
+                      <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700 text-[11px] font-semibold">
+                        🧾 {route.steps.length} stops
                       </span>
                       {route.confirms > 0 && (
                         <span className="text-emerald-400 font-semibold">
@@ -142,8 +139,8 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
                   </div>
 
                   {/* Expand badge */}
-                  <div className="flex items-center gap-1.5 flex-shrink-0 text-amber-400 text-xs font-semibold group-hover:translate-x-0.5 transition-transform">
-                    <span>Tingnan ang Byahe</span>
+                  <div className="flex items-center gap-1.5 flex-shrink-0 text-emerald-400 text-xs font-semibold group-hover:translate-x-0.5 transition-transform">
+                    <span>Buksan ang Resibo</span>
                     <span>➔</span>
                   </div>
                 </div>

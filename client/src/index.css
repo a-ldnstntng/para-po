@@ -1,25 +1,19 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Bebas+Neue&display=swap');
 
 @import "tailwindcss";
 
 /* Tailwind v4 theme customization */
 @theme {
-  --color-jeep-yellow: #F59E0B;
-  --color-jeep-yellow-light: #FDE68A;
-  --color-jeep-red: #E11D48;
-  --color-jeep-red-dark: #BE123C;
-  --color-jeep-blue: #1D4ED8;
-  --color-jeep-blue-dark: #1E40AF;
-  --color-jeep-green: #10B981;
-  --color-jeep-dark: #0B0F19;
-  --color-jeep-card: #131B2E;
-  --color-jeep-card-light: #1E293B;
-  --color-jeep-border: #334155;
+  --color-plate-yellow: #FFD700;
+  --color-plate-green: #008751;
+  --color-plate-dark: #1E293B;
+  --color-receipt-paper: #FAF8F5;
+  --color-receipt-text: #1E293B;
 
-  --font-family-display: 'Bebas Neue', 'Oswald', Impact, sans-serif;
+  --font-family-plate: 'Bebas Neue', 'Oswald', Impact, sans-serif;
+  --font-family-mono: 'JetBrains Mono', Courier, monospace;
   --font-family-body: 'Inter', system-ui, sans-serif;
-  --font-family-mono: 'JetBrains Mono', monospace;
 }
 
 /* Base styles */
@@ -44,25 +38,157 @@ body {
   flex-direction: column;
 }
 
-/* Signboard Hero Frame */
-.signboard-card {
-  background: linear-gradient(135deg, #1E40AF 0%, #172554 100%);
-  border: 2px solid #60A5FA;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 10px 25px -5px rgba(29, 78, 216, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+/* =========================================================
+   PHILIPPINE LICENSE PLATE STYLES
+   ========================================================= */
+.license-plate {
+  background: #FFFFFF;
+  border: 5px solid #008751;
+  border-radius: 12px;
   position: relative;
+  box-shadow:
+    0 0 0 2px #0B0F19,
+    0 12px 28px -6px rgba(0, 0, 0, 0.7),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* Signboard Display Typography */
-.signboard-title {
-  font-family: var(--font-family-display);
+/* License plate bolt screw holes */
+.plate-bolt {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #E2E8F0 0%, #64748B 50%, #1E293B 100%);
+  border: 1px solid #475569;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.plate-bolt-tl { top: 12px; left: 14px; }
+.plate-bolt-tr { top: 12px; right: 14px; }
+.plate-bolt-bl { bottom: 12px; left: 14px; }
+.plate-bolt-br { bottom: 12px; right: 14px; }
+
+/* Embossed License Plate Lettering */
+.plate-text-stamped {
+  font-family: var(--font-family-plate);
+  letter-spacing: 0.14em;
+  color: #008751;
+  text-shadow:
+    1px 1px 0px #004D25,
+    2px 2px 0px rgba(0, 0, 0, 0.2),
+    0 0 1px rgba(0, 0, 0, 0.5);
+  line-height: 0.9;
+}
+
+/* LTO Registration Seal Sticker */
+.plate-decal {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #FFD700;
+  color: #000000;
+  border: 1.5px solid #000000;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+/* =========================================================
+   THERMAL TRANSIT POS RECEIPT STYLES
+   ========================================================= */
+.receipt-paper {
+  background-color: #FAF8F5;
+  color: #0F172A;
+  font-family: var(--font-family-mono);
+  position: relative;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  padding: 2rem 1.75rem;
+}
+
+/* Jagged Zigzag Tear-off Edges */
+.receipt-paper::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 6px,
+    #FAF8F5 6px,
+    #FAF8F5 12px
+  ),
+  repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 6px,
+    #FAF8F5 6px,
+    #FAF8F5 12px
+  );
+  background-size: 12px 8px;
+  background-repeat: repeat-x;
+}
+
+.receipt-paper::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    45deg,
+    #FAF8F5,
+    #FAF8F5 6px,
+    transparent 6px,
+    transparent 12px
+  ),
+  repeating-linear-gradient(
+    -45deg,
+    #FAF8F5,
+    #FAF8F5 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  background-size: 12px 8px;
+  background-repeat: repeat-x;
+}
+
+/* Receipt divider */
+.receipt-divider {
+  border-top: 1.5px dashed #94A3B8;
+  margin: 0.75rem 0;
+}
+
+.receipt-divider-double {
+  border-top: 2px solid #334155;
+  border-bottom: 2px solid #334155;
+  height: 5px;
+  margin: 0.75rem 0;
+}
+
+/* Receipt Red Stamp Watermark */
+.receipt-stamp {
+  border: 2px dashed #DC2626;
+  color: #DC2626;
+  padding: 2px 8px;
+  font-family: var(--font-family-plate);
+  font-size: 0.85rem;
   letter-spacing: 0.08em;
-  color: #FBBF24;
-  text-shadow: 0 2px 8px rgba(245, 158, 11, 0.4), 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-weight: 800;
+  display: inline-block;
+  transform: rotate(-4deg);
+  opacity: 0.9;
 }
 
-/* Modern Transit Card */
+/* Modern Card / Panel Utilities */
 .transit-panel {
   background-color: #131B2E;
   border: 1px solid #1E293B;
@@ -70,13 +196,13 @@ body {
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
-/* Modern Action Buttons */
+/* Buttons */
 .btn-jeep-primary {
-  background-color: #E11D48;
+  background-color: #008751;
   color: #FFFFFF;
-  font-family: var(--font-family-display);
-  font-size: 1.15rem;
-  letter-spacing: 0.05em;
+  font-family: var(--font-family-plate);
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
   font-weight: 700;
   padding: 0.65rem 1.75rem;
   border-radius: 0.75rem;
@@ -85,14 +211,14 @@ body {
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 135, 81, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-jeep-primary:hover {
-  background-color: #F43F5E;
+  background-color: #00A362;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 135, 81, 0.45);
 }
 
 .btn-jeep-primary:active {
@@ -125,25 +251,6 @@ body {
   border-color: #475569;
 }
 
-.btn-jeep-confirm {
-  background-color: #059669;
-  color: #FFFFFF;
-  font-family: var(--font-family-body);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
-}
-
-.btn-jeep-confirm:hover {
-  background-color: #10B981;
-  transform: translateY(-1px);
-}
-
 /* Sample Prompt Pill */
 .sample-pill {
   background-color: #1E293B;
@@ -159,18 +266,27 @@ body {
 
 .sample-pill:hover {
   background-color: #2D3748;
-  border-color: #F59E0B;
-  color: #FBBF24;
+  border-color: #008751;
+  color: #34D399;
   transform: translateY(-1px);
 }
 
-/* Vehicle Mode Badges */
-.mode-badge-jeep { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
-.mode-badge-bus { background: #D1FAE5; color: #065F46; border: 1px solid #6EE7B7; }
-.mode-badge-trike { background: #FFEDD5; color: #9A3412; border: 1px solid #FDBA74; }
-.mode-badge-train { background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD; }
-.mode-badge-walk { background: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; }
-.mode-badge-uv { background: #E0F2FE; color: #075985; border: 1px solid #7DD3FC; }
+/* Receipt Mode Tags */
+.receipt-mode-tag {
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.receipt-mode-jeep { background: #FEF3C7; color: #78350F; border: 1px solid #F59E0B; }
+.receipt-mode-bus { background: #D1FAE5; color: #064E3B; border: 1px solid #10B981; }
+.receipt-mode-trike { background: #FFEDD5; color: #7C2D12; border: 1px solid #F97316; }
+.receipt-mode-train { background: #DBEAFE; color: #1E3A8A; border: 1px solid #3B82F6; }
+.receipt-mode-walk { background: #E2E8F0; color: #334155; border: 1px solid #94A3B8; }
+.receipt-mode-uv { background: #E0F2FE; color: #0C4A6E; border: 1px solid #0284C7; }
 
 /* Loading Spinner */
 @keyframes spinRing {

@@ -6,76 +6,63 @@ interface StepCardProps {
   isLast: boolean;
 }
 
-const MODE_CONFIG: Record<string, { label: string; icon: string; badgeClass: string }> = {
-  jeep: { label: 'Jeepney', icon: '🚐', badgeClass: 'mode-badge-jeep' },
-  tricycle: { label: 'Tricycle', icon: '🛺', badgeClass: 'mode-badge-trike' },
-  bus: { label: 'Bus', icon: '🚌', badgeClass: 'mode-badge-bus' },
-  uv_express: { label: 'UV Express', icon: '🚐', badgeClass: 'mode-badge-uv' },
-  walk: { label: 'Lakad', icon: '🚶', badgeClass: 'mode-badge-walk' },
-  mrt: { label: 'MRT', icon: '🚈', badgeClass: 'mode-badge-train' },
-  lrt: { label: 'LRT', icon: '🚈', badgeClass: 'mode-badge-train' },
-  pnr: { label: 'PNR', icon: '🚂', badgeClass: 'mode-badge-train' },
-  grab: { label: 'Grab/Car', icon: '🚗', badgeClass: 'mode-badge-bus' },
+const MODE_CONFIG: Record<string, { label: string; icon: string; tagClass: string }> = {
+  jeep: { label: 'JEEP', icon: '🚐', tagClass: 'receipt-mode-jeep' },
+  tricycle: { label: 'TRIKE', icon: '🛺', tagClass: 'receipt-mode-trike' },
+  bus: { label: 'BUS', icon: '🚌', tagClass: 'receipt-mode-bus' },
+  uv_express: { label: 'UV-EXP', icon: '🚐', tagClass: 'receipt-mode-uv' },
+  walk: { label: 'LAKAD', icon: '🚶', tagClass: 'receipt-mode-walk' },
+  mrt: { label: 'MRT-3', icon: '🚈', tagClass: 'receipt-mode-train' },
+  lrt: { label: 'LRT', icon: '🚈', tagClass: 'receipt-mode-train' },
+  pnr: { label: 'PNR', icon: '🚂', tagClass: 'receipt-mode-train' },
+  grab: { label: 'GRAB/CAR', icon: '🚗', tagClass: 'receipt-mode-bus' },
 };
 
 export default function StepCard({ step, index, isLast }: StepCardProps) {
-  const modeInfo = MODE_CONFIG[step.mode] || { label: step.mode, icon: '📍', badgeClass: 'mode-badge-walk' };
+  const modeInfo = MODE_CONFIG[step.mode] || { label: step.mode.toUpperCase(), icon: '📍', tagClass: 'receipt-mode-walk' };
+  const stepNum = String(index + 1).padStart(2, '0');
 
   return (
-    <div className={`relative ${!isLast ? 'pb-4' : ''}`}>
-      <div className="flex items-start gap-3.5">
-        {/* Step Indicator & Timeline Line */}
-        <div className="flex flex-col items-center flex-shrink-0">
-          <div className="w-7 h-7 rounded-full bg-slate-800 border-2 border-slate-600 text-amber-400 font-mono font-bold text-xs flex items-center justify-center shadow-md">
-            {index + 1}
-          </div>
-          {!isLast && (
-            <div className="w-0.5 flex-1 bg-gradient-to-b from-slate-600 to-slate-800 my-1" />
+    <div className={`text-xs sm:text-sm font-mono text-slate-800 ${!isLast ? 'pb-3 mb-3 border-b border-dashed border-slate-300' : ''}`}>
+      {/* Item Line: QTY / STEP # + MODE + FARE */}
+      <div className="flex items-baseline justify-between gap-2">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="font-bold text-slate-900">{stepNum}.</span>
+          <span className={`receipt-mode-tag ${modeInfo.tagClass}`}>
+            {modeInfo.icon} {modeInfo.label}
+          </span>
+          {step.line_label && (
+            <span className="font-semibold text-slate-700 bg-slate-200 px-1.5 py-0.5 rounded text-[11px]">
+              [{step.line_label}]
+            </span>
           )}
         </div>
 
-        {/* Step Content Card */}
-        <div className="flex-1 bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 sm:p-4 shadow-md">
-          {/* Header Tag Row */}
-          <div className="flex items-center gap-2 flex-wrap mb-1.5">
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-bold ${modeInfo.badgeClass}`}>
-              <span>{modeInfo.icon}</span>
-              <span>{modeInfo.label}</span>
-            </span>
-
-            {step.line_label && (
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-blue-950 text-blue-300 border border-blue-800">
-                Line: {step.line_label}
-              </span>
-            )}
-
-            {step.fare_estimate_php !== null && step.fare_estimate_php !== undefined && (
-              <span className="ml-auto font-mono text-xs font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
-                ₱{step.fare_estimate_php} est.
-              </span>
-            )}
-          </div>
-
-          {/* Commute Instruction */}
-          <p className="font-body text-sm sm:text-base font-medium text-slate-100 leading-snug">
-            {step.instruction}
-          </p>
-
-          {/* Landmark / Stop Node */}
-          <div className="mt-2 text-xs font-mono text-slate-400 flex items-center gap-1.5">
-            <span className="text-amber-400">📍 Babaan:</span>
-            <span className="text-slate-200 font-semibold">{step.landmark}</span>
-          </div>
-
-          {/* Notes Callout */}
-          {step.notes && (
-            <div className="mt-2 rounded-lg bg-amber-950/40 border border-amber-800/60 p-2.5 text-xs text-amber-200 flex items-start gap-1.5">
-              <span className="text-sm">💡</span>
-              <span className="leading-relaxed">{step.notes}</span>
-            </div>
-          )}
+        {/* Right-aligned Fare Amount */}
+        <div className="font-bold text-slate-900 whitespace-nowrap text-right text-xs sm:text-sm">
+          {step.fare_estimate_php !== null && step.fare_estimate_php !== undefined
+            ? `PHP ${Number(step.fare_estimate_php).toFixed(2)}`
+            : 'PHP 0.00'}
         </div>
       </div>
+
+      {/* Instruction */}
+      <p className="mt-1 pl-6 text-slate-700 text-xs sm:text-[13px] leading-relaxed">
+        {step.instruction}
+      </p>
+
+      {/* Landmark / Stop */}
+      <div className="mt-1 pl-6 text-[11px] text-slate-500 flex items-center gap-1">
+        <span>➔ BABAAN / STOP:</span>
+        <span className="font-semibold text-slate-800">{step.landmark}</span>
+      </div>
+
+      {/* Note / Tip */}
+      {step.notes && (
+        <div className="mt-1.5 ml-6 p-2 rounded bg-amber-100/70 border border-amber-300/80 text-[11px] text-amber-900 leading-snug">
+          💡 *PAALALA:* {step.notes}
+        </div>
+      )}
     </div>
   );
 }
