@@ -3,7 +3,7 @@
 
 @import "tailwindcss";
 
-/* Tailwind v4 theme customization - Manila Commuter Structured Classic */
+/* Tailwind v4 theme customization - Manila Commuter Clean Light */
 @theme {
   --color-manila-amber: #D97706;
   --color-manila-amber-light: #F59E0B;
@@ -11,7 +11,7 @@
   --color-manila-charcoal: #0F172A;
   --color-manila-charcoal-light: #1E293B;
   --color-manila-slate: #64748B;
-  --color-manila-border: #0F172A;
+  --color-manila-border: #E2E8F0;
   --color-manila-canvas: #F8FAFC;
   --color-manila-card: #FFFFFF;
 
@@ -30,8 +30,6 @@
 body {
   font-family: var(--font-family-body);
   background-color: #F8FAFC;
-  background-image: radial-gradient(#CBD5E1 1.2px, transparent 1.2px);
-  background-size: 24px 24px;
   color: #0F172A;
   min-height: 100vh;
   overflow-x: hidden;
@@ -53,71 +51,37 @@ body {
   font-family: var(--font-family-utility);
 }
 
-/* =========================================================
-   STRUCTURED TRANSIT CARDS & PANELS
-   ========================================================= */
+/* Modern Card / Panel Utilities */
 .transit-panel {
   background-color: #FFFFFF;
-  border: 2px solid #0F172A;
+  border: 1px solid #E2E8F0;
   border-radius: 12px;
-  box-shadow: 4px 4px 0px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
 }
 
-/* =========================================================
-   AUTHENTIC STRUCTURED TRANSIT TICKET PASS
-   ========================================================= */
+/* Transit Pass Card */
 .transit-pass {
   background: #FFFFFF;
-  border: 2px solid #0F172A;
-  border-radius: 14px;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
   position: relative;
-  box-shadow: 5px 5px 0px rgba(15, 23, 42, 0.1);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
   overflow: hidden;
-}
-
-/* Scalloped Circular Ticket Punch Notches */
-.ticket-notch-top {
-  position: absolute;
-  top: -10px;
-  width: 20px;
-  height: 20px;
-  background-color: #F8FAFC;
-  border-radius: 50%;
-  border-bottom: 2px solid #0F172A;
-  z-index: 20;
-}
-
-.ticket-notch-bottom {
-  position: absolute;
-  bottom: -10px;
-  width: 20px;
-  height: 20px;
-  background-color: #F8FAFC;
-  border-radius: 50%;
-  border-top: 2px solid #0F172A;
-  z-index: 20;
 }
 
 /* Rotated Ink-Stamp Validator Graphic */
 .validator-stamp {
-  border: 2px dashed #D97706;
+  border: 1.5px dashed #D97706;
   color: #B45309;
-  padding: 3px 8px;
+  padding: 2px 8px;
   font-family: var(--font-family-utility);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   display: inline-block;
-  transform: rotate(-6deg);
+  transform: rotate(-4deg);
   background-color: #FFFBEB;
   border-radius: 4px;
-}
-
-/* Transit Section Dividers */
-.transit-rule-double {
-  border-top: 2px solid #0F172A;
-  border-bottom: 1px solid #0F172A;
-  height: 4px;
 }
 
 /* Buttons */
@@ -130,24 +94,22 @@ body {
   font-weight: 800;
   padding: 0.65rem 1.75rem;
   border-radius: 0.5rem;
-  border: 2px solid #0F172A;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
   transition: all 0.12s ease;
-  box-shadow: 3px 3px 0px #0F172A;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
 }
 
 .btn-sakay-primary:hover {
   background-color: #B45309;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #0F172A;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.4);
 }
 
 .btn-sakay-primary:active {
-  transform: translate(2px, 2px);
-  box-shadow: 0px 0px 0px transparent;
+  transform: translateY(0);
 }
 
 .btn-sakay-primary:disabled {
@@ -162,57 +124,43 @@ body {
   color: #0F172A;
   font-family: var(--font-family-body);
   font-size: 0.85rem;
-  font-weight: 700;
-  padding: 0.5rem 1rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
   border-radius: 0.5rem;
-  border: 1.5px solid #0F172A;
+  border: 1px solid #CBD5E1;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
   transition: all 0.12s ease;
-  box-shadow: 2px 2px 0px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .btn-transit-secondary:hover {
-  background-color: #F1F5F9;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px rgba(15, 23, 42, 0.2);
-}
-
-.btn-transit-secondary:active {
-  transform: translate(1px, 1px);
-  box-shadow: 0px 0px 0px transparent;
+  background-color: #F8FAFC;
+  border-color: #94A3B8;
 }
 
 /* Sample Prompt Pill */
 .sample-pill {
-  background-color: #FFFFFF;
-  color: #0F172A;
-  border: 1.5px solid #0F172A;
+  background-color: #F8FAFC;
+  color: #1E293B;
+  border: 1px solid #CBD5E1;
   border-radius: 6px;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 600;
   padding: 0.35rem 0.85rem;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   cursor: pointer;
   transition: all 0.12s ease;
-  box-shadow: 2px 2px 0px rgba(15, 23, 42, 0.08);
 }
 
 .sample-pill:hover {
   background-color: #FEF3C7;
   border-color: #D97706;
   color: #B45309;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0px #D97706;
-}
-
-.sample-pill:active {
-  transform: translate(1px, 1px);
-  box-shadow: 0px 0px 0px transparent;
 }
 
 /* Loading Spinner */
