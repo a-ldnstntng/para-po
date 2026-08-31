@@ -105,9 +105,9 @@ export default function Ticket({
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
       {/* ========================================================
-          1. WIDE LANDSCAPE TRANSIT TICKET PASS (LIGHT THEME)
+          1. WIDE LANDSCAPE TRANSIT TICKET PASS
           ======================================================== */}
-      <div className="transit-pass flex flex-col md:flex-row relative bg-white">
+      <div className="transit-pass flex flex-col md:flex-row relative bg-white border-2 border-slate-900 shadow-[5px_5px_0px_rgba(15,23,42,0.12)]">
         {/* Scalloped Circular Ticket Notches */}
         <div className="ticket-notch-top left-3/4 -ml-2.5 hidden md:block" />
         <div className="ticket-notch-bottom left-3/4 -ml-2.5 hidden md:block" />
@@ -115,9 +115,9 @@ export default function Ticket({
         {/* MAIN BODY (Left ~75%) */}
         <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between relative bg-white">
           {/* Header Row: Transit Title + Validator Stamp */}
-          <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
+          <div className="flex items-start justify-between gap-2 border-b-2 border-slate-900 pb-3">
             <div>
-              <div className="text-[10px] font-utility font-semibold tracking-widest text-slate-500 uppercase">
+              <div className="text-[10px] font-utility font-bold tracking-widest text-slate-500 uppercase">
                 REPUBLIC OF THE PHILIPPINES
               </div>
               <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wide text-slate-900 uppercase leading-none mt-0.5">
@@ -126,17 +126,23 @@ export default function Ticket({
             </div>
 
             {/* Rotated Ink-Stamp Validator Punch */}
-            <div className="validator-stamp">
+            <div className="validator-stamp shadow-xs">
               <div>VALIDATED</div>
               <div className="text-[10px] font-normal">{formattedStampDate} {formattedStampTime}</div>
             </div>
           </div>
 
           {/* Center Journey Line */}
-          <div className="py-5">
-            <div className="flex items-center justify-between gap-3 text-slate-500 font-utility text-[11px] uppercase tracking-wider mb-1 font-semibold">
-              <span>ORIGIN</span>
-              <span>DESTINATION</span>
+          <div className="py-5 bg-slate-50/70 -mx-5 sm:-mx-6 px-5 sm:px-6 border-y border-dashed border-slate-300 my-1">
+            <div className="flex items-center justify-between gap-3 text-slate-500 font-utility text-[11px] uppercase tracking-wider mb-1.5 font-bold">
+              <span className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                ORIGIN
+              </span>
+              <span className="flex items-center gap-1">
+                DESTINATION
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              </span>
             </div>
 
             {/* Horizontal Journey Line with Vehicle Icon */}
@@ -146,12 +152,12 @@ export default function Ticket({
               </div>
 
               {/* Connecting Journey Line with Icon */}
-              <div className="flex-1 flex items-center justify-center gap-1.5 px-2 relative">
-                <div className="h-0.5 flex-1 bg-slate-300" />
-                <div className="p-1.5 rounded-full bg-amber-100 border border-amber-500 text-amber-800 flex-shrink-0 shadow-sm">
+              <div className="flex-1 flex items-center justify-center gap-1 px-2 relative">
+                <div className="h-0.5 flex-1 bg-slate-900" />
+                <div className="p-1.5 rounded-full bg-amber-400 border-2 border-slate-900 text-slate-950 flex-shrink-0 shadow-sm">
                   <PrimaryVehicleIcon className="w-4 h-4" />
                 </div>
-                <div className="h-0.5 flex-1 bg-slate-300" />
+                <div className="h-0.5 flex-1 bg-slate-900" />
               </div>
 
               <div className="font-display font-black text-xl sm:text-2xl md:text-3xl text-slate-900 tracking-wide uppercase truncate max-w-[40%] text-right">
@@ -161,9 +167,9 @@ export default function Ticket({
           </div>
 
           {/* Bottom Info Bar: Serial + Code128 Barcode */}
-          <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
+          <div className="pt-3 border-t-2 border-slate-900 flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-utility tracking-widest text-slate-500 uppercase font-semibold">
+              <div className="text-[10px] font-utility tracking-widest text-slate-500 uppercase font-bold">
                 TICKET NO.
               </div>
               <div className="font-utility font-bold text-xs sm:text-sm text-slate-900">
@@ -173,7 +179,7 @@ export default function Ticket({
 
             {/* Code128 Vector Barcode */}
             <div className="flex flex-col items-center">
-              <svg className="w-28 h-6 text-slate-800 fill-current opacity-85" viewBox="0 0 100 24">
+              <svg className="w-28 h-6 text-slate-900 fill-current opacity-90" viewBox="0 0 100 24">
                 <rect x="0" y="0" width="3" height="24" />
                 <rect x="5" y="0" width="2" height="24" />
                 <rect x="9" y="0" width="4" height="24" />
@@ -197,7 +203,7 @@ export default function Ticket({
                 <rect x="93" y="0" width="3" height="24" />
                 <rect x="98" y="0" width="2" height="24" />
               </svg>
-              <span className="text-[9px] font-utility text-slate-500 uppercase tracking-widest mt-0.5 font-semibold">
+              <span className="text-[9px] font-utility text-slate-600 uppercase tracking-widest mt-0.5 font-bold">
                 SINGLE RIDE ONLY
               </span>
             </div>
@@ -205,25 +211,25 @@ export default function Ticket({
         </div>
 
         {/* TEAR-OFF STUB (Right ~25%) */}
-        <div className="w-full md:w-44 bg-slate-50 p-5 flex flex-col justify-between items-center text-center border-t md:border-t-0 md:border-l border-dashed border-slate-300 relative">
-          {/* Accent Color Band on top/edge */}
-          <div className="w-full h-1.5 bg-amber-500 absolute top-0 left-0 right-0" />
+        <div className="w-full md:w-44 bg-amber-50/60 p-5 flex flex-col justify-between items-center text-center border-t-2 md:border-t-0 md:border-l-2 border-dashed border-slate-900 relative">
+          {/* Accent Color Band on top */}
+          <div className="w-full h-2 bg-amber-500 absolute top-0 left-0 right-0 border-b border-slate-900" />
 
           <div className="pt-2">
-            <span className="text-[10px] font-utility tracking-widest text-slate-500 uppercase font-bold">
+            <span className="text-[10px] font-utility tracking-widest text-slate-600 uppercase font-bold">
               TOTAL FARE
             </span>
             <div className="font-display font-black text-4xl sm:text-5xl text-amber-700 tracking-tight leading-none mt-1">
               ₱{totalFare.toFixed(0)}
             </div>
-            <span className="text-[11px] font-utility text-slate-600 font-semibold">
+            <span className="text-[11px] font-utility text-slate-700 font-semibold">
               {route.steps.length} transit {route.steps.length === 1 ? 'step' : 'steps'}
             </span>
           </div>
 
           {/* Stub Barcode & Serial */}
-          <div className="pt-3 border-t border-slate-200 w-full">
-            <div className="font-utility text-[10px] text-slate-600 uppercase font-bold">
+          <div className="pt-3 border-t border-slate-300 w-full">
+            <div className="font-utility text-[10px] text-slate-700 uppercase font-bold">
               STUB #{ticketSerial}
             </div>
             <div className="text-[9px] font-utility text-amber-800 uppercase font-bold mt-0.5">
@@ -236,7 +242,7 @@ export default function Ticket({
       {/* ========================================================
           2. SEPARATE EXPANDABLE DIRECTIONS DRAWER
           ======================================================== */}
-      <div className="transit-panel overflow-hidden">
+      <div className="transit-panel overflow-hidden border-2 border-slate-900 shadow-[4px_4px_0px_rgba(15,23,42,0.08)]">
         {/* Toggle Button */}
         <button
           onClick={() => setShowDirections(!showDirections)}
@@ -247,29 +253,29 @@ export default function Ticket({
             <span className="font-display text-lg font-bold text-slate-900 tracking-wide uppercase">
               Mga Hakbang sa Byahe (Route Steps)
             </span>
-            <span className="text-xs font-utility bg-slate-100 text-slate-700 font-semibold px-2 py-0.5 rounded border border-slate-300">
+            <span className="text-xs font-utility bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-400">
               {route.steps.length} steps
             </span>
           </div>
           {showDirections ? (
-            <ChevronUp className="w-5 h-5 text-slate-500" />
+            <ChevronUp className="w-5 h-5 text-slate-700" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-slate-500" />
+            <ChevronDown className="w-5 h-5 text-slate-700" />
           )}
         </button>
 
         {/* Collapsible Content */}
         {showDirections && (
-          <div className="p-4 sm:p-5 pt-0 border-t border-slate-200 space-y-4">
+          <div className="p-4 sm:p-5 pt-0 border-t-2 border-slate-900 space-y-4">
             {/* Single Highlighted Primary Tip Callout */}
             {bestTip && (
-              <div className="mt-3 rounded-lg bg-amber-50 border border-amber-300 p-3 flex items-start gap-2.5 text-xs text-amber-900">
-                <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="mt-3 rounded-lg bg-amber-50 border-2 border-amber-400 p-3 flex items-start gap-2.5 text-xs text-amber-950 shadow-xs">
+                <Info className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-utility font-bold text-amber-900 uppercase tracking-wider mr-1">
                     Paalala sa Byahe:
                   </span>
-                  <span className="leading-relaxed font-medium">{bestTip}</span>
+                  <span className="leading-relaxed font-semibold">{bestTip}</span>
                 </div>
               </div>
             )}
@@ -290,16 +296,16 @@ export default function Ticket({
       </div>
 
       {/* ========================================================
-          3. CLEAN ACTION BUTTONS
+          3. ACTION BUTTONS
           ======================================================== */}
-      <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
         <button
           onClick={handleCopy}
           type="button"
           className="btn-transit-secondary text-xs sm:text-sm"
           title="Kopyahin ang buong ruta"
         >
-          {copied ? <Check className="w-4 h-4 text-amber-600" /> : <Copy className="w-4 h-4 text-slate-500" />}
+          {copied ? <Check className="w-4 h-4 text-amber-600" /> : <Copy className="w-4 h-4 text-slate-700" />}
           <span>{copied ? 'Kopyado Na!' : 'Kopyahin'}</span>
         </button>
 
@@ -307,7 +313,7 @@ export default function Ticket({
           <button
             onClick={onConfirm}
             type="button"
-            className="btn-transit-secondary text-xs sm:text-sm text-amber-700 hover:text-amber-800"
+            className="btn-transit-secondary text-xs sm:text-sm text-amber-800 hover:text-amber-900 border-amber-600"
           >
             <Star className="w-4 h-4 text-amber-600" />
             <span>Tama 'to!</span>
@@ -331,7 +337,7 @@ export default function Ticket({
             type="button"
             className="btn-transit-secondary text-xs sm:text-sm"
           >
-            <X className="w-4 h-4 text-slate-500" />
+            <X className="w-4 h-4 text-slate-700" />
             <span>Isara</span>
           </button>
         )}
@@ -340,7 +346,7 @@ export default function Ticket({
           <button
             onClick={onDelete}
             type="button"
-            className="px-3.5 py-2 rounded-lg border border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs sm:text-sm font-semibold transition-all inline-flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-lg border-1.5 border-rose-600 bg-rose-50 text-rose-800 hover:bg-rose-100 text-xs sm:text-sm font-bold transition-all inline-flex items-center gap-1.5 shadow-xs"
           >
             <Trash2 className="w-4 h-4" />
             <span>Burahin</span>
