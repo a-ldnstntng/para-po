@@ -47,25 +47,25 @@ export default function RouteInput({
   };
 
   // -------------------------------------------------------------------------
-  // 1. COLLAPSED STATE (After route generated — frees up screen space)
+  // 1. COLLAPSED SUMMARY STATE
   // -------------------------------------------------------------------------
   if (isCollapsed && text.trim()) {
     return (
-      <div className="w-full bg-white border border-slate-200 rounded-xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-xs">
+      <div className="w-full bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-2.5 shadow-xs">
         <div className="flex-1 min-w-0">
-          <span className="text-[10px] font-utility font-semibold text-slate-400 uppercase tracking-wider block">
+          <span className="text-[9px] font-utility font-semibold text-slate-400 uppercase tracking-wider block">
             Hinanap na Byahe:
           </span>
-          <p className="text-xs sm:text-sm font-body text-slate-800 font-medium truncate">
+          <p className="text-xs font-utility text-slate-800 font-medium truncate">
             "{text}"
           </p>
         </div>
         <button
           onClick={onExpand}
           type="button"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-utility font-bold transition-all cursor-pointer flex-shrink-0"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-utility font-medium transition-all cursor-pointer flex-shrink-0"
         >
-          <Edit3 className="w-3.5 h-3.5" />
+          <Edit3 className="w-3 h-3" />
           <span>Baguhin</span>
         </button>
       </div>
@@ -73,22 +73,22 @@ export default function RouteInput({
   }
 
   // -------------------------------------------------------------------------
-  // 2. EXPANDED PRIMARY TASK INPUT STATE
+  // 2. EXPANDED PRIMARY INPUT STATE (Tightened Mobile Padding)
   // -------------------------------------------------------------------------
   return (
     <section className="w-full">
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-xs">
-        <form onSubmit={handleSubmit} className="space-y-4 w-full">
+      <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-xs">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5 w-full">
           {/* Header Row */}
           <div className="flex items-center justify-between">
             <label
               htmlFor="route-input"
-              className="font-display text-xl sm:text-2xl font-bold text-slate-900 tracking-wide uppercase"
+              className="font-display text-lg sm:text-xl font-black text-slate-900 tracking-tight uppercase"
             >
               Saan ang byahe mo?
             </label>
-            <span className="text-[11px] font-utility text-slate-400 hidden sm:inline">
-              <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-600">Ctrl+Enter</kbd>
+            <span className="text-[10px] font-utility text-slate-400 hidden sm:inline">
+              <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-500">Ctrl+Enter</kbd>
             </span>
           </div>
 
@@ -102,13 +102,13 @@ export default function RouteInput({
               placeholder="Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons.'"
               rows={3}
               disabled={isExtracting}
-              className="w-full bg-slate-50/80 border border-slate-300 rounded-xl p-3.5 sm:p-4 pr-12
-                text-slate-900 font-body text-sm sm:text-base placeholder:text-slate-400
+              className="w-full bg-slate-50/80 border border-slate-300 rounded-lg p-3 pr-11
+                text-slate-900 font-utility text-xs sm:text-sm placeholder:text-slate-400
                 focus:outline-none focus:border-slate-800 focus:bg-white focus:ring-1 focus:ring-slate-800
                 disabled:opacity-50 resize-none transition-all"
             />
             {/* Voice Button */}
-            <div className="absolute bottom-3 right-3">
+            <div className="absolute bottom-2.5 right-2.5">
               <VoiceButton
                 onTranscript={(transcript) => setText((prev) => (prev ? prev + ' ' + transcript : transcript))}
                 disabled={isExtracting}
@@ -116,26 +116,26 @@ export default function RouteInput({
             </div>
           </div>
 
-          {/* Progressive Disclosure: Examples Accordion Toggle */}
-          <div className="pt-1">
+          {/* Progressive Disclosure: Examples Toggle */}
+          <div className="pt-0.5">
             <button
               type="button"
               onClick={() => setShowExamples(!showExamples)}
-              className="text-xs font-utility text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer transition-colors"
+              className="text-[11px] font-utility text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer transition-colors"
             >
               <span>{showExamples ? 'Itago ang mga halimbawa' : 'Subukan ang halimbawa'}</span>
-              {showExamples ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              {showExamples ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             </button>
 
             {showExamples && (
-              <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2 border-t border-slate-100">
+              <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-slate-100">
                 {SAMPLE_PROMPTS.map((sample, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setText(sample.prompt)}
                     disabled={isExtracting}
-                    className="suggestion-pill text-xs py-1 px-2.5"
+                    className="suggestion-pill text-[11px] py-0.5 px-2"
                   >
                     {sample.label}
                   </button>
@@ -145,7 +145,7 @@ export default function RouteInput({
           </div>
 
           {/* Action Row */}
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center gap-2.5 pt-1">
             <button
               type="submit"
               disabled={!text.trim() || isExtracting}
@@ -159,7 +159,7 @@ export default function RouteInput({
               ) : (
                 <>
                   <span>Sakay!</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </>
               )}
             </button>

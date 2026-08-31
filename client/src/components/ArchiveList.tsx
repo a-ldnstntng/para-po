@@ -33,50 +33,50 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-8">
-        <div className="spinner-ring !w-6 !h-6 !border-slate-300 !border-t-slate-800" />
+      <div className="flex justify-center py-6">
+        <div className="spinner-ring !w-5 !h-5 !border-slate-300 !border-t-slate-800" />
       </div>
     );
   }
 
   if (routes.length === 0) {
     return (
-      <div className="text-center py-6 text-slate-400 font-utility text-xs">
+      <div className="text-center py-4 text-slate-400 font-utility text-[11px]">
         Wala pang saved trips.
       </div>
     );
   }
 
   return (
-    <div className="space-y-3 w-full">
+    <div className="space-y-2.5 w-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2">
-        <h2 className="font-display font-bold text-lg sm:text-xl uppercase text-slate-900 leading-none">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+        <h2 className="font-display font-black text-base sm:text-lg uppercase text-slate-900 leading-none">
           Saved Trips ({routes.length})
         </h2>
 
         {/* Search Box */}
         <div className="w-full sm:w-auto relative">
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search destination..."
-            className="w-full sm:w-52 bg-white text-slate-900 font-body text-xs rounded-lg border border-slate-300 pl-7 pr-2.5 py-1.5 placeholder:text-slate-400 focus:outline-none focus:border-slate-800 transition-all shadow-xs"
+            className="w-full sm:w-48 bg-white text-slate-900 font-utility text-[11px] rounded-lg border border-slate-300 pl-7 pr-2.5 py-1.5 placeholder:text-slate-400 focus:outline-none focus:border-slate-800 transition-all shadow-xs"
           />
         </div>
       </div>
 
       {/* Filter Notice */}
       {searchQuery && (
-        <div className="text-xs font-utility text-slate-600 bg-slate-100 rounded-lg px-2.5 py-1">
+        <div className="text-[11px] font-utility text-slate-600 bg-slate-100 rounded-lg px-2.5 py-1">
           Showing: {filteredRoutes.length} of {routes.length} trips for "{searchQuery}"
         </div>
       )}
 
       {/* Route Cards */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {filteredRoutes.map((route) => (
           <div key={route.id}>
             {expandedId === route.id ? (
@@ -92,24 +92,26 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
             ) : (
               <div
                 onClick={() => setExpandedId(route.id)}
-                className="bg-white border border-slate-200 rounded-xl p-3.5 cursor-pointer hover:border-slate-400 hover:shadow-xs transition-all"
+                className="bg-white border border-slate-200 rounded-lg p-3 cursor-pointer hover:border-slate-400 hover:shadow-xs transition-all"
               >
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-2.5">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 text-slate-900 font-display font-bold text-base uppercase truncate">
+                    <div className="flex items-center gap-1.5 text-slate-900 font-display font-black text-sm uppercase truncate">
                       <span>{route.origin}</span>
                       <span className="text-slate-400 font-utility text-xs">➔</span>
                       <span>{route.destination}</span>
                     </div>
 
-                    <p className="text-xs font-body text-slate-500 truncate mt-0.5">
+                    <p className="text-[11px] font-utility text-slate-500 truncate mt-0.5">
                       "{route.raw_text}"
                     </p>
 
-                    <div className="flex items-center gap-3 text-[11px] font-utility text-slate-400 mt-1.5">
-                      <span>{route.steps.length} {route.steps.length === 1 ? 'leg' : 'legs'}</span>
+                    <div className="flex items-center gap-3 text-[10px] font-utility text-slate-400 mt-1">
+                      <span className="font-bold text-slate-700">
+                        {route.steps.length} {route.steps.length === 1 ? 'leg' : 'legs'}
+                      </span>
                       {route.confirms > 0 && (
-                        <span className="flex items-center gap-1 text-slate-600">
+                        <span className="flex items-center gap-1 text-slate-700">
                           <Star className="w-3 h-3 fill-current text-slate-500" />
                           <span>{route.confirms}</span>
                         </span>
@@ -123,9 +125,9 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 text-slate-500 text-xs font-utility flex-shrink-0">
+                  <div className="flex items-center gap-1 text-slate-400 text-[11px] font-utility flex-shrink-0">
                     <span>Tingnan</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <ChevronRight className="w-3 h-3" />
                   </div>
                 </div>
               </div>
