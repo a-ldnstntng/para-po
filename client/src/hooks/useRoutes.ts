@@ -29,6 +29,7 @@ export function useRoutes() {
   const extract = useCallback(async (text: string) => {
     setIsExtracting(true);
     setError(null);
+    setCurrentRoute(null);
     setCurrentRawText(text);
     try {
       const route = await extractRoute(text);
