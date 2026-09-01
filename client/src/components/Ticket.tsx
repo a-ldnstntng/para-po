@@ -18,6 +18,7 @@ import {
   WifiOff,
   Layers,
   ListOrdered,
+  Navigation,
   type LucideIcon,
 } from 'lucide-react';
 import type { ExtractedRoute, SavedRoute, RouteOption } from '../lib/api';
@@ -48,7 +49,6 @@ const PRIMARY_ICONS: Record<string, LucideIcon> = {
   walk: Footprints,
 };
 
-// Helper to determine the primary icon for an option card
 function getOptionIcon(opt: RouteOption): LucideIcon {
   const isCar =
     opt.title.toLowerCase().includes('grab') ||
@@ -126,7 +126,7 @@ export default function Ticket({
   const handleCopy = () => {
     const optionHeader = activeOption ? `[${activeOption.title.toUpperCase()}]\n` : '';
     const formatted =
-      `PARA PO! TRANSIT PASS #${ticketSerial}\n` +
+      `PARA PO! PASS #${ticketSerial}\n` +
       optionHeader +
       `ROUTE: ${route.origin.toUpperCase()} ➔ ${route.destination.toUpperCase()}\n` +
       `EST. TIME: ~${totalDuration} MINS | TOTAL FARE: PHP ${totalFare.toFixed(2)} (${activeSteps.length} legs)\n\n` +
@@ -162,42 +162,34 @@ export default function Ticket({
     .toUpperCase();
 
   return (
-    <div className="w-full max-w-xl mx-auto space-y-3.5 sm:space-y-4">
+    <div className="w-full max-w-xl mx-auto space-y-4">
       {/* ========================================================
-          1. SCANNABLE ROUTE-OPTION COMPARISON (LEGS · TIME · FARE)
+          1. iOS ROUTE-OPTION SELECTOR (Pills & Segmented Cards)
           ======================================================== */}
       {options && options.length > 1 && (
         <div className="w-full">
           <div className="flex items-center justify-between pb-1 flex-wrap gap-2">
-            <span className="text-[11px] font-utility text-slate-600 flex items-center gap-1">
-              <span className="font-bold text-slate-900">Ruta:</span>
-              <strong className="text-slate-800 font-semibold">{activeOption?.title}</strong>
-            </span>
+            <div className="flex items-center gap-1.5 text-xs font-body font-semibold text-slate-500">
+              <span className="text-slate-900 font-bold">Ruta:</span>
+              <span className="text-slate-800">{activeOption?.title}</span>
+            </div>
             <button
               onClick={() => setShowAlternativeRoutes(!showAlternativeRoutes)}
               type="button"
-              className="bg-white border border-slate-300 hover:border-slate-800 text-slate-800 font-utility text-[11px] font-semibold px-2.5 py-1 rounded-md shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all hover:bg-slate-50"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-body text-xs font-semibold shadow-2xs transition-all cursor-pointer"
             >
-              <Layers className="w-3.5 h-3.5 text-slate-600" />
-              <span>{showAlternativeRoutes ? 'Itago ang ibang ruta' : `Tingnan ang ${options.length - 1} pang ruta`}</span>
-              {showAlternativeRoutes ? <ChevronUp className="w-3 h-3 text-slate-500" /> : <ChevronDown className="w-3 h-3 text-slate-500" />}
+              <Layers className="w-3.5 h-3.5 text-slate-500" />
+              <span>{showAlternativeRoutes ? 'Itago ang mga ruta' : `Tingnan ang ${options.length - 1} pang ruta`}</span>
+              {showAlternativeRoutes ? <ChevronUp className="w-3 h-3 text-slate-400" /> : <ChevronDown className="w-3 h-3 text-slate-400" />}
             </button>
           </div>
 
-          {/* Scannable Option Comparison Cards */}
+          {/* Scannable Option Cards (iOS Banking Style) */}
           {showAlternativeRoutes && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1.5 pt-2 border-t border-slate-200">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-2 pt-2">
               {options.map((opt, idx) => {
                 const isSelected = selectedOptionIdx === idx;
                 const OptIcon = getOptionIcon(opt);
-                const isRideHailing =
-                  opt.title.toLowerCase().includes('grab') ||
-                  opt.title.toLowerCase().includes('taxi') ||
-                  opt.title.toLowerCase().includes('car');
-                const isP2P =
-                  opt.title.toLowerCase().includes('p2p') ||
-                  opt.steps?.some((s) => s.mode === 'p2p_bus');
-
                 const optDuration = opt.total_duration_min || opt.steps?.reduce((sum, s) => sum + (s.estimated_duration_min || 15), 0) || 45;
 
                 return (
@@ -209,30 +201,27 @@ export default function Ticket({
                     }}
                     type="button"
                     className={`
-                      p-2.5 rounded-lg text-left transition-all cursor-pointer border flex flex-col justify-between
+                      p-3.5 rounded-2xl text-left transition-all cursor-pointer flex flex-col justify-between
                       ${
                         isSelected
-                          ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                          : isP2P
-                          ? 'bg-indigo-950 text-indigo-100 border-indigo-900 hover:border-indigo-700'
-                          : isRideHailing
-                          ? 'bg-slate-100/90 text-slate-800 border-slate-300 hover:border-slate-800'
-                          : 'bg-white text-slate-800 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+                          ? 'bg-slate-900 text-white shadow-md shadow-slate-900/10 ring-2 ring-orange-500'
+                          : 'bg-white text-slate-800 border border-slate-100 hover:border-slate-300 shadow-xs hover:bg-slate-50'
                       }
                     `}
                   >
-                    {/* Top Row: Icon + Title */}
                     <div>
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <OptIcon className={`w-3.5 h-3.5 flex-shrink-0 ${isSelected ? 'text-amber-400' : isP2P ? 'text-indigo-300' : 'text-slate-600'}`} />
-                        <span className="font-utility font-bold text-xs leading-tight line-clamp-1">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isSelected ? 'bg-slate-800 text-orange-400' : 'bg-slate-100 text-slate-600'}`}>
+                          <OptIcon className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="font-display font-bold text-xs leading-tight line-clamp-1">
                           {opt.title}
                         </span>
                       </div>
                       {opt.badge && (
                         <span
-                          className={`inline-block text-[9px] font-utility px-1.5 py-0.2 rounded font-medium ${
-                            isSelected ? 'bg-slate-800 text-slate-200' : isP2P ? 'bg-indigo-900 text-indigo-200' : 'bg-slate-100 text-slate-600'
+                          className={`inline-block text-[10px] font-body font-semibold px-2 py-0.5 rounded-full ${
+                            isSelected ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600'
                           }`}
                         >
                           {opt.badge}
@@ -240,13 +229,12 @@ export default function Ticket({
                       )}
                     </div>
 
-                    {/* Bottom Row: 3 Axes of Comparison (Legs · Time · Fare) */}
-                    <div className="mt-2 pt-1 border-t border-slate-200/50 text-[11px] font-utility flex items-center justify-between gap-1 flex-wrap">
-                      <span className={`font-bold ${isSelected ? 'text-slate-200' : isP2P ? 'text-indigo-200' : 'text-slate-800'}`}>
+                    <div className="mt-3 pt-2 border-t border-slate-100/30 text-xs font-body flex items-center justify-between gap-1">
+                      <span className={isSelected ? 'text-slate-300 font-medium' : 'text-slate-500'}>
                         {opt.steps?.length} legs · ~{optDuration}m
                       </span>
                       {opt.total_fare_php !== undefined && (
-                        <span className={`font-bold ${isSelected ? 'text-amber-400' : isP2P ? 'text-amber-400' : 'text-slate-900'}`}>
+                        <span className={`font-bold ${isSelected ? 'text-orange-400' : 'text-slate-900'}`}>
                           ₱{opt.total_fare_php.toFixed(0)}
                         </span>
                       )}
@@ -260,28 +248,28 @@ export default function Ticket({
       )}
 
       {/* ========================================================
-          2. THE HERO OBJECT: TRANSIT PASS TICKET
+          2. THE HERO OBJECT: SLEEK NEON-ACCENTED TRANSIT PASS
           ======================================================== */}
       <div className="transit-pass flex flex-col sm:flex-row bg-white">
-        {/* MAIN BODY (Left ~75%) */}
-        <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between bg-white">
-          {/* Header: Title + Offline Flag / Validator Stamp */}
-          <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-2.5">
+        {/* MAIN BODY */}
+        <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between bg-white">
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[9px] font-utility font-semibold tracking-widest text-slate-400 uppercase">
-                  REPUBLIC OF THE PHILIPPINES
+                <span className="text-[10px] font-body font-bold text-slate-400 uppercase tracking-wider">
+                  COMMUTER PASS
                 </span>
                 {route.is_offline_cached && (
-                  <span className="text-[9px] font-utility font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 flex items-center gap-0.5">
+                  <span className="text-[9px] font-body font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full flex items-center gap-1">
                     <WifiOff className="w-2.5 h-2.5" />
                     <span>Offline</span>
                   </span>
                 )}
               </div>
-              <h2 className="font-display font-black text-xl sm:text-2xl tracking-tight text-slate-900 uppercase leading-none mt-0.5">
-                PARA PO! COMMUTE PASS
-              </h2>
+              <h3 className="font-display font-extrabold text-xl sm:text-2xl tracking-tight text-slate-900 mt-0.5">
+                PARA PO! PASS
+              </h3>
             </div>
 
             {/* Validator Stamp */}
@@ -291,92 +279,90 @@ export default function Ticket({
             </div>
           </div>
 
-          {/* Journey Section (Display font for Origin & Destination) */}
-          <div className="py-3 my-1.5 border-y border-dashed border-slate-200">
-            <div className="space-y-2.5">
+          {/* Journey Section (Modern Origin -> Destination) */}
+          <div className="py-4 my-1">
+            <div className="space-y-3">
               {/* Origin */}
               <div>
-                <span className="text-[9px] font-utility font-semibold text-slate-400 uppercase tracking-widest block">
+                <span className="text-[10px] font-body font-bold text-slate-400 uppercase tracking-wider block">
                   ORIGIN
                 </span>
-                <div className="font-display font-black text-lg sm:text-xl text-slate-900 leading-tight uppercase">
+                <div className="font-display font-extrabold text-lg sm:text-xl text-slate-900 leading-snug">
                   {route.origin}
                 </div>
               </div>
 
               {/* Connecting Journey Line with Vehicle Icon */}
-              <div className="flex items-center gap-2 text-slate-600 my-0.5">
-                <div className="p-1 rounded-full bg-slate-100 border border-slate-300 flex-shrink-0">
-                  <PrimaryVehicleIcon className="w-3.5 h-3.5 text-slate-700" />
+              <div className="flex items-center gap-2.5 text-slate-400 my-1">
+                <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-700">
+                  <PrimaryVehicleIcon className="w-4 h-4" />
                 </div>
-                <div className="h-0.5 flex-1 bg-slate-200" />
-                <span className="font-utility text-[10px] text-slate-400 uppercase font-semibold">
-                  TO DESTINATION
-                </span>
-                <div className="h-0.5 w-4 bg-slate-200" />
+                <div className="h-0.5 flex-1 bg-slate-100" />
+                <Navigation className="w-3.5 h-3.5 text-orange-500 rotate-90 flex-shrink-0" />
+                <div className="h-0.5 w-6 bg-slate-100" />
               </div>
 
               {/* Destination */}
               <div>
-                <span className="text-[9px] font-utility font-semibold text-slate-400 uppercase tracking-widest block">
+                <span className="text-[10px] font-body font-bold text-slate-400 uppercase tracking-wider block">
                   DESTINATION
                 </span>
-                <div className="font-display font-black text-lg sm:text-xl text-slate-900 leading-tight uppercase">
+                <div className="font-display font-extrabold text-lg sm:text-xl text-slate-900 leading-snug">
                   {route.destination}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Info Bar: Real Generated Barcode + Ticket Serial */}
-          <div className="pt-2.5 border-t border-slate-200 flex items-center justify-between">
+          {/* Bottom Bar: Barcode & Pass Serial */}
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
             <div>
-              <div className="text-[9px] font-utility tracking-widest text-slate-400 uppercase font-semibold">
-                TICKET NO.
+              <div className="text-[10px] font-body font-semibold text-slate-400 uppercase tracking-wider">
+                PASS NUMBER
               </div>
               <div className="font-utility font-bold text-xs text-slate-800">
-                PASS #{ticketSerial}
+                #{ticketSerial}
               </div>
             </div>
 
-            {/* Real Genuine Scannable Code128 Barcode */}
+            {/* Real Code128 Barcode */}
             <div className="flex flex-col items-end">
-              <RealBarcode value={ticketSerial} className="w-24 h-5 text-slate-800" />
-              <span className="text-[8px] font-utility text-slate-400 uppercase tracking-widest mt-0.5 font-semibold">
+              <RealBarcode value={ticketSerial} className="w-24 h-5 text-slate-800 opacity-90" />
+              <span className="text-[9px] font-body text-slate-400 uppercase tracking-wider mt-0.5 font-medium">
                 SINGLE RIDE ONLY
               </span>
             </div>
           </div>
         </div>
 
-        {/* TEAR-OFF STUB (Right ~25% - TOTAL FARE & ESTIMATED TRAVEL TIME) */}
-        <div className="w-full sm:w-44 bg-slate-50 p-4 sm:p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-dashed border-slate-300 relative shrink-0">
-          <div className="pt-1 w-full">
-            <span className="text-[9px] font-utility tracking-widest text-slate-400 uppercase font-semibold">
+        {/* TEAR-OFF STUB (Right Side / Total Fare Metric) */}
+        <div className="w-full sm:w-44 bg-slate-50/80 p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-slate-100 relative shrink-0">
+          <div className="pt-2 w-full">
+            <span className="text-[10px] font-body font-bold tracking-wider text-slate-400 uppercase">
               TOTAL FARE
             </span>
-            {/* The single hero orange accent number in Archivo Black */}
-            <div className="font-display font-black text-3xl sm:text-4xl text-amber-700 tracking-tight leading-none mt-1">
+            {/* The Hero Vibrant Orange Fare */}
+            <div className="font-display font-black text-4xl sm:text-5xl text-orange-600 tracking-tight leading-none mt-1">
               ₱{totalFare.toFixed(0)}
             </div>
 
-            {/* Prominent Estimated Travel Time on Stub */}
-            <div className="mt-2 pt-2 border-t border-slate-200 flex items-center justify-center gap-1 text-slate-800 font-utility font-bold text-xs">
-              <Clock className="w-3.5 h-3.5 text-slate-500" />
+            {/* Estimated Travel Time */}
+            <div className="mt-3 pt-2.5 border-t border-slate-200/60 flex items-center justify-center gap-1.5 text-slate-800 font-body font-bold text-xs">
+              <Clock className="w-3.5 h-3.5 text-orange-500" />
               <span>~{totalDuration} MINS</span>
             </div>
 
-            <span className="text-[10px] font-utility text-slate-500 font-medium mt-0.5 block">
+            <span className="text-[11px] font-body text-slate-400 font-medium mt-1 block">
               {activeSteps.length} {activeSteps.length === 1 ? 'transit leg' : 'transit legs'}
             </span>
           </div>
 
           {/* Stub Serial */}
-          <div className="pt-2 border-t border-slate-200 w-full mt-3 sm:mt-0">
-            <div className="font-utility text-[9px] text-slate-500 uppercase font-medium">
+          <div className="pt-3 border-t border-slate-200/60 w-full mt-4 sm:mt-0">
+            <div className="font-utility text-[10px] text-slate-500 uppercase font-semibold">
               STUB #{ticketSerial}
             </div>
-            <div className="text-[8px] font-utility text-slate-400 uppercase font-semibold mt-0.5">
+            <div className="text-[9px] font-body text-slate-400 uppercase font-medium mt-0.5">
               VERIFIED PASS
             </div>
           </div>
@@ -384,49 +370,51 @@ export default function Ticket({
       </div>
 
       {/* ========================================================
-          3. FOLDED STEPS & TIP SECTION (Consolidated Header)
+          3. FOLDED DIRECTIONS (iOS Expandable Section)
           ======================================================== */}
-      <div className="bg-white border border-slate-300 rounded-xl overflow-hidden shadow-xs">
-        {/* Consolidated Section Header */}
+      <div className="ios-card overflow-hidden">
+        {/* Toggle Button */}
         <button
           onClick={() => setShowDirections(!showDirections)}
           type="button"
-          className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
+          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-2 flex-wrap">
-            <ListOrdered className="w-4 h-4 text-slate-700" />
-            <span className="font-display text-sm sm:text-base font-black text-slate-900 tracking-tight uppercase">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <div className="w-7 h-7 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
+              <ListOrdered className="w-4 h-4" />
+            </div>
+            <span className="font-display font-bold text-sm sm:text-base text-slate-900 tracking-tight">
               Mga Hakbang sa Byahe
             </span>
-            <span className="text-[11px] font-utility bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded border border-slate-300">
+            <span className="text-xs font-body font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full">
               {activeSteps.length} {activeSteps.length === 1 ? 'leg' : 'legs'} · ~{totalDuration}m
             </span>
             {bestTip && (
-              <span className="text-[10px] font-utility text-amber-900 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded font-bold flex items-center gap-1">
-                <Info className="w-3 h-3 text-amber-600" />
+              <span className="text-[11px] font-body font-semibold text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <Info className="w-3 h-3 text-orange-500" />
                 <span>Tip</span>
               </span>
             )}
           </div>
-          <div className="bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1 rounded-md text-slate-800 font-utility text-[11px] font-bold flex items-center gap-1.5 transition-colors">
+          <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-body font-semibold transition-colors">
             <span>{showDirections ? 'Itago' : 'Tingnan'}</span>
             {showDirections ? (
-              <ChevronUp className="w-3.5 h-3.5 text-slate-600" />
+              <ChevronUp className="w-3.5 h-3.5" />
             ) : (
-              <ChevronDown className="w-3.5 h-3.5 text-slate-600" />
+              <ChevronDown className="w-3.5 h-3.5" />
             )}
           </div>
         </button>
 
-        {/* Collapsible Step List Content with Folded Tip & Durations */}
+        {/* Collapsible Step List Content */}
         {showDirections && (
-          <div className="p-3.5 sm:p-4 pt-0 border-t border-slate-100 space-y-2.5">
+          <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 space-y-3">
             {/* Integrated Reminder Note */}
             {bestTip && (
-              <div className="mt-2.5 bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-utility text-slate-600 flex items-start gap-1.5">
-                <Info className="w-3.5 h-3.5 text-slate-500 flex-shrink-0 mt-0.5" />
-                <p className="leading-snug">
-                  <strong className="text-slate-800 font-semibold">Paalala: </strong>
+              <div className="mt-3 bg-orange-50/60 border border-orange-200/70 rounded-2xl p-3 text-xs font-body text-slate-700 flex items-start gap-2">
+                <Info className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong className="text-orange-950 font-bold">Paalala: </strong>
                   {bestTip}
                 </p>
               </div>
@@ -449,7 +437,7 @@ export default function Ticket({
       </div>
 
       {/* ========================================================
-          4. ACTION CONTROLS
+          4. ACTION CONTROLS (iOS Pill Buttons)
           ======================================================== */}
       <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
         <button
@@ -477,9 +465,9 @@ export default function Ticket({
           <button
             onClick={onSave}
             type="button"
-            className="btn-transit-secondary font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 border-slate-300"
+            className="btn-transit-secondary !bg-slate-900 !text-white hover:!bg-slate-800"
           >
-            <Bookmark className="w-3.5 h-3.5" />
+            <Bookmark className="w-3.5 h-3.5 text-orange-400" />
             <span>I-Save</span>
           </button>
         )}
@@ -499,9 +487,9 @@ export default function Ticket({
           <button
             onClick={onDelete}
             type="button"
-            className="px-2.5 py-1 rounded-md border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-utility font-medium transition-all inline-flex items-center gap-1 cursor-pointer"
+            className="px-3 py-1.5 rounded-full border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-body font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <Trash2 className="w-3 h-3" />
+            <Trash2 className="w-3.5 h-3.5" />
             <span>Burahin</span>
           </button>
         )}

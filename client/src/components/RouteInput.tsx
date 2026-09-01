@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3, Lightbulb, Navigation } from 'lucide-react';
+import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3, Sparkles } from 'lucide-react';
 import VoiceButton from './VoiceButton';
 
 interface RouteInputProps {
@@ -47,48 +47,50 @@ export default function RouteInput({
   };
 
   // -------------------------------------------------------------------------
-  // 1. COLLAPSED SUMMARY STATE
+  // 1. COLLAPSED SUMMARY STATE (iOS Clean Activity Card)
   // -------------------------------------------------------------------------
   if (isCollapsed && text.trim()) {
     return (
-      <div className="w-full bg-white border border-slate-300 rounded-xl p-3 flex items-center justify-between gap-2.5 shadow-2xs">
+      <div className="w-full ios-card p-4 sm:p-4.5 flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <span className="text-[9px] font-utility font-bold text-slate-500 uppercase tracking-wider block">
-            Hinanap na Byahe:
+          <span className="text-[10px] font-body font-bold text-slate-400 uppercase tracking-wider block">
+            Kasalukuyang Byahe
           </span>
-          <p className="text-xs font-utility text-slate-800 font-medium truncate">
+          <p className="text-sm font-body text-slate-800 font-semibold truncate mt-0.5">
             "{text}"
           </p>
         </div>
         <button
           onClick={onExpand}
           type="button"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 text-xs font-utility font-bold transition-all cursor-pointer flex-shrink-0 shadow-2xs"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-body font-bold transition-all cursor-pointer flex-shrink-0"
         >
-          <Edit3 className="w-3.5 h-3.5 text-slate-600" />
-          <span>Baguhin</span>
+          <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+          <span>I-edit</span>
         </button>
       </div>
     );
   }
 
   // -------------------------------------------------------------------------
-  // 2. EXPANDED PRIMARY INPUT STATE
+  // 2. EXPANDED PRIMARY INPUT STATE (iOS Neobank Card)
   // -------------------------------------------------------------------------
   return (
     <section className="w-full">
-      <div className="bg-white border border-slate-300 rounded-xl p-4 sm:p-5 shadow-xs">
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-3.5 w-full">
+      <div className="ios-card p-5 sm:p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 w-full">
           {/* Header Row */}
           <div className="flex items-center justify-between">
-            <label
-              htmlFor="route-input"
-              className="font-display text-lg sm:text-xl font-black text-slate-900 tracking-tight uppercase"
-            >
-              Saan ang byahe mo?
-            </label>
-            <span className="text-[10px] font-utility text-slate-400 hidden sm:inline">
-              <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-500">Ctrl+Enter</kbd>
+            <div>
+              <h2 className="font-display text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                Saan ang byahe mo?
+              </h2>
+              <p className="text-xs text-slate-400 font-medium mt-0.5">
+                I-type ang origin, destination o sakayan
+              </p>
+            </div>
+            <span className="text-[10px] font-body text-slate-400 hidden sm:inline bg-slate-100 px-2 py-1 rounded-md">
+              Ctrl+Enter
             </span>
           </div>
 
@@ -102,13 +104,13 @@ export default function RouteInput({
               placeholder="Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons.'"
               rows={3}
               disabled={isExtracting}
-              className="w-full bg-slate-50/90 border border-slate-300 rounded-lg p-3 pr-11
-                text-slate-900 font-utility text-xs sm:text-sm placeholder:text-slate-400
-                focus:outline-none focus:border-slate-800 focus:bg-white focus:ring-1 focus:ring-slate-800
-                disabled:opacity-50 resize-none transition-all shadow-inner"
+              className="w-full bg-slate-50/90 hover:bg-slate-50 border border-slate-200/80 rounded-2xl p-4 pr-12
+                text-slate-900 font-body text-sm placeholder:text-slate-400
+                focus:outline-none focus:border-orange-500/50 focus:bg-white focus:ring-3 focus:ring-orange-500/10
+                disabled:opacity-50 resize-none transition-all"
             />
             {/* Voice Button */}
-            <div className="absolute bottom-2.5 right-2.5">
+            <div className="absolute bottom-3 right-3">
               <VoiceButton
                 onTranscript={(transcript) => setText((prev) => (prev ? prev + ' ' + transcript : transcript))}
                 disabled={isExtracting}
@@ -116,29 +118,28 @@ export default function RouteInput({
             </div>
           </div>
 
-          {/* Progressive Disclosure: Examples Toggle with Lightbulb Icon */}
+          {/* Progressive Disclosure: Examples Accordion */}
           <div className="pt-0.5">
             <button
               type="button"
               onClick={() => setShowExamples(!showExamples)}
-              className="bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 text-slate-700 text-[11px] font-utility font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5 cursor-pointer transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1.5 text-xs font-body font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
             >
-              <Lightbulb className="w-3.5 h-3.5 text-slate-500" />
+              <Sparkles className="w-3.5 h-3.5 text-orange-500" />
               <span>{showExamples ? 'Itago ang mga halimbawa' : 'Subukan ang halimbawa'}</span>
-              {showExamples ? <ChevronUp className="w-3.5 h-3.5 text-slate-500" /> : <ChevronDown className="w-3.5 h-3.5 text-slate-500" />}
+              {showExamples ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
 
             {showExamples && (
-              <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2 border-t border-slate-100">
+              <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-slate-100">
                 {SAMPLE_PROMPTS.map((sample, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setText(sample.prompt)}
                     disabled={isExtracting}
-                    className="bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-800 text-slate-800 text-[11px] font-utility font-medium px-2.5 py-1 rounded-md shadow-2xs transition-all flex items-center gap-1 cursor-pointer"
+                    className="suggestion-pill text-xs py-1.5 px-3"
                   >
-                    <Navigation className="w-2.5 h-2.5 text-slate-500 flex-shrink-0" />
                     <span>{sample.label}</span>
                   </button>
                 ))}
@@ -146,8 +147,8 @@ export default function RouteInput({
             )}
           </div>
 
-          {/* Action Row */}
-          <div className="flex items-center gap-2.5 pt-1">
+          {/* Action Button Row */}
+          <div className="flex items-center gap-3 pt-1">
             <button
               type="submit"
               disabled={!text.trim() || isExtracting}
@@ -161,7 +162,7 @@ export default function RouteInput({
               ) : (
                 <>
                   <span>Sakay!</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
