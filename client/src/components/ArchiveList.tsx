@@ -175,7 +175,7 @@ export default function ArchiveList({ routes, isLoading, onConfirm, onDelete }: 
 
                     <div className="flex items-center gap-3 text-[11px] font-body text-slate-400 mt-1">
                       <span className="font-semibold text-slate-600">
-                        {route.steps.length} {route.steps.length === 1 ? 'leg' : 'legs'}
+                        {route.steps.length} {route.steps.length === 1 ? 'sakay' : 'sakay / transfer'}
                       </span>
                       {route.confirms > 0 && (
                         <span className="flex items-center gap-1 text-slate-600">
