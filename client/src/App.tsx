@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, X, WifiOff, MapPin, ChevronRight, Clock } from 'lucide-react';
+import { AlertTriangle, X, WifiOff, MapPin, ChevronRight, Clock, ArrowUpRight } from 'lucide-react';
 import Board from './components/Board';
 import RouteInput from './components/RouteInput';
 import Ticket from './components/Ticket';
 import ArchiveList from './components/ArchiveList';
-import TransitHub from './components/TransitHub';
 import InstallPrompt from './components/InstallPrompt';
 import { useRoutes } from './hooks/useRoutes';
 import { useOfflineStatus } from './hooks/useOfflineStatus';
@@ -103,139 +102,149 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-[env(safe-area-inset-top,0.75rem)] pb-[env(safe-area-inset-bottom,2.5rem)] px-4 sm:px-6 bg-[#F8F9FB] text-slate-900 selection:bg-orange-100">
-      {/* PWA Install Banner */}
-      <div className="w-full max-w-xl mx-auto pt-1 pb-0.5">
-        <InstallPrompt />
-      </div>
-
-      {/* Offline Status Notice */}
-      {isOffline && (
-        <div className="w-full max-w-xl mx-auto my-1.5">
-          <div className="bg-slate-900 text-orange-400 text-xs font-body px-4 py-2.5 rounded-2xl flex items-center gap-2.5 shadow-sm">
-            <WifiOff className="w-4 h-4 flex-shrink-0 text-orange-500" />
-            <span className="leading-snug font-medium text-slate-200">
-              Offline ka ngayon — available ang huling {offlineRoutes.length} na-save mong byahe.
-            </span>
-          </div>
+    <div className="min-h-screen w-full flex flex-col items-center justify-between pt-[env(safe-area-inset-top,0.75rem)] pb-[env(safe-area-inset-bottom,1.5rem)] px-4 sm:px-6 bg-[#F8F9FB] text-slate-900 selection:bg-orange-100">
+      <div className="w-full flex flex-col items-center">
+        {/* PWA Install Banner */}
+        <div className="w-full max-w-xl mx-auto pt-1 pb-0.5">
+          <InstallPrompt />
         </div>
-      )}
 
-      <main className="w-full max-w-xl mx-auto flex flex-col items-center space-y-4 sm:space-y-5">
-        {/* Minimal iOS Header */}
-        <Board
-          onSelectRouteTag={handleSelectRouteTag}
-          hasActiveResult={!!currentRoute}
-          onResetSearch={handleResetSearch}
-        />
+        {/* Offline Status Notice */}
+        {isOffline && (
+          <div className="w-full max-w-xl mx-auto my-1.5">
+            <div className="bg-slate-900 text-orange-400 text-xs font-body px-4 py-2.5 rounded-2xl flex items-center gap-2.5 shadow-sm">
+              <WifiOff className="w-4 h-4 flex-shrink-0 text-orange-500" />
+              <span className="leading-snug font-medium text-slate-200">
+                Offline ka ngayon — available ang huling {offlineRoutes.length} na-save mong byahe.
+              </span>
+            </div>
+          </div>
+        )}
 
-        {/* Primary Input Task */}
-        <div className="w-full">
-          <RouteInput
-            onSubmit={handleSearch}
-            onClear={handleClearRoute}
-            isExtracting={isExtracting}
-            isCollapsed={isInputCollapsed}
-            onExpand={() => setIsInputCollapsed(false)}
+        <main className="w-full max-w-xl mx-auto flex flex-col items-center space-y-4 sm:space-y-5">
+          {/* Minimal iOS Header */}
+          <Board
+            onSelectRouteTag={handleSelectRouteTag}
+            hasActiveResult={!!currentRoute}
+            onResetSearch={handleResetSearch}
           />
-        </div>
 
-        {/* Offline Query Fallback Helper Box */}
-        {offlineNotice && (
-          <div className="w-full ios-card p-4 sm:p-5 space-y-3">
-            <div className="flex items-start gap-2.5 text-slate-800 font-body text-xs">
-              <WifiOff className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
-              <p className="font-semibold leading-relaxed">{offlineNotice}</p>
-            </div>
-
-            {offlineRoutes.length > 0 && (
-              <div className="space-y-2 pt-1">
-                {offlineRoutes.map((cached, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSelectOfflineRoute(cached)}
-                    type="button"
-                    className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 rounded-2xl p-3 text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer"
-                  >
-                    <div className="min-w-0">
-                      <div className="font-display font-bold text-xs sm:text-sm text-slate-900 truncate flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
-                        <span>{cached.origin}</span>
-                        <span className="text-slate-400">➔</span>
-                        <span>{cached.destination}</span>
-                      </div>
-                      <div className="text-[11px] font-body text-slate-400 mt-1 flex items-center gap-2.5">
-                        <span>{cached.steps?.length} legs</span>
-                        {cached.total_duration_min && (
-                          <span className="flex items-center gap-1 text-slate-600">
-                            <Clock className="w-3 h-3" />
-                            <span>~{cached.total_duration_min}m</span>
-                          </span>
-                        )}
-                        <span className="text-orange-600 font-bold">
-                          ₱{cached.total_fare_php || cached.steps?.reduce((sum, s) => sum + (s.fare_estimate_php || 0), 0) || 0}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white text-slate-700 text-xs font-body font-semibold shadow-xs flex-shrink-0">
-                      <span>Buksan</span>
-                      <ChevronRight className="w-3 h-3 text-slate-400" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Error Banner */}
-        {error && (
+          {/* Primary Input Task */}
           <div className="w-full">
-            <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3.5 flex items-center justify-between shadow-xs">
-              <div className="flex items-center gap-2.5">
-                <AlertTriangle className="w-4 h-4 text-rose-500 flex-shrink-0" />
-                <p className="text-rose-900 font-body text-xs font-semibold">{error}</p>
-              </div>
-              <button
-                onClick={() => setError(null)}
-                className="text-rose-400 hover:text-rose-700 p-1 rounded-full transition-colors"
-                title="Dismiss error"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Extracted Route Result (The Hero Object) */}
-        {currentRoute && (
-          <div ref={ticketRef} className="w-full pt-1 flex flex-col items-center">
-            <Ticket
-              route={currentRoute}
-              onSave={save}
+            <RouteInput
+              onSubmit={handleSearch}
               onClear={handleClearRoute}
+              isExtracting={isExtracting}
+              isCollapsed={isInputCollapsed}
+              onExpand={() => setIsInputCollapsed(false)}
             />
           </div>
-        )}
 
-        {/* TRANSIT HUB & DASHBOARD (Fills the bottom section with Fare Guide & Popular NCR Corridors) */}
-        <div className="w-full">
-          <TransitHub onSelectRoute={handleSearch} />
+          {/* Offline Query Fallback Helper Box */}
+          {offlineNotice && (
+            <div className="w-full ios-card p-4 sm:p-5 space-y-3">
+              <div className="flex items-start gap-2.5 text-slate-800 font-body text-xs">
+                <WifiOff className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
+                <p className="font-semibold leading-relaxed">{offlineNotice}</p>
+              </div>
+
+              {offlineRoutes.length > 0 && (
+                <div className="space-y-2 pt-1">
+                  {offlineRoutes.map((cached, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSelectOfflineRoute(cached)}
+                      type="button"
+                      className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 rounded-2xl p-3 text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer"
+                    >
+                      <div className="min-w-0">
+                        <div className="font-display font-bold text-xs sm:text-sm text-slate-900 truncate flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
+                          <span>{cached.origin}</span>
+                          <span className="text-slate-400">➔</span>
+                          <span>{cached.destination}</span>
+                        </div>
+                        <div className="text-[11px] font-body text-slate-400 mt-1 flex items-center gap-2.5">
+                          <span>{cached.steps?.length} legs</span>
+                          {cached.total_duration_min && (
+                            <span className="flex items-center gap-1 text-slate-600">
+                              <Clock className="w-3 h-3" />
+                              <span>~{cached.total_duration_min}m</span>
+                            </span>
+                          )}
+                          <span className="text-orange-600 font-bold">
+                            ₱{cached.total_fare_php || cached.steps?.reduce((sum, s) => sum + (s.fare_estimate_php || 0), 0) || 0}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white text-slate-700 text-xs font-body font-semibold shadow-xs flex-shrink-0">
+                        <span>Buksan</span>
+                        <ChevronRight className="w-3 h-3 text-slate-400" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Error Banner */}
+          {error && (
+            <div className="w-full">
+              <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3.5 flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-rose-500 flex-shrink-0" />
+                  <p className="text-rose-900 font-body text-xs font-semibold">{error}</p>
+                </div>
+                <button
+                  onClick={() => setError(null)}
+                  className="text-rose-400 hover:text-rose-700 p-1 rounded-full transition-colors"
+                  title="Dismiss error"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Extracted Route Result */}
+          {currentRoute && (
+            <div ref={ticketRef} className="w-full pt-1 flex flex-col items-center">
+              <Ticket
+                route={currentRoute}
+                onSave={save}
+                onClear={handleClearRoute}
+              />
+            </div>
+          )}
+
+          {/* Saved Trips Archive & Empty-State Guide */}
+          <div className="w-full">
+            <ArchiveList
+              routes={savedRoutes}
+              isLoading={isLoading}
+              onConfirm={confirm}
+              onDelete={remove}
+            />
+          </div>
+        </main>
+      </div>
+
+      {/* QUIET FOOTER BRANDING (Muted, Low-Visual-Weight at the very bottom) */}
+      <footer className="w-full max-w-xl mx-auto pt-6 pb-2 text-center space-y-1">
+        <p className="font-utility text-[11px] text-slate-400 font-normal">
+          PARA PO! • Ginawa para sa mga estudyante at commuter ng Pilipinas
+        </p>
+        <div>
+          <a
+            href="mailto:support@parapo.ph?subject=Feedback%20sa%20Ruta%20ng%20Para%20Po"
+            className="inline-flex items-center gap-0.5 font-utility text-[11px] text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            <span>May mali sa datos? Ipaalam sa amin</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
         </div>
-
-        {/* Subtle Spacing Divider */}
-        <div className="w-full border-t border-slate-200/60 my-2 sm:my-3" />
-
-        {/* Saved Trips Archive */}
-        <div className="w-full">
-          <ArchiveList
-            routes={savedRoutes}
-            isLoading={isLoading}
-            onConfirm={confirm}
-            onDelete={remove}
-          />
-        </div>
-      </main>
+      </footer>
     </div>
   );
 }
