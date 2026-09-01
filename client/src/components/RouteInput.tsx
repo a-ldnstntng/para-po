@@ -11,10 +11,11 @@ interface RouteInputProps {
 }
 
 const SAMPLE_PROMPTS = [
-  { label: 'Cubao ➔ Antipolo', prompt: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons Antipolo.' },
-  { label: 'SM North ➔ Baclaran', prompt: 'From SM North EDSA, take MRT-3 to Taft Avenue, then jeep to Baclaran Redemptorist.' },
-  { label: 'Shaw ➔ Kapitolyo', prompt: 'Mula Shaw MRT Station, mag-trike papuntang Kapitolyo Pasig tapos lakad sa Commons.' },
-  { label: 'SJDM ➔ PUP Sta. Mesa', prompt: 'Galing SJDM Bulacan, sakay ng bus pa-Cubao, tapos LRT-2 to Pureza, then trike to PUP Sta Mesa.' },
+  { label: 'Cubao ➔ Antipolo', prompt: 'Cubao papuntang Antipolo Simbahan' },
+  { label: 'Monumento ➔ BGC', prompt: 'Paano magcommute mula Monumento hanggang BGC Taguig?' },
+  { label: 'SM North ➔ Baclaran', prompt: 'SM North EDSA to Baclaran via MRT o Carousel' },
+  { label: 'PUP ➔ QC Circle', prompt: 'Pano pumunta ng Quezon City Circle galing PUP Sta Mesa?' },
+  { label: 'Buendia ➔ Intramuros', prompt: 'Buendia Makati papuntang Intramuros Manila' },
 ];
 
 export default function RouteInput({
@@ -73,7 +74,7 @@ export default function RouteInput({
   }
 
   // -------------------------------------------------------------------------
-  // 2. EXPANDED PRIMARY INPUT STATE (iOS Neobank Card)
+  // 2. EXPANDED PRIMARY INPUT STATE
   // -------------------------------------------------------------------------
   return (
     <section className="w-full">
@@ -86,7 +87,7 @@ export default function RouteInput({
                 Saan ang byahe mo?
               </h2>
               <p className="text-xs text-slate-400 font-medium mt-0.5">
-                I-type ang origin, destination o sakayan
+                I-type ang origin at destination
               </p>
             </div>
             <span className="text-[10px] font-body text-slate-400 hidden sm:inline bg-slate-100 px-2 py-1 rounded-md">
@@ -101,7 +102,7 @@ export default function RouteInput({
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Halimbawa: 'Galing Cubao, sumakay ng jeep na Antipolo. Baba sa Robinsons.'"
+              placeholder="Halimbawa: 'Cubao to Antipolo' o 'Paano pumunta ng BGC galing Monumento?'"
               rows={3}
               disabled={isExtracting}
               className="w-full bg-slate-50/90 hover:bg-slate-50 border border-slate-200/80 rounded-2xl p-4 pr-12
