@@ -4,6 +4,7 @@ import Board from './components/Board';
 import RouteInput from './components/RouteInput';
 import Ticket from './components/Ticket';
 import ArchiveList from './components/ArchiveList';
+import TransitHub from './components/TransitHub';
 import InstallPrompt from './components/InstallPrompt';
 import { useRoutes } from './hooks/useRoutes';
 import { useOfflineStatus } from './hooks/useOfflineStatus';
@@ -102,13 +103,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-[env(safe-area-inset-top,0.75rem)] pb-[env(safe-area-inset-bottom,2rem)] px-4 sm:px-6 bg-[#F8F9FB] text-slate-900 selection:bg-orange-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-[env(safe-area-inset-top,0.75rem)] pb-[env(safe-area-inset-bottom,2.5rem)] px-4 sm:px-6 bg-[#F8F9FB] text-slate-900 selection:bg-orange-100">
       {/* PWA Install Banner */}
-      <div className="w-full max-w-xl mx-auto pt-1 pb-1">
+      <div className="w-full max-w-xl mx-auto pt-1 pb-0.5">
         <InstallPrompt />
       </div>
 
-      {/* Offline Status Notice (iOS Clean Pill) */}
+      {/* Offline Status Notice */}
       {isOffline && (
         <div className="w-full max-w-xl mx-auto my-1.5">
           <div className="bg-slate-900 text-orange-400 text-xs font-body px-4 py-2.5 rounded-2xl flex items-center gap-2.5 shadow-sm">
@@ -187,7 +188,7 @@ function App() {
           </div>
         )}
 
-        {/* Error Banner (iOS Toast Card) */}
+        {/* Error Banner */}
         {error && (
           <div className="w-full">
             <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3.5 flex items-center justify-between shadow-xs">
@@ -206,7 +207,7 @@ function App() {
           </div>
         )}
 
-        {/* Extracted Route Result */}
+        {/* Extracted Route Result (The Hero Object) */}
         {currentRoute && (
           <div ref={ticketRef} className="w-full pt-1 flex flex-col items-center">
             <Ticket
@@ -216,6 +217,11 @@ function App() {
             />
           </div>
         )}
+
+        {/* TRANSIT HUB & DASHBOARD (Fills the bottom section with Fare Guide & Popular NCR Corridors) */}
+        <div className="w-full">
+          <TransitHub onSelectRoute={handleSearch} />
+        </div>
 
         {/* Subtle Spacing Divider */}
         <div className="w-full border-t border-slate-200/60 my-2 sm:my-3" />
