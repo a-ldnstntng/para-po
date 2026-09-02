@@ -54,7 +54,7 @@ export default function ByaheKoTab({
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-12">
+      <div className="flex justify-center py-16">
         <div className="spinner-ring !w-6 !h-6 !border-slate-300 !border-t-slate-800" />
       </div>
     );
@@ -63,22 +63,22 @@ export default function ByaheKoTab({
   // Empty State
   if (routes.length === 0) {
     return (
-      <div className="w-full max-w-xl lg:max-w-2xl mx-auto text-center py-12 space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto shadow-xs">
-          <Clock className="w-6 h-6" />
+      <div className="w-full max-w-xl mx-auto text-center py-16 space-y-4">
+        <div className="w-14 h-14 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto shadow-xs">
+          <Clock className="w-7 h-7" />
         </div>
         <div>
-          <h3 className="font-display font-bold text-lg text-slate-900">
+          <h3 className="font-display font-bold text-xl text-slate-900">
             Wala pang nai-save na byahe
           </h3>
-          <p className="font-body text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+          <p className="font-body text-xs text-slate-400 mt-1.5 max-w-xs mx-auto leading-relaxed">
             I-save ang madalas mong ruta para mabilis buksan kahit walang signal o data.
           </p>
         </div>
         <button
           onClick={onGoToSearch}
           type="button"
-          className="btn-sakay-primary !text-xs !py-2 !px-5"
+          className="btn-sakay-primary !text-xs !py-2.5 !px-6"
         >
           Mag-search ng Byahe
         </button>
@@ -92,7 +92,7 @@ export default function ByaheKoTab({
 
     if (isExpanded) {
       return (
-        <div key={route.id} className="pt-2">
+        <div key={route.id} className="col-span-full pt-2">
           <Ticket
             route={route}
             isSaved
@@ -107,7 +107,7 @@ export default function ByaheKoTab({
     return (
       <div
         key={route.id}
-        className="ios-card p-4 hover:border-slate-300 hover:shadow-sm transition-all"
+        className="ios-card p-4 hover:border-slate-300 hover:shadow-sm transition-all flex flex-col justify-between"
       >
         <div className="flex items-start justify-between gap-3">
           {/* Left Avatar Icon */}
@@ -117,7 +117,7 @@ export default function ByaheKoTab({
 
           {/* Center Details */}
           <div className="flex-1 min-w-0" onClick={() => setExpandedId(route.id)}>
-            <div className="flex items-center gap-1.5 text-slate-900 font-display font-bold text-sm truncate">
+            <div className="flex items-center gap-1.5 text-slate-900 font-display font-bold text-sm truncate cursor-pointer">
               <span>{route.origin}</span>
               <span className="text-slate-400 text-xs">➔</span>
               <span>{route.destination}</span>
@@ -127,7 +127,7 @@ export default function ByaheKoTab({
               "{route.raw_text}"
             </p>
 
-            <div className="flex items-center gap-3 text-[11px] font-body text-slate-400 mt-1 flex-wrap">
+            <div className="flex items-center gap-3 text-[11px] font-body text-slate-400 mt-1.5 flex-wrap">
               <span className="font-semibold text-slate-600">
                 {route.steps.length} {route.steps.length === 1 ? 'sakay' : 'sakay / transfer'}
               </span>
@@ -141,12 +141,12 @@ export default function ByaheKoTab({
           </div>
 
           {/* Favorite & Actions */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0">
             {/* Toggle Favorite */}
             <button
               onClick={() => onToggleFavorite(route.id)}
               type="button"
-              className={`p-2 rounded-full transition-colors cursor-pointer ${
+              className={`p-1.5 rounded-full transition-colors cursor-pointer ${
                 isFav ? 'text-amber-500 hover:text-amber-600' : 'text-slate-300 hover:text-slate-500'
               }`}
               title={isFav ? 'Alisin sa paborito' : 'I-mark bilang paborito'}
@@ -169,8 +169,8 @@ export default function ByaheKoTab({
             <button
               onClick={() => setExpandedId(route.id)}
               type="button"
-              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 transition-colors"
-              title="Tingnan ang detalye"
+              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+              title="Tingnan ang tiket"
             >
               <Eye className="w-4 h-4" />
             </button>
@@ -181,11 +181,11 @@ export default function ByaheKoTab({
   };
 
   return (
-    <div className="w-full max-w-xl lg:max-w-5xl xl:max-w-6xl mx-auto space-y-4 pt-2">
+    <div className="w-full max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto space-y-5 py-4 sm:py-8">
       {/* Header & Search */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
         <div>
-          <h2 className="font-display font-bold text-xl text-slate-900 tracking-tight">
+          <h2 className="font-display font-bold text-2xl text-slate-900 tracking-tight">
             Byahe Ko ({routes.length})
           </h2>
           <p className="font-body text-xs text-slate-400 mt-0.5">
@@ -200,32 +200,32 @@ export default function ByaheKoTab({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Hanapin ang ruta..."
-            className="w-full sm:w-48 bg-white text-slate-900 font-body text-xs rounded-full border border-slate-200 pl-8 pr-3 py-1.5 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 transition-all shadow-xs"
+            className="w-full sm:w-56 bg-white text-slate-900 font-body text-xs rounded-full border border-slate-200 pl-8 pr-3 py-2 placeholder:text-slate-400 focus:outline-none focus:border-orange-500 transition-all shadow-xs"
           />
         </div>
       </div>
 
       {/* 1. FAVORITES SECTION */}
       {favorites.length > 0 && (
-        <div className="space-y-2 pt-1">
+        <div className="space-y-2.5 pt-1">
           <div className="flex items-center gap-1.5 text-xs font-display font-bold text-slate-800 uppercase tracking-wider px-1">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
             <span>Paboritong Araw-araw ({favorites.length})</span>
           </div>
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {favorites.map(renderRouteCard)}
           </div>
         </div>
       )}
 
       {/* 2. RECENT / SAVED TRIPS SECTION */}
-      <div className="space-y-2 pt-1">
+      <div className="space-y-2.5 pt-1">
         {favorites.length > 0 && (
           <div className="text-xs font-display font-bold text-slate-500 uppercase tracking-wider px-1 pt-2">
             Iba pang na-save na Byahe ({otherRoutes.length})
           </div>
         )}
-        <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {otherRoutes.map(renderRouteCard)}
         </div>
       </div>

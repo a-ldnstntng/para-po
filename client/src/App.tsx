@@ -134,7 +134,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-between pt-[env(safe-area-inset-top,0.75rem)] pb-28 px-4 sm:px-6 lg:px-8 bg-[#F8F9FB] text-slate-900 selection:bg-orange-100">
+    <div className="min-h-screen w-full flex flex-col items-center justify-start pt-[env(safe-area-inset-top,0.75rem)] pb-32 px-4 sm:px-6 lg:px-8 bg-[#F8F9FB] text-slate-900 selection:bg-orange-100">
       <div className="w-full max-w-xl lg:max-w-5xl xl:max-w-6xl mx-auto flex flex-col items-center">
         {/* PWA Install Banner */}
         <div className="w-full pt-1 pb-0.5">
