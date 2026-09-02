@@ -289,7 +289,6 @@ function App() {
             />
           </div>
         )}
-      </div>
 
       {/* PERSISTENT BOTTOM TAB NAVIGATION */}
       <BottomNav
@@ -297,6 +296,7 @@ function App() {
         onChangeTab={setActiveTab}
         savedCount={savedRoutes.length}
       />
+    </div>
     </div>
   );
 }

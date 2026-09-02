@@ -4,7 +4,9 @@
 @import "tailwindcss";
 
 /* Tailwind v4 theme customization - Arvo & Lora Font Dynamics */
+/* Strict 3-color system: off-white bg, near-black text, single amber accent */
 @theme {
+  /* Legacy jeepney-orange brand (thermal ticket identity, keep as-is) */
   --color-brand-orange: #FF6B00;
   --color-brand-orange-hover: #E65A00;
   --color-brand-orange-light: #FFF4ED;
@@ -14,9 +16,68 @@
   --color-brand-canvas: #F8F9FB;
   --color-brand-card: #FFFFFF;
 
+  /* New neutral + amber app chrome tokens */
+  --color-canvas: #F7F7F5;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #71717A;
+  --color-ink-soft: #A1A1AA;
+  --color-hairline: #ECECEC;
+  --color-accent: #F5A623;
+  --color-accent-strong: #DD8F00;
+  --color-accent-soft: #FEF3C7;
+  --color-accent-ink: #7A4A00;
+
   --font-family-display: 'Arvo', Georgia, serif;
   --font-family-body: 'Lora', Georgia, serif;
   --font-family-utility: 'JetBrains Mono', monospace;
+}
+
+/* Rounded, softly-shadowed card surface for the redesigned chrome */
+.card-chrome {
+  background: #FFFFFF;
+  border-radius: 1.25rem; /* 20px */
+  border: 1px solid #ECECEC;
+  box-shadow: 0 1px 2px rgba(26, 26, 26, 0.03), 0 6px 20px -8px rgba(26, 26, 26, 0.06);
+}
+
+/* Icon chip: light rounded square behind tappable icons */
+.icon-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.875rem;
+  background: #F4F4F2;
+  color: #1A1A1A;
+  flex-shrink: 0;
+}
+
+/* Status pill: rounded colored label, bold short text */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-family: var(--font-family-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* Card-based info row: label left, value right, thin divider */
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+.info-row + .info-row {
+  border-top: 1px solid #ECECEC;
 }
 
 /* Base styles & Smooth App-like behavior */
@@ -29,8 +90,8 @@
 
 html, body {
   font-family: var(--font-family-body);
-  background-color: #F8F9FB;
-  color: #111827;
+  background-color: #F7F7F5;
+  color: #1A1A1A;
   min-height: 100vh;
   min-height: -webkit-fill-available;
   overflow-x: hidden;

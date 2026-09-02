@@ -181,7 +181,7 @@ export default function ByaheKoTab({
   };
 
   return (
-    <div className="w-full max-w-xl lg:max-w-4xl mx-auto space-y-4 pt-2">
+    <div className="w-full max-w-xl lg:max-w-5xl xl:max-w-6xl mx-auto space-y-4 pt-2">
       {/* Header & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
         <div>

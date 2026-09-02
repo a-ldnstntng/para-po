@@ -144,7 +144,7 @@ export default function StepCard({ step, index, isLast }: StepCardProps) {
           </div>
 
           {/* Transit Card Details */}
-          <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-3.5 sm:p-4 shadow-xs">
+          <div className="flex-1 min-w-0 bg-white border border-slate-100 rounded-2xl p-3.5 sm:p-4 shadow-xs">
             {/* Top Line: Mode + Line Label + Fare/Time */}
             <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
               <div className="flex items-center gap-1.5">
@@ -176,7 +176,7 @@ export default function StepCard({ step, index, isLast }: StepCardProps) {
             </div>
 
             {/* Commuter Instruction */}
-            <p className="font-body text-xs sm:text-sm text-slate-700 font-medium leading-snug">
+            <p className="font-body text-xs sm:text-sm text-slate-700 font-medium leading-snug overflow-hidden">
               {step.instruction}
             </p>
 

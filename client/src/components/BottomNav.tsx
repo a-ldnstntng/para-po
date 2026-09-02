@@ -33,8 +33,8 @@ export default function BottomNav({
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-t border-slate-200/80 shadow-lg pb-[env(safe-area-inset-bottom,0.5rem)]">
-      <div className="max-w-xl lg:max-w-2xl mx-auto flex items-center justify-around px-2 py-1.5">
+    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 z-40 w-full max-w-[430px] bg-white/90 backdrop-blur-xl border-t border-hairline pb-[env(safe-area-inset-bottom,0.5rem)] lg:shadow-[0_0_60px_-15px_rgba(0,0,0,0.2)]">
+      <div className="flex items-center justify-around px-3 pt-2 pb-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -44,20 +44,41 @@ export default function BottomNav({
               key={tab.id}
               onClick={() => onChangeTab(tab.id)}
               type="button"
+              aria-current={isActive ? 'page' : undefined}
               className={`
-                flex-1 flex flex-col items-center justify-center py-1.5 px-2 rounded-2xl transition-all cursor-pointer relative
-                ${isActive ? 'text-orange-600' : 'text-slate-400 hover:text-slate-600'}
+                flex-1 flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-2xl transition-colors cursor-pointer
+                ${isActive ? 'text-ink' : 'text-ink-soft hover:text-ink-muted'}
               `}
             >
               <div className="relative">
-                <Icon className={`w-5 h-5 transition-transform ${isActive ? 'scale-110' : ''}`} />
+                {/* Icon chip: soft rounded square behind the icon */}
+                <span
+                  className={`
+                    inline-flex items-center justify-center w-11 h-8 rounded-xl transition-colors
+                    ${isActive ? 'bg-accent-soft' : 'bg-transparent'}
+                  `}
+                >
+                  {/* Filled/solid only on the active tab; outline otherwise */}
+                  <Icon
+                    className={`w-[22px] h-[22px] transition-colors ${
+                      isActive ? 'text-accent-strong' : 'text-current'
+                    }`}
+                    fill={isActive ? 'currentColor' : 'none'}
+                    strokeWidth={isActive ? 1.75 : 2}
+                  />
+                </span>
                 {tab.badge !== undefined && (
-                  <span className="absolute -top-1 -right-2 bg-orange-500 text-white text-[9px] font-utility font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-xs">
+                  <span className="absolute -top-0.5 -right-0.5 bg-accent-strong text-white text-[9px] font-utility font-bold rounded-full w-4 h-4 flex items-center justify-center">
                     {tab.badge}
                   </span>
                 )}
               </div>
-              <span className={`text-[11px] font-display font-bold mt-1 tracking-tight ${isActive ? 'text-orange-600' : 'text-slate-500 font-medium'}`}>
+              <span
+                className={`
+                  text-[11px] font-display tracking-tight transition-colors
+                  ${isActive ? 'text-ink font-bold' : 'text-ink-soft font-medium'}
+                `}
+              >
                 {tab.label}
               </span>
             </button>

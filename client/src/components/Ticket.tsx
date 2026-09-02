@@ -253,9 +253,9 @@ export default function Ticket({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* LEFT COLUMN: HERO TRANSIT PASS TICKET (lg:col-span-7) */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="transit-pass flex flex-col sm:flex-row bg-white">
+          <div className="transit-pass flex flex-col bg-white">
             {/* MAIN PASS BODY */}
-            <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between bg-white">
+            <div className="flex-1 min-w-0 p-5 sm:p-6 flex flex-col justify-between bg-white">
               {/* Header */}
               <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
                 <div>
@@ -290,7 +290,7 @@ export default function Ticket({
                     <span className="text-[10px] font-body font-bold text-slate-400 uppercase tracking-wider block">
                       ORIGIN
                     </span>
-                    <div className="font-display font-extrabold text-lg sm:text-xl text-slate-900 leading-snug">
+                    <div className="font-display font-extrabold text-lg sm:text-xl text-slate-900 leading-snug break-words">
                       {route.origin}
                     </div>
                   </div>
@@ -310,7 +310,7 @@ export default function Ticket({
                     <span className="text-[10px] font-body font-bold text-slate-400 uppercase tracking-wider block">
                       DESTINATION
                     </span>
-                    <div className="font-display font-extrabold text-lg sm:text-xl text-slate-900 leading-snug">
+                    <div className="font-display font-extrabold text-lg sm:text-xl text-slate-900 leading-snug break-words">
                       {route.destination}
                     </div>
                   </div>
@@ -318,18 +318,18 @@ export default function Ticket({
               </div>
 
               {/* Bottom Bar: Barcode & Pass Serial */}
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                <div>
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+                <div className="min-w-0">
                   <div className="text-[10px] font-body font-semibold text-slate-400 uppercase tracking-wider">
                     PASS NUMBER
                   </div>
-                  <div className="font-utility font-bold text-xs text-slate-800">
+                  <div className="font-utility font-bold text-xs text-slate-800 truncate">
                     #{ticketSerial}
                   </div>
                 </div>
 
                 {/* Real Code128 Barcode */}
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-end flex-shrink-0">
                   <RealBarcode value={ticketSerial} className="w-24 h-5 text-slate-800 opacity-90" />
                   <span className="text-[9px] font-body text-slate-400 uppercase tracking-wider mt-0.5 font-medium">
                     SINGLE RIDE ONLY
@@ -339,30 +339,28 @@ export default function Ticket({
             </div>
 
             {/* TEAR-OFF STUB (Fare Metric) */}
-            <div className="w-full sm:w-44 bg-slate-50/80 p-5 flex flex-col justify-between items-center text-center border-t sm:border-t-0 sm:border-l border-slate-100 relative shrink-0">
-              <div className="pt-2 w-full">
-                <span className="text-[10px] font-body font-bold tracking-wider text-slate-400 uppercase">
+            <div className="w-full shrink-0 bg-slate-50/80 p-4 flex flex-row sm:flex-row items-center justify-center gap-6 sm:gap-8 text-center border-t border-slate-100">
+              <div className="min-w-0">
+                <span className="text-[10px] font-body font-bold tracking-wider text-slate-400 uppercase block">
                   TOTAL FARE
                 </span>
                 {/* The Hero Orange Fare */}
-                <div className="font-display font-black text-4xl sm:text-5xl text-orange-600 tracking-tight leading-none mt-1">
+                <div className="font-display font-black text-4xl text-orange-600 tracking-tight leading-none mt-1">
                   ₱{totalFare.toFixed(0)}
                 </div>
 
                 {/* Estimated Travel Time */}
-                <div className="mt-3 pt-2.5 border-t border-slate-200/60 flex items-center justify-center gap-1.5 text-slate-800 font-body font-bold text-xs">
-                  <Clock className="w-3.5 h-3.5 text-orange-500" />
-                  <span>~{totalDuration} MINS</span>
+                <div className="mt-2.5 text-slate-800 font-body font-bold text-xs">
+                  <Clock className="w-3.5 h-3.5 text-orange-500 inline-block -mt-0.5 mr-1" />
+                  ~{totalDuration} MINS
                 </div>
-
-                <span className="text-[11px] font-body text-slate-400 font-medium mt-1 block">
-                  {activeSteps.length} {activeSteps.length === 1 ? 'sakay' : 'sakay / transfer'}
-                </span>
               </div>
 
-              {/* Stub Serial */}
-              <div className="pt-3 border-t border-slate-200/60 w-full mt-4 sm:mt-0">
-                <div className="font-utility text-[10px] text-slate-500 uppercase font-semibold">
+              <div className="min-w-0">
+                <span className="text-[11px] font-body text-slate-400 font-medium block">
+                  {activeSteps.length} {activeSteps.length === 1 ? 'sakay' : 'sakay / transfer'}
+                </span>
+                <div className="font-utility text-[10px] text-slate-500 uppercase font-semibold mt-2">
                   STUB #{ticketSerial}
                 </div>
                 <div className="text-[9px] font-body text-slate-400 uppercase font-medium mt-0.5">
