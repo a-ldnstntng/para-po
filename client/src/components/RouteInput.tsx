@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3, Sparkles } from 'lucide-react';
+import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3, Sparkles, Home } from 'lucide-react';
 import VoiceButton from './VoiceButton';
 
 interface RouteInputProps {
@@ -9,6 +9,7 @@ interface RouteInputProps {
   isCollapsed?: boolean;
   onExpand?: () => void;
   prefillText?: string;
+  homeLocation?: string;
 }
 
 const SAMPLE_PROMPTS = [
@@ -26,13 +27,15 @@ export default function RouteInput({
   isCollapsed = false,
   onExpand,
   prefillText,
+  homeLocation = '',
 }: RouteInputProps) {
   const [text, setText] = useState('');
   const [showExamples, setShowExamples] = useState(false);
+  const [useOtherOrigin, setUseOtherOrigin] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (prefillText !== undefined && prefillText !== null) {
+    if (prefillText !== undefined && prefillText !== null && prefillText !== '') {
       setText(prefillText);
       if (textareaRef.current) {
         textareaRef.current.focus();
@@ -42,8 +45,14 @@ export default function RouteInput({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (text.trim() && !isExtracting) {
-      onSubmit(text.trim());
+    const query = text.trim();
+    if (!query || isExtracting) return;
+
+    // If homeLocation is active and user didn't override or explicitly mention an origin
+    if (homeLocation && !useOtherOrigin && !query.toLowerCase().includes('mula') && !query.toLowerCase().includes('galing') && !query.toLowerCase().includes('from')) {
+      onSubmit(`Mula sa ${homeLocation} papuntang ${query}`);
+    } else {
+      onSubmit(query);
     }
   };
 
@@ -88,6 +97,8 @@ export default function RouteInput({
   // -------------------------------------------------------------------------
   // 2. EXPANDED PRIMARY INPUT STATE
   // -------------------------------------------------------------------------
+  const hasActiveHome = Boolean(homeLocation && !useOtherOrigin);
+
   return (
     <section className="w-full">
       <div className="ios-card p-5 sm:p-6">
@@ -96,16 +107,41 @@ export default function RouteInput({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-display text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                Saan ang byahe mo?
+                {hasActiveHome ? 'Saan ka pupunta?' : 'Saan ang byahe mo?'}
               </h2>
               <p className="text-xs text-slate-400 font-medium mt-0.5">
-                I-type ang origin at destination
+                {hasActiveHome ? `Magsisimula ang byahe mula sa ${homeLocation}` : 'I-type ang origin at destination'}
               </p>
             </div>
             <span className="text-[10px] font-body text-slate-400 hidden sm:inline bg-slate-100 px-2 py-1 rounded-md">
               Ctrl+Enter
             </span>
           </div>
+
+          {/* Default Home Origin Indicator / Override Toggle */}
+          {homeLocation && (
+            <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-orange-50/60 border border-orange-200/60 text-xs font-body">
+              <div className="flex items-center gap-2 text-slate-800 min-w-0">
+                <Home className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
+                <span className="truncate">
+                  {useOtherOrigin ? (
+                    <span className="text-slate-500">I-type ang ibang pinanggalingan</span>
+                  ) : (
+                    <span>
+                      Galing sa Bahay: <strong className="text-orange-950 font-bold">{homeLocation}</strong>
+                    </span>
+                  )}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setUseOtherOrigin(!useOtherOrigin)}
+                className="text-[11px] font-utility font-semibold text-orange-700 hover:text-orange-900 underline flex-shrink-0 cursor-pointer"
+              >
+                {useOtherOrigin ? 'Gamitin ang Bahay' : 'Galing sa iba?'}
+              </button>
+            </div>
+          )}
 
           {/* Text input area */}
           <div className="relative w-full">
@@ -115,7 +151,11 @@ export default function RouteInput({
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Halimbawa: 'Cubao to Antipolo' o 'Paano pumunta ng BGC galing Monumento?'"
+              placeholder={
+                hasActiveHome
+                  ? `Halimbawa: 'SM North EDSA' o 'BGC Taguig'`
+                  : "Halimbawa: 'Cubao to Antipolo' o 'Paano pumunta ng BGC galing Monumento?'"
+              }
               rows={3}
               disabled={isExtracting}
               className="w-full bg-slate-50/90 hover:bg-slate-50 border border-slate-200/80 rounded-2xl p-4 pr-12

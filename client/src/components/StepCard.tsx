@@ -1,5 +1,7 @@
-import { Bus, Train, Bike, Footprints, Car, MapPin, Clock, type LucideIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Bus, Train, Bike, Footprints, Car, MapPin, Clock, Flag, type LucideIcon } from 'lucide-react';
 import type { RouteStep } from '../lib/api';
+import StepReportModal from './StepReportModal';
 
 interface StepCardProps {
   step: RouteStep;
@@ -74,7 +76,8 @@ const MODE_CONFIG: Record<
   },
 };
 
-export default function StepCard({ step, isLast }: StepCardProps) {
+export default function StepCard({ step, index, isLast }: StepCardProps) {
+  const [showReportModal, setShowReportModal] = useState(false);
   const isWalking = step.mode === 'walk';
   const modeInfo = MODE_CONFIG[step.mode] || {
     label: step.mode.toUpperCase(),
@@ -95,89 +98,123 @@ export default function StepCard({ step, isLast }: StepCardProps) {
 
   const stopLabel = isLast ? 'Huling babaan:' : 'Babaan / Transfer:';
 
-  // ---------------------------------------------------------------
-  // 1. WALKING CONNECTOR STEP (iOS Compact Activity Row)
-  // ---------------------------------------------------------------
-  if (isWalking) {
-    return (
-      <div className={`relative flex items-center gap-3.5 ${!isLast ? 'pb-3' : ''} px-1`}>
-        {/* Timeline Squircle Icon */}
-        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400">
-          <Footprints className="w-3.5 h-3.5" />
-        </div>
-
-        {/* Text Details */}
-        <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
-          <p className="text-xs font-body text-slate-500 font-medium truncate">
-            <span>{step.instruction}</span>
-            {step.landmark && <span className="text-slate-400 ml-1">➔ {step.landmark}</span>}
-          </p>
-          {hasDuration && (
-            <span className="text-[11px] font-body text-slate-400 font-medium flex-shrink-0">
-              ~{step.estimated_duration_min}m
-            </span>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // ---------------------------------------------------------------
-  // 2. PRIMARY TRANSIT LEG (iOS Transaction-Style Card)
-  // ---------------------------------------------------------------
   return (
-    <div className={`relative flex items-start gap-3.5 ${!isLast ? 'pb-3.5' : ''}`}>
-      {/* Sleek App Icon Container */}
-      <div className={`w-11 h-11 rounded-2xl ${modeInfo.iconBg} ${modeInfo.iconColor} flex items-center justify-center flex-shrink-0 shadow-xs mt-0.5`}>
-        <IconComponent className="w-5 h-5" />
-      </div>
-
-      {/* Transit Card Details (iOS List Group Card) */}
-      <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-3.5 sm:p-4 shadow-xs">
-        {/* Top Line: Mode + Line Label + Fare/Time */}
-        <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-          <div className="flex items-center gap-1.5">
-            <span className="font-display font-bold text-xs text-slate-900 tracking-wide uppercase">
-              {modeInfo.label}
-            </span>
-
-            {showLineLabel && (
-              <span className="text-[11px] font-body font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                {step.line_label}
-              </span>
-            )}
+    <>
+      {/* ---------------------------------------------------------------
+          1. WALKING CONNECTOR STEP (Compact Row)
+          --------------------------------------------------------------- */}
+      {isWalking ? (
+        <div className={`relative flex items-center gap-3.5 ${!isLast ? 'pb-3' : ''} px-1`}>
+          {/* Squircle Icon */}
+          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400">
+            <Footprints className="w-3.5 h-3.5" />
           </div>
 
-          {/* Fare & Duration Pill */}
-          <div className="flex items-center gap-2">
-            {hasDuration && (
-              <span className="text-[11px] font-body font-semibold text-slate-400 flex items-center gap-1 bg-slate-50 px-2 py-0.5 rounded-full">
-                <Clock className="w-3 h-3 text-slate-400" />
-                <span>~{step.estimated_duration_min}m</span>
-              </span>
-            )}
-            {hasFare && (
-              <span className="font-display font-bold text-sm text-slate-900">
-                ₱{step.fare_estimate_php!.toFixed(2)}
-              </span>
-            )}
+          {/* Details */}
+          <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+            <p className="text-xs font-body text-slate-500 font-medium truncate">
+              <span>{step.instruction}</span>
+              {step.landmark && <span className="text-slate-400 ml-1">➔ {step.landmark}</span>}
+            </p>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {hasDuration && (
+                <span className="text-[11px] font-body text-slate-400 font-medium">
+                  ~{step.estimated_duration_min}m
+                </span>
+              )}
+              <button
+                onClick={() => setShowReportModal(true)}
+                type="button"
+                className="text-slate-300 hover:text-rose-500 transition-colors cursor-pointer"
+                title="I-ulat ang maling impormasyon sa hakbang na ito"
+              >
+                <Flag className="w-3 h-3" />
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* Commuter Instruction */}
-        <p className="font-body text-xs sm:text-sm text-slate-700 font-medium leading-snug">
-          {step.instruction}
-        </p>
-
-        {/* Landmark / Stop */}
-        {step.landmark && (
-          <div className="mt-2 pt-1.5 border-t border-slate-50 text-[11px] font-body text-slate-400 flex items-center gap-1.5">
-            <MapPin className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
-            <span className="font-medium">{stopLabel}</span>
-            <span className="text-slate-700 font-semibold">{step.landmark}</span>
+      ) : (
+        /* ---------------------------------------------------------------
+            2. PRIMARY TRANSIT LEG (iOS Transaction-Style Card)
+            --------------------------------------------------------------- */
+        <div className={`relative flex items-start gap-3.5 ${!isLast ? 'pb-3.5' : ''}`}>
+          {/* Icon Container */}
+          <div className={`w-11 h-11 rounded-2xl ${modeInfo.iconBg} ${modeInfo.iconColor} flex items-center justify-center flex-shrink-0 shadow-xs mt-0.5`}>
+            <IconComponent className="w-5 h-5" />
           </div>
-        )}
-      </div>
-    </div>
+
+          {/* Transit Card Details */}
+          <div className="flex-1 bg-white border border-slate-100 rounded-2xl p-3.5 sm:p-4 shadow-xs">
+            {/* Top Line: Mode + Line Label + Fare/Time */}
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+              <div className="flex items-center gap-1.5">
+                <span className="font-display font-bold text-xs text-slate-900 tracking-wide uppercase">
+                  {modeInfo.label}
+                </span>
+
+                {showLineLabel && (
+                  <span className="text-[11px] font-body font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                    {step.line_label}
+                  </span>
+                )}
+              </div>
+
+              {/* Fare & Duration Pill */}
+              <div className="flex items-center gap-2">
+                {hasDuration && (
+                  <span className="text-[11px] font-body font-semibold text-slate-400 flex items-center gap-1 bg-slate-50 px-2 py-0.5 rounded-full">
+                    <Clock className="w-3 h-3 text-slate-400" />
+                    <span>~{step.estimated_duration_min}m</span>
+                  </span>
+                )}
+                {hasFare && (
+                  <span className="font-display font-bold text-sm text-slate-900">
+                    ₱{step.fare_estimate_php!.toFixed(2)}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Commuter Instruction */}
+            <p className="font-body text-xs sm:text-sm text-slate-700 font-medium leading-snug">
+              {step.instruction}
+            </p>
+
+            {/* Landmark / Stop & Unobtrusive Report Target */}
+            <div className="mt-2.5 pt-2 border-t border-slate-50 flex items-center justify-between gap-2 flex-wrap text-[11px] font-body">
+              {step.landmark ? (
+                <div className="text-slate-400 flex items-center gap-1.5 min-w-0">
+                  <MapPin className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
+                  <span className="font-medium">{stopLabel}</span>
+                  <span className="text-slate-700 font-semibold truncate">{step.landmark}</span>
+                </div>
+              ) : (
+                <div />
+              )}
+
+              {/* Unobtrusive "Mali ba ito?" Tap Target */}
+              <button
+                onClick={() => setShowReportModal(true)}
+                type="button"
+                className="inline-flex items-center gap-1 text-[10px] font-utility text-slate-400 hover:text-rose-600 transition-colors cursor-pointer py-0.5"
+                title="I-ulat ang maling pamasahe o rutang sarado na"
+              >
+                <Flag className="w-2.5 h-2.5" />
+                <span>Mali ba ito?</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Step Report Modal */}
+      {showReportModal && (
+        <StepReportModal
+          step={step}
+          stepIndex={index}
+          onClose={() => setShowReportModal(false)}
+        />
+      )}
+    </>
   );
 }
