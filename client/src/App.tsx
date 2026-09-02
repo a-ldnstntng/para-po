@@ -157,112 +157,114 @@ function App() {
             TAB 1: SEARCH (Default / Landing Screen)
             ======================================================== */}
         {activeTab === 'search' && (
-          <main className="w-full flex flex-col items-center space-y-4 sm:space-y-5">
-            {/* Header */}
-            <Board
-              onSelectRouteTag={handleSelectRouteTag}
-              hasActiveResult={!!currentRoute}
-              onResetSearch={handleResetSearch}
-            />
-
-            {/* Primary Input Task with Bahay Ko support */}
-            <div className="w-full max-w-xl lg:max-w-2xl mx-auto">
-              <RouteInput
-                onSubmit={handleSearch}
-                onClear={handleClearRoute}
-                isExtracting={isExtracting}
-                isCollapsed={isInputCollapsed}
-                onExpand={() => setIsInputCollapsed(false)}
-                prefillText={prefillText}
-                homeLocation={profile.homeLocation}
+          <div key="tab-search" className="w-full animate-tab-content">
+            <main className="w-full flex flex-col items-center space-y-4 sm:space-y-5">
+              {/* Header */}
+              <Board
+                onSelectRouteTag={handleSelectRouteTag}
+                hasActiveResult={!!currentRoute}
+                onResetSearch={handleResetSearch}
               />
-            </div>
 
-            {/* Offline Query Fallback Helper Box */}
-            {offlineNotice && (
-              <div className="w-full max-w-xl lg:max-w-2xl mx-auto ios-card p-4 sm:p-5 space-y-3">
-                <div className="flex items-start gap-2.5 text-slate-800 font-body text-xs">
-                  <WifiOff className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
-                  <p className="font-semibold leading-relaxed">{offlineNotice}</p>
-                </div>
-
-                {offlineRoutes.length > 0 && (
-                  <div className="space-y-2 pt-1">
-                    {offlineRoutes.map((cached, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSelectOfflineRoute(cached)}
-                        type="button"
-                        className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 rounded-2xl p-3 text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer"
-                      >
-                        <div className="min-w-0">
-                          <div className="font-display font-bold text-xs sm:text-sm text-slate-900 truncate flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
-                            <span>{cached.origin}</span>
-                            <span className="text-slate-400">➔</span>
-                            <span>{cached.destination}</span>
-                          </div>
-                          <div className="text-[11px] font-body text-slate-400 mt-1 flex items-center gap-2.5">
-                            <span>{cached.steps?.length} sakay</span>
-                            {cached.total_duration_min && (
-                              <span className="flex items-center gap-1 text-slate-600">
-                                <Clock className="w-3 h-3" />
-                                <span>~{cached.total_duration_min}m</span>
-                              </span>
-                            )}
-                            <span className="text-orange-600 font-bold">
-                              ₱{cached.total_fare_php || cached.steps?.reduce((sum, s) => sum + (s.fare_estimate_php || 0), 0) || 0}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white text-slate-700 text-xs font-body font-semibold shadow-xs flex-shrink-0">
-                          <span>Buksan</span>
-                          <ChevronRight className="w-3 h-3 text-slate-400" />
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Error Banner */}
-            {error && (
+              {/* Primary Input Task with Bahay Ko support */}
               <div className="w-full max-w-xl lg:max-w-2xl mx-auto">
-                <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3.5 flex items-center justify-between shadow-xs">
-                  <div className="flex items-center gap-2.5">
-                    <AlertTriangle className="w-4 h-4 text-rose-500 flex-shrink-0" />
-                    <p className="text-rose-900 font-body text-xs font-semibold">{error}</p>
-                  </div>
-                  <button
-                    onClick={() => setError(null)}
-                    className="text-rose-400 hover:text-rose-700 p-1 rounded-full transition-colors"
-                    title="Dismiss error"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Extracted Route Result (Dual-Pane on Desktop) */}
-            {currentRoute && (
-              <div ref={ticketRef} className="w-full pt-1">
-                <Ticket
-                  route={currentRoute}
-                  onSave={save}
+                <RouteInput
+                  onSubmit={handleSearch}
                   onClear={handleClearRoute}
+                  isExtracting={isExtracting}
+                  isCollapsed={isInputCollapsed}
+                  onExpand={() => setIsInputCollapsed(false)}
+                  prefillText={prefillText}
+                  homeLocation={profile.homeLocation}
                 />
               </div>
-            )}
-          </main>
+
+              {/* Offline Query Fallback Helper Box */}
+              {offlineNotice && (
+                <div className="w-full max-w-xl lg:max-w-2xl mx-auto ios-card p-4 sm:p-5 space-y-3">
+                  <div className="flex items-start gap-2.5 text-slate-800 font-body text-xs">
+                    <WifiOff className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
+                    <p className="font-semibold leading-relaxed">{offlineNotice}</p>
+                  </div>
+
+                  {offlineRoutes.length > 0 && (
+                    <div className="space-y-2 pt-1">
+                      {offlineRoutes.map((cached, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleSelectOfflineRoute(cached)}
+                          type="button"
+                          className="w-full bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 rounded-2xl p-3 text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer"
+                        >
+                          <div className="min-w-0">
+                            <div className="font-display font-bold text-xs sm:text-sm text-slate-900 truncate flex items-center gap-1.5">
+                              <MapPin className="w-3.5 h-3.5 text-orange-500 flex-shrink-0" />
+                              <span>{cached.origin}</span>
+                              <span className="text-slate-400">➔</span>
+                              <span>{cached.destination}</span>
+                            </div>
+                            <div className="text-[11px] font-body text-slate-400 mt-1 flex items-center gap-2.5">
+                              <span>{cached.steps?.length} sakay</span>
+                              {cached.total_duration_min && (
+                                <span className="flex items-center gap-1 text-slate-600">
+                                  <Clock className="w-3 h-3" />
+                                  <span>~{cached.total_duration_min}m</span>
+                                </span>
+                              )}
+                              <span className="text-orange-600 font-bold">
+                                ₱{cached.total_fare_php || cached.steps?.reduce((sum, s) => sum + (s.fare_estimate_php || 0), 0) || 0}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-white text-slate-700 text-xs font-body font-semibold shadow-xs flex-shrink-0">
+                            <span>Buksan</span>
+                            <ChevronRight className="w-3 h-3 text-slate-400" />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Error Banner */}
+              {error && (
+                <div className="w-full max-w-xl lg:max-w-2xl mx-auto">
+                  <div className="bg-rose-50 border border-rose-100 rounded-2xl p-3.5 flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-rose-500 flex-shrink-0" />
+                      <p className="text-rose-900 font-body text-xs font-semibold">{error}</p>
+                    </div>
+                    <button
+                      onClick={() => setError(null)}
+                      className="text-rose-400 hover:text-rose-700 p-1 rounded-full transition-colors"
+                      title="Dismiss error"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Extracted Route Result (Dual-Pane on Desktop) */}
+              {currentRoute && (
+                <div ref={ticketRef} className="w-full pt-1">
+                  <Ticket
+                    route={currentRoute}
+                    onSave={save}
+                    onClear={handleClearRoute}
+                  />
+                </div>
+              )}
+            </main>
+          </div>
         )}
 
         {/* ========================================================
             TAB 2: BYAHE KO (Favorites, History, & Sakay Ulit)
             ======================================================== */}
         {activeTab === 'byahe_ko' && (
-          <div className="w-full">
+          <div key="tab-byahe-ko" className="w-full animate-tab-content">
             <ByaheKoTab
               routes={savedRoutes}
               isLoading={isLoading}
@@ -280,7 +282,7 @@ function App() {
             TAB 3: PROFILE & SETTINGS (Name, Bahay Ko, Feedback)
             ======================================================== */}
         {activeTab === 'profile' && (
-          <div className="w-full">
+          <div key="tab-profile" className="w-full animate-tab-content">
             <ProfileTab
               profile={profile}
               onSaveProfile={handleUpdateProfile}
