@@ -28,6 +28,7 @@ function App() {
   const { isOffline, offlineRoutes, saveRouteToOffline } = useOfflineStatus();
   const [isInputCollapsed, setIsInputCollapsed] = useState(false);
   const [offlineNotice, setOfflineNotice] = useState<string | null>(null);
+  const [prefillText, setPrefillText] = useState('');
   const ticketRef = useRef<HTMLDivElement>(null);
 
   // Auto-persist last extracted route to local storage for offline use
@@ -55,11 +56,12 @@ function App() {
     clearCurrent();
     setIsInputCollapsed(false);
     setOfflineNotice(null);
+    setPrefillText('');
   };
 
-  const handleSelectRouteTag = (tag: string) => {
+  const handleSelectRouteTag = (destination: string) => {
     setIsInputCollapsed(false);
-    handleSearch(`Ruta papuntang ${tag}`);
+    setPrefillText(`Papuntang ${destination} galing sa `);
   };
 
   const handleSearch = async (text: string) => {
@@ -137,6 +139,7 @@ function App() {
               isExtracting={isExtracting}
               isCollapsed={isInputCollapsed}
               onExpand={() => setIsInputCollapsed(false)}
+              prefillText={prefillText}
             />
           </div>
 

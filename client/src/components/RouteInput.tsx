@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, RotateCcw, ChevronDown, ChevronUp, Edit3, Sparkles } from 'lucide-react';
 import VoiceButton from './VoiceButton';
 
@@ -8,6 +8,7 @@ interface RouteInputProps {
   isExtracting: boolean;
   isCollapsed?: boolean;
   onExpand?: () => void;
+  prefillText?: string;
 }
 
 const SAMPLE_PROMPTS = [
@@ -24,9 +25,20 @@ export default function RouteInput({
   isExtracting,
   isCollapsed = false,
   onExpand,
+  prefillText,
 }: RouteInputProps) {
   const [text, setText] = useState('');
   const [showExamples, setShowExamples] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (prefillText !== undefined && prefillText !== null) {
+      setText(prefillText);
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }
+  }, [prefillText]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +110,7 @@ export default function RouteInput({
           {/* Text input area */}
           <div className="relative w-full">
             <textarea
+              ref={textareaRef}
               id="route-input"
               value={text}
               onChange={(e) => setText(e.target.value)}
