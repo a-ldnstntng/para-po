@@ -157,7 +157,7 @@ function App() {
             TAB 1: SEARCH (Default / Landing Screen)
             ======================================================== */}
         {activeTab === 'search' && (
-          <div key="tab-search" className="w-full animate-tab-content">
+          <div key="tab-search" className={`w-full animate-tab-content ${!currentRoute ? 'min-h-[75vh] flex flex-col justify-center' : 'pt-2'}`}>
             <main className="w-full flex flex-col items-center space-y-4 sm:space-y-5">
               {/* Header */}
               <Board
